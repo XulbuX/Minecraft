@@ -1,0 +1,6 @@
+{
+    "parent": "item/bow",
+    "textures": {
+        "layer0": "wpm/arrow_launcher_pulling_0"
+    }
+}

@@ -1,0 +1,23 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "wpm/ice_crystal"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "scale": [1,1,1]
+    },
+    "thirdperson_lefthand": {
+        "scale": [1,1,1]
+    },
+    "firstperson_righthand": {
+        "scale": [1,1,1]
+    },
+    "firstperson_lefthand": {
+        "scale": [1,1,1]
+    },
+    "ground": {
+      "scale": [1,1,1]
+    }
+  }
+}

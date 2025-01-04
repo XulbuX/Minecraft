@@ -1,0 +1,17 @@
+{
+    "providers": [
+        {
+            "type": "bitmap",
+            "file": "minecraft:font/_logo_wpm.png",
+            "ascent": 1024,
+            "height": 1024,
+            "shift": [0, 0.5],
+			"size": 11.0,
+			"oversample": 1.0,
+			"skip": "",
+            "chars": [
+                "\uE000"
+            ]
+        }
+    ]
+}
