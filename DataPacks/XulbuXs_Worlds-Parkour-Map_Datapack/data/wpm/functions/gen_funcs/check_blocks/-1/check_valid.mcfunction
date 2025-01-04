@@ -1,0 +1,5 @@
+execute if block ~ ~-.01 ~ #trapdoors[half=top,open=false] run scoreboard players set @s Check_Blocks 0
+execute if block ~ ~-.01 ~ #wpm:full_blocks run scoreboard players set @s Check_Blocks 0
+execute if block ~ ~-.01 ~ #slabs[type=double] run scoreboard players set @s Check_Blocks 0
+execute if block ~ ~-.01 ~ #stairs[half=top] run scoreboard players set @s Check_Blocks 0
+execute if block ~ ~-.01 ~ #slabs[type=top] run scoreboard players set @s Check_Blocks 0

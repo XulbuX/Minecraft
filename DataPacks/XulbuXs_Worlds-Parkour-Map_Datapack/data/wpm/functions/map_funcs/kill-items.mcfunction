@@ -1,0 +1,6 @@
+kill @e[type=item,nbt={Item:{id:"minecraft:wheat"}}]
+kill @e[type=item,nbt={Item:{id:"minecraft:wheat_seeds"}}]
+kill @e[type=item,nbt={Item:{id:"minecraft:carrot"}}]
+kill @e[type=item,nbt={Item:{id:"minecraft:potato"}}]
+kill @e[type=item,nbt={Item:{id:"minecraft:poisonous_potato"}}]
+kill @e[type=item,nbt={Item:{id:"minecraft:bone_meal"}}]

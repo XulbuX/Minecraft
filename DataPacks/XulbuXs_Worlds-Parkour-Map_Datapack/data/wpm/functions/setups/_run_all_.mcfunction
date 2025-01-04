@@ -1,0 +1,13 @@
+# BLOCKS
+   function wpm:setups/blocks/fake-portal-block/__main__
+   function wpm:setups/blocks/interaction-lock/__main__
+   function wpm:setups/blocks/moving-platform/__main__
+   function wpm:setups/blocks/reset-button/__main__
+   function wpm:setups/blocks/display-item/__main__
+   function wpm:setups/blocks/air-lift/__main__
+   function wpm:setups/blocks/jump-pad/__main__
+   function wpm:setups/blocks/portals/__main__
+   function wpm:setups/blocks/deleter/__main__
+   function wpm:setups/blocks/snake/__main__
+# BUYING-STATIONS
+   function wpm:setups/buy-stands/__main__

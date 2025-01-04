@@ -1,0 +1,10 @@
+execute at @s run summon tnt ~ ~ ~ {Fuse:80s,Motion:[0.0d,1.0d,0.75d]}
+execute at @s run summon tnt ~ ~ ~ {Fuse:80s,Motion:[0.4408d,1.0d,0.6068d]}
+execute at @s run summon tnt ~ ~ ~ {Fuse:80s,Motion:[0.7133d,1.0d,0.2318d]}
+execute at @s run summon tnt ~ ~ ~ {Fuse:80s,Motion:[0.7133d,1.0d,-0.2318d]}
+execute at @s run summon tnt ~ ~ ~ {Fuse:80s,Motion:[0.4408d,1.0d,-0.6068d]}
+execute at @s run summon tnt ~ ~ ~ {Fuse:80s,Motion:[0.0d,1.0d,-0.75d]}
+execute at @s run summon tnt ~ ~ ~ {Fuse:80s,Motion:[-0.4408d,1.0d,-0.6068d]}
+execute at @s run summon tnt ~ ~ ~ {Fuse:80s,Motion:[-0.7133d,1.0d,-0.2318d]}
+execute at @s run summon tnt ~ ~ ~ {Fuse:80s,Motion:[-0.7133d,1.0d,0.2318d]}
+execute at @s run summon tnt ~ ~ ~ {Fuse:80s,Motion:[-0.4408d,1.0d,0.6068d]}

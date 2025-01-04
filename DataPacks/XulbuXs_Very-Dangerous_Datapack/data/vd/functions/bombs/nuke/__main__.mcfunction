@@ -1,0 +1,2 @@
+execute as @e[type=tnt,tag=NUKE,nbt={Fuse:1s}] at @s run summon tnt ~ ~ ~ {Fuse:50s,Motion:[0d,2d,0d],CustomName:'[{"text":"NUKE","color":"gold","bold":true}]',CustomNameVisible:1b,Glowing:1b,Invulnerable:1b,NoGravity:1b,Tags:["NUKE_Fase2"]}
+execute as @e[type=tnt,tag=NUKE_Fase2,nbt={Fuse:1s}] run function vd:bombs/nuke/boom

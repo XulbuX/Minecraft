@@ -1,0 +1,2 @@
+execute at @s run summon tnt ~ ~ ~ {Fuse:15s,Motion:[0d,-2.5d,0d],CustomName:'[{"text":"NUKE","color":"red","bold":true}]',CustomNameVisible:1b,Glowing:1b,Invulnerable:1b}
+execute at @s run summon creeper ~ ~ ~ {Fuse:15s,Motion:[0d,-3d,0d],ExplosionRadius:100,ignited:1,Invulnerable:1b,PersistenceRequired:1b,active_effects:[{id:"invisibility",duration:1000000,amplifier:255,show_particles:0b}]}

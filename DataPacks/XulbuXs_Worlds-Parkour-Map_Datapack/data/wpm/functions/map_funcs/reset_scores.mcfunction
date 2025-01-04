@@ -1,0 +1,15 @@
+scoreboard players reset * AirLift_timer
+scoreboard players reset * DeathCount
+scoreboard players reset * DeathMessage_ID
+scoreboard players reset * FreezeLauncher_timer
+scoreboard players reset * Frozen_timer
+scoreboard players reset * HomingAmmo
+scoreboard players reset * HomingLauncher_timer
+scoreboard players reset * JumpPad_timer
+scoreboard players reset * ParkourPlayers_DEATHS
+scoreboard players reset * ParkourPlayers_HEALTH
+scoreboard players reset * ParkourPlayers_MONEY
+scoreboard players reset * save_last_DEATH
+scoreboard players reset * SlapTimer_green
+scoreboard players reset * SlapTimer_red
+scoreboard players reset * Title_LavaCave
