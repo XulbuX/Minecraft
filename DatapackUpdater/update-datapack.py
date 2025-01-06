@@ -1,6 +1,7 @@
 import json
-import re
+import sys
 import os
+import re
 
 
 def rename_directories(root_dir: str) -> None:
@@ -65,5 +66,6 @@ def update_datapack(root_dir: str) -> None:
     update_pack_mcmeta(root_dir)
 
 
-datapack_path = "/path/to/your/datapack"
-update_datapack(datapack_path)
+if __name__ == "__main__":
+    datapack_path = sys.argv[1]  # PATH TO DATAPACK ROOT DIRECTORY
+    update_datapack(datapack_path)
