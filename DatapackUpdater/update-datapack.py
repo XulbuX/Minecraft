@@ -29,7 +29,7 @@ def rename_directories(root_dir: str) -> None:
 
 
 def update_file_contents(file_path: str) -> None:
-    with open(file_path, "r") as file:
+    with open(file_path, "r", encoding="utf-8") as file:
         content = file.read()
     content = re.sub(  # UPDATE NBT STRUCTURE
         r'{Enchantments:\[{id:"minecraft:(\w+)",lvl:(\d+)}\]}',
@@ -40,7 +40,7 @@ def update_file_contents(file_path: str) -> None:
         r"execute if function", "execute if function_loaded", content
     )
     content = re.sub(r"return run", "return", content)  # UPDATE RETURN RUN COMMAND
-    with open(file_path, "w") as file:
+    with open(file_path, "w", encoding="utf-8") as file:
         file.write(content)
 
 
@@ -67,5 +67,9 @@ def update_datapack(root_dir: str) -> None:
 
 
 if __name__ == "__main__":
-    datapack_path = sys.argv[1]  # PATH TO DATAPACK ROOT DIRECTORY
+    try:
+        datapack_path = sys.argv[1]  # PATH TO DATAPACK ROOT DIRECTORY
+    except IndexError:
+        print("Please provide the path to the datapack root directory.")
+        sys.exit(1)
     update_datapack(datapack_path)
