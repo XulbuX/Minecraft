@@ -53,7 +53,7 @@ scoreboard objectives add Single_buy_price dummy
 scoreboard objectives add Items_to_purchase dummy
 scoreboard objectives add DeathMessage_timer dummy
 scoreboard objectives add ParkourPlayers_DEATHS deathCount
-scoreboard objectives modify ParkourPlayers_DEATHS displayname ["",{"text":"[","color":"#0066CC"},{"text":"DEATHS","color":"#007D62"},{"text":"]","color":"#0066CC"}]
+scoreboard objectives modify ParkourPlayers_DEATHS displayname ["",{"text":"[","color":"#5055FF"},{"text":"DEATHS","color":"#8085FF"},{"text":"]","color":"#5055FF"}]
 scoreboard objectives add ParkourPlayers_HEALTH health
 scoreboard objectives modify ParkourPlayers_HEALTH displayname ["",{"text":"[","color":"#D35555"},{"text":"HEALTH","color":"#FF6955"},{"text":"]","color":"#D35555"}]
 scoreboard objectives modify ParkourPlayers_HEALTH rendertype hearts
