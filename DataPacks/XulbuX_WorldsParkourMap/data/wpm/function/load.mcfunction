@@ -53,12 +53,12 @@ scoreboard objectives add Single_buy_price dummy
 scoreboard objectives add Items_to_purchase dummy
 scoreboard objectives add DeathMessage_timer dummy
 scoreboard objectives add ParkourPlayers_DEATHS deathCount
-scoreboard objectives modify ParkourPlayers_DEATHS displayname ["",{"text":"[","color":"#5055FF"},{"text":"DEATHS","color":"#8085FF"},{"text":"]","color":"#5055FF"}]
+scoreboard objectives modify ParkourPlayers_DEATHS displayname ["",{"text":"》","color":"#5055FF"},{"text":"DEATHS","bold":true,"color":"#8085FF"},{"text":"《","color":"#5055FF"}]
 scoreboard objectives add ParkourPlayers_HEALTH health
-scoreboard objectives modify ParkourPlayers_HEALTH displayname ["",{"text":"[","color":"#D35555"},{"text":"HEALTH","color":"#FF6955"},{"text":"]","color":"#D35555"}]
+scoreboard objectives modify ParkourPlayers_HEALTH displayname ["",{"text":"》","color":"#D03530"},{"text":"HEALTH","bold":true,"color":"#FF5550"},{"text":"《","color":"#D03530"}]
 scoreboard objectives modify ParkourPlayers_HEALTH rendertype hearts
 scoreboard objectives add ParkourPlayers_MONEY dummy
-scoreboard objectives modify ParkourPlayers_MONEY displayname ["",{"text":"[","bold":true,"color":"#CC9900"},{"text":"MONEY","bold":false,"color":"#FFCC00"},{"text":"]","bold":true,"color":"#CC9900"}]
+scoreboard objectives modify ParkourPlayers_MONEY displayname ["",{"text":"》","color":"#E06020"},{"text":"MONEY","bold":true,"color":"#FF8540"},{"text":"《","color":"#E06020"}]
 # FUNCTIONS  -  GENERAL
 scoreboard objectives add Check_Blocks dummy
 scoreboard objectives add Check_Blocks_2 dummy
