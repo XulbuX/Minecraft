@@ -49,10 +49,10 @@ def update_pack_mcmeta(root_dir: str) -> None:
     if os.path.exists(mcmeta_path):
         with open(mcmeta_path, "r") as file:
             data = json.load(file)
-        data["pack"]["pack_format"] = 18  # UPDATE TO VERSION 1.21.x FORMAT
+        data["pack"]["pack_format"] = 57  # UPDATE TO VERSION 1.21.2 - 1.21.3 FORMAT
         with open(mcmeta_path, "w") as file:
             json.dump(data, file, indent=4)
-        print(f"Updated pack.mcmeta to format 18")
+        print(f"Updated pack.mcmeta to format 57 [1.21.2 - 1.21.3]")
 
 
 def update_datapack(root_dir: str) -> None:
