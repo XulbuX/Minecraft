@@ -12,7 +12,7 @@ REGEX = {
     ),
     "enchantment_glint": rx.compile(r"Enchantments\s*:\s*\[\s*\{\s*\}\s*\]"),
     "unbreakable": rx.compile(r"Unbreakable\s*:\s*1"),
-    "tags": rx.compile(r"Tags\s*:\s*\[\s*(?:\"(.*)\")+\s*\]"),
+    "tags": rx.compile(r"Tags\s*:\s*" + Regex.brackets("[", "]", is_group=True)),
     "enchantments": rx.compile(
         r"Enchantments\s*:\s*\[\s*(?:"
         + Regex.brackets("{", "}", is_group=True)
@@ -50,7 +50,10 @@ def update_content(content: str) -> tuple[str, int]:
         nbt = REGEX["unbreakable"].sub("unbreakable={}", nbt)
         nbt = REGEX["tags"].sub(
             lambda m: "custom_data={"
-            + ",".join(f"{String.to_camel_case(tag)}:1" for tag in m.groups())
+            + ",".join(
+                f"{String.to_camel_case(tag.lstrip('"').rstrip('"'), False)}:1"
+                for tag in m.groups()
+            )
             + "}",
             nbt,
         )
@@ -63,10 +66,10 @@ def update_content(content: str) -> tuple[str, int]:
         nbt = REGEX["display"].sub(
             lambda m: f"custom_name='[\"\",{m.group(1)}]',lore=[{m.group(2)}]", nbt
         )
-        return nbt
+        return f"[{nbt[1:-1]}]"
 
     content = REGEX["hex"].sub(lambda m: f"{m.group(1)}{m.group(2).upper()}", content)
-    content = update_nbt(content)
+    content = REGEX["nbt"].sub(lambda m: update_nbt(m.group()), content)
     return content, changed
 
 
@@ -76,8 +79,7 @@ def process_file(file_path: Path, root_dir: Path) -> None:
     # try:
     content = file_path.read_text(encoding="utf-8")
     new_content, modified = update_content(content)
-    if modified:
-        file_path.write_text(new_content, encoding="utf-8")
+    file_path.write_text(new_content, encoding="utf-8")
     log_path = str(file_path.relative_to(root_dir))
     dim = "[dim]" if modified < 1 else ""
     Console.done(
