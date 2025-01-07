@@ -10,8 +10,9 @@ REGEX = {
         r"(?<=(?:give\s+(?:\@[apres]|[^\s]+)\s+[\w_]+\s*)|(?:nbt\s*=\s*))"
         + Regex.brackets("{", "}", is_group=True)
     ),
-    "enchantment_glint": rx.compile(r"Enchantments\s*:\s*\[\s*\{\s*\}\s*\]"),
     "unbreakable": rx.compile(r"Unbreakable\s*:\s*1"),
+    "enchantment_glint": rx.compile(r"Enchantments\s*:\s*\[\s*\{\s*\}\s*\]"),
+    "custom_model_data": rx.compile(r"CustomModelData\s*:\s*([0-9]+)"),
     "tags": rx.compile(r"Tags\s*:\s*" + Regex.brackets("[", "]", is_group=True)),
     "enchantments": rx.compile(
         r"Enchantments\s*:\s*\[\s*(?:"
@@ -24,6 +25,9 @@ REGEX = {
         + r"\s*'\s*,\s*Lore\s*:\s*"
         + Regex.brackets("[", "]", is_group=True)
         + r"\s*\}"
+    ),
+    "can_place_on": rx.compile(
+        r"CanPlaceOn\s*:\s*" + Regex.brackets("[", "]", is_group=True)
     ),
 }
 
@@ -45,13 +49,34 @@ def update_content(content: str) -> tuple[str, int]:
         eid = rx.search(r"id\s*:\s*\"[\w_]+\"\s*,\s*", enchantment)
         return f"{eid.group()}:{lvl.group()}" if lvl and eid else enchantment
 
+    def update_can_place_on(can_place_on: str) -> str:
+        can_place_on = [
+            item[1].strip() for item in rx.findall(Regex.quotes(), can_place_on)
+        ]
+        options = [
+            (
+                opts.group().strip("[]").split(",")
+                if (opts := rx.search(Regex.brackets("[", "]", is_group=True), item))
+                else None
+            )
+            for item in can_place_on
+        ]
+        can_place_on = [
+            rx.sub(Regex.brackets("[", "]"), "", item) for item in can_place_on
+        ]
+        return ",".join(
+            f'{{blocks:"{item}"' + (f',state:"{options[i]}"}}' if options[i] else "}")
+            for i, item in enumerate(can_place_on)
+        )
+
     def update_nbt(nbt: str) -> str:
-        nbt = REGEX["enchantment_glint"].sub("enchantment_glint_override=true", nbt)
         nbt = REGEX["unbreakable"].sub("unbreakable={}", nbt)
+        nbt = REGEX["enchantment_glint"].sub("enchantment_glint_override=true", nbt)
+        nbt = REGEX["custom_model_data"].sub(r"custom_model_data=\1", nbt)
         nbt = REGEX["tags"].sub(
             lambda m: "custom_data={"
             + ",".join(
-                f"{String.to_camel_case(tag.lstrip('"').rstrip('"'), False)}:1"
+                f"{String.to_camel_case(tag.strip().strip('"'), upper=False)}:1"
                 for tag in m.groups()
             )
             + "}",
@@ -65,6 +90,12 @@ def update_content(content: str) -> tuple[str, int]:
         )
         nbt = REGEX["display"].sub(
             lambda m: f"custom_name='[\"\",{m.group(1)}]',lore=[{m.group(2)}]", nbt
+        )
+        nbt = REGEX["can_place_on"].sub(
+            lambda m: "can_place_on={predicates:["
+            + update_can_place_on(m.group())
+            + "]",
+            nbt,
         )
         return f"[{nbt[1:-1]}]"
 
