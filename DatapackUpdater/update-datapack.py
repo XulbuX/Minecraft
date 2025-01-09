@@ -5,14 +5,22 @@ import random
 import struct
 import sys
 
-
+SELECTOR = r"(?:\@[apres]|[^\s]+)"
 REGEX = {
     "hex": rx.compile(r"(#|0x)([0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3,4})\b"),
     "nbt": rx.compile(
-        r"(?<=(?:give\s+(?:\@[apres]|[^\s]+)\s+([\w_]+)\s*)|(?:nbt\s*=\s*))"
+        r"(?<=(?:give\s+"
+        + SELECTOR
+        + r"\s+([\w_]+)\s*)|(?:nbt\s*=\s*))"
         + Regex.brackets("{", "}", is_group=True)
     ),
-    "tag": rx.compile(r"(?<=(?:\@[apres]|[^\s]+)\s*\[.*?,?)tag\s*=\s*([\w+-._]+)"),
+    "tag_usage": rx.compile(
+        r"(?<=(?:"
+        + SELECTOR
+        + r"\s*\[.*?,?)|(?:tag\s+"
+        + SELECTOR
+        + r"\s+(?:add|remove))tag\s*=\s*([\w+-._]+)"
+    ),
     "unbreakable": rx.compile(r"Unbreakable\s*:\s*1"),
     "enchantment_glint": rx.compile(r"Enchantments\s*:\s*\[\s*\{\s*\}\s*\]"),
     "block_state_tag": rx.compile(
@@ -192,7 +200,7 @@ def update_content(content: str) -> tuple[str, int]:
         ),
         content,
     )
-    content = REGEX["tag"].sub(
+    content = REGEX["tag_usage"].sub(
         lambda m: f"tag={String.to_delimited_case(m.group(1))}", content
     )
     return content, changed
