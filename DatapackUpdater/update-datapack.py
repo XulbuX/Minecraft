@@ -44,9 +44,10 @@ def is_readable(filepath: Path):
 def update_content(content: str) -> tuple[str, int]:
     changed = 0
 
-    def update_options(options: str) -> str:
-        opts = rx.findall(r"[\w_]+=[\w_]+", options)
-        return ",".join(mods[0] + f':"{(mods := opt.split("="))[1]}"' for opt in opts)
+    def update_options(options: list) -> str:
+        return ",".join(
+            (mods := opt.split("="))[0] + f':"{mods[1]}"' for opt in options
+        )
 
     def update_enchantment(enchantment: str) -> str:
         lvl = rx.search(r"lvl\s*:\s*[0-9]+", enchantment)
@@ -70,7 +71,7 @@ def update_content(content: str) -> tuple[str, int]:
         ]
         return ",".join(
             f'{{blocks:"{item}"'
-            + ((",state:{" + options[i].split("=") + "}}") if options[i] else "}")
+            + ((",state:{" + update_options(options[i]) + "}}") if options[i] else "}")
             for i, item in enumerate(can_place_on)
         )
 
