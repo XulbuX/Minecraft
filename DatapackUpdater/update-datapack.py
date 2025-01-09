@@ -103,7 +103,7 @@ def update_content(content: str) -> tuple[str, int]:
             r"Tags\s*:\s*" + Regex.brackets("[", "]", is_group=True),
             lambda m: "\\Tags:["
             + ",".join(
-                f'"{String.to_camel_case(tag.strip().strip('"'), upper=False)}"'
+                f'"{String.to_delimited_case(tag.strip().strip('"'))}"'
                 for tag in m.group(1).split(",")
             )
             + "]",
@@ -174,7 +174,7 @@ def update_content(content: str) -> tuple[str, int]:
         nbt = REGEX["tags"].sub(
             lambda m: "custom_data={"
             + ",".join(
-                f"{String.to_camel_case(tag.strip().strip('"'), upper=False)}:1"
+                f"{String.to_delimited_case(tag.strip().strip('"'))}:1"
                 for tag in m.group(1).split(",")
             )
             + "}",
@@ -193,7 +193,7 @@ def update_content(content: str) -> tuple[str, int]:
         content,
     )
     content = REGEX["tag"].sub(
-        lambda m: f"tag={String.to_camel_case(m.group(1), upper=False)}", content
+        lambda m: f"tag={String.to_delimited_case(m.group(1))}", content
     )
     return content, changed
 
