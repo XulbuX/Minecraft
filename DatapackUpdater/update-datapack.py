@@ -5,7 +5,7 @@ import random
 import struct
 import sys
 
-SELECTOR = r"(?:\@[apres]|[^\s]+)"
+SELECTOR = r"(?:\*|\@[aenprs]|[^\s]+)"
 REGEX = {
     "hex": rx.compile(r"(#|0x)([0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3,4})\b"),
     "nbt": rx.compile(
@@ -20,6 +20,22 @@ REGEX = {
         + r"\s*\[.*?,?\s*tag\s*=\s*)|(?:tag\s+"
         + SELECTOR
         + r"\s+(?:add|remove)\s+))([\w+-._]+)"
+    ),
+    "score_usage": rx.compile(
+        r"(?<=(?:score\s+"
+        + SELECTOR
+        + r"""\s+)
+            |(?:scoreboard\s+objectives\s+(?:add|modify|remove|setdisplay\s+[\w._]+)\s+)
+            |(?:scoreboard\s+players\s+(?:add|display\s+(?:name|numberformat)\s+"""
+        + SELECTOR
+        + rf"|enable\s+{SELECTOR}|get\s+{SELECTOR}|remove\s+{SELECTOR}|reset\s+{SELECTOR}|set\s+{SELECTOR})\s+))([\w._]+)"
+    ),
+    "score_operation": rx.compile(
+        r"(?<=scoreboard\s+players\s+operation"
+        + SELECTOR
+        + r"\s+)([\w_]+)\s+([%*+-/<>=]+)\s+("
+        + SELECTOR
+        + r")\s+([\w_]+)"
     ),
     "unbreakable": rx.compile(r"Unbreakable\s*:\s*1"),
     "enchantment_glint": rx.compile(r"Enchantments\s*:\s*\[\s*\{\s*\}\s*\]"),
