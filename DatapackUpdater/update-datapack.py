@@ -201,7 +201,7 @@ def update_content(content: str) -> tuple[str, int]:
         content,
     )
     content = REGEX["tag_usage"].sub(
-        lambda m: f"tag={String.to_delimited_case(m.group(1))}", content
+        lambda m: String.to_delimited_case(m.group(1)), content
     )
     return content, changed
 
