@@ -44,6 +44,10 @@ def is_readable(filepath: Path):
 def update_content(content: str) -> tuple[str, int]:
     changed = 0
 
+    def update_options(options: str) -> str:
+        opts = rx.findall(r"[\w_]+=[\w_]+", options)
+        return ",".join(mods[0] + f':"{(mods := opt.split("="))[1]}"' for opt in opts)
+
     def update_enchantment(enchantment: str) -> str:
         lvl = rx.search(r"lvl\s*:\s*[0-9]+", enchantment)
         eid = rx.search(r"id\s*:\s*\"[\w_]+\"\s*,\s*", enchantment)
@@ -65,7 +69,8 @@ def update_content(content: str) -> tuple[str, int]:
             rx.sub(Regex.brackets("[", "]"), "", item) for item in can_place_on
         ]
         return ",".join(
-            f'{{blocks:"{item}"' + (f',state:"{options[i]}"}}' if options[i] else "}")
+            f'{{blocks:"{item}"'
+            + ((",state:{" + options[i].split("=") + "}}") if options[i] else "}")
             for i, item in enumerate(can_place_on)
         )
 
