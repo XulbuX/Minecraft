@@ -24,9 +24,7 @@ REGEX = {
     "scoreboard_usage": rx.compile(
         r"(?<=(?:score\s+"
         + SELECTOR
-        + r"""\s+)
-            |(?:scoreboard\s+objectives\s+(?:add|modify|remove|setdisplay\s+[\w._]+)\s+)
-            |(?:scoreboard\s+players\s+(?:add|display\s+(?:name|numberformat)\s+"""
+        + r"\s+)|(?:scoreboard\s+objectives\s+(?:add|modify|remove|setdisplay\s+[\w._]+)\s+)|(?:scoreboard\s+players\s+(?:add|display\s+(?:name|numberformat)\s+"
         + SELECTOR
         + rf"|enable\s+{SELECTOR}|get\s+{SELECTOR}|remove\s+{SELECTOR}|reset\s+{SELECTOR}|set\s+{SELECTOR})\s+))([\w._]+)"
     ),
