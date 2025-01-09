@@ -9,7 +9,7 @@ import sys
 REGEX = {
     "hex": rx.compile(r"(#|0x)([0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3,4})\b"),
     "nbt": rx.compile(
-        r"(?<=(?:give\s+(?:\@[apres]|[^\s]+)\s+[\w_]+\s*)|(?:nbt\s*=\s*))"
+        r"(?<=(?:give\s+(?:\@[apres]|[^\s]+)\s+([\w_]+)\s*)|(?:nbt\s*=\s*))"
         + Regex.brackets("{", "}", is_group=True)
     ),
     "unbreakable": rx.compile(r"Unbreakable\s*:\s*1"),
@@ -97,7 +97,7 @@ def update_content(content: str) -> tuple[str, int]:
             + f',operation:{operation},id:"{mod_id}"}}'
         )
 
-    def update_entity_tag(entity_tag: str) -> str:
+    def update_entity_tag(entity_tag: str, entity_id: str = None) -> str:
         entity_tag = rx.sub(
             r"Tags\s*:\s*" + Regex.brackets("[", "]", is_group=True),
             lambda m: "\\Tags:["
@@ -108,7 +108,11 @@ def update_content(content: str) -> tuple[str, int]:
             + "]",
             entity_tag,
         )
-        return entity_tag
+        return (
+            f'id:"{entity_id}",'
+            if entity_id and not rx.search(r"id\s*:\s*\"\s*[\w_]+\s*\"")
+            else ""
+        ) + entity_tag
 
     def update_can_place_on(can_place_on: str) -> str:
         can_place_on = [
@@ -131,7 +135,7 @@ def update_content(content: str) -> tuple[str, int]:
             for i, item in enumerate(can_place_on)
         )
 
-    def update_nbt(nbt: str) -> str:
+    def update_nbt(nbt: str, entity_id: str = None) -> str:
         nbt = REGEX["unbreakable"].sub("unbreakable={}", nbt)
         nbt = REGEX["enchantment_glint"].sub("enchantment_glint_override=true", nbt)
         nbt = REGEX["block_state_tag"].sub(r"block_state={\1}", nbt)
@@ -163,7 +167,8 @@ def update_content(content: str) -> tuple[str, int]:
             nbt,
         )
         nbt = REGEX["entity_tag"].sub(
-            lambda m: "entity_data={" + update_entity_tag(m.group(1)) + "}", nbt
+            lambda m: "entity_data={" + update_entity_tag(m.group(1), entity_id) + "}",
+            nbt,
         )
         nbt = REGEX["tags"].sub(
             lambda m: "custom_data={"
@@ -180,7 +185,12 @@ def update_content(content: str) -> tuple[str, int]:
         return f"[{nbt}]"
 
     content = REGEX["hex"].sub(lambda m: f"{m.group(1)}{m.group(2).upper()}", content)
-    content = REGEX["nbt"].sub(lambda m: update_nbt(m.group(1)), content)
+    content = REGEX["nbt"].sub(
+        lambda m: (
+            update_nbt(m.group(2), m.group(1)) if m.group(2) else update_nbt(m.group(1))
+        ),
+        content,
+    )
     return content, changed
 
 
