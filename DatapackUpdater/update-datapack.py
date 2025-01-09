@@ -17,9 +17,9 @@ REGEX = {
     "tag_usage": rx.compile(
         r"(?<=(?:"
         + SELECTOR
-        + r"\s*\[.*?,?)|(?:tag\s+"
+        + r"\s*\[.*?,?\s*tag\s*=\s*)|(?:tag\s+"
         + SELECTOR
-        + r"\s+(?:add|remove))tag\s*=\s*([\w+-._]+)"
+        + r"\s+(?:add|remove)\s+))([\w+-._]+)"
     ),
     "unbreakable": rx.compile(r"Unbreakable\s*:\s*1"),
     "enchantment_glint": rx.compile(r"Enchantments\s*:\s*\[\s*\{\s*\}\s*\]"),
