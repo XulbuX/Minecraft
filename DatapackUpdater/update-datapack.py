@@ -1,6 +1,7 @@
 from xulbux import Console, String, Regex
 from pathlib import Path
 import regex as rx
+import random
 import struct
 import sys
 
@@ -76,19 +77,32 @@ def update_content(content: str) -> tuple[str, int]:
             .group(1)
             .replace("generic.", "")
         )
-        amount = rx.search(r"Amount\s*:\s*([0-9.]+)", modifier).group(1)
+        amount = rx.search(r"Amount\s*:\s*([0-9-.]+)", modifier).group(1)
         slot = (rx.search(r"Slot\s*:\s*\"([\w]+)\"", modifier) or [None])[0]
-        operation = rx.search(r"Operation\s*:\s*([\w_]+)", modifier).group(1)
-        uuid_parts = [
+        operations = ("add_value", "add_multiplied_base", "add_multiplied_total")
+        operation = operations[
+            int((rx.search(r"Operation\s*:\s*([012])", modifier) or [None])[0] or 0)
+        ]
+        uuid_parts = (
             int(part)
             for part in (
-                rx.search(r"UUID\s*:\s*\[I;((?:[0-9-]+,?){4})\]", modifier)
-                .group(1)
-                .split(",")
-            )
-        ]
+                (rx.search(r"UUID\s*:\s*\[I;((?:[0-9-]+,?){4})\]", modifier) or [None])[
+                    0
+                ]  # GET PRESENT UUID
+                or [
+                    random.randint(-2147483648, 2147483647) for _ in range(4)
+                ]  # GENERATE RANDOM UUID
+            ).split(",")
+        )
         mod_id = str(struct.unpack(">Q", struct.pack(">iiii", *uuid_parts)[8:])[0])[:13]
-        return f"{{type:{typ},amount:{amount}{',slot:' + slot if slot else ''},operation:{operation},id:{mod_id}}}"
+        return (
+            "{"
+            + f"type:{typ},amount:{amount}"
+            + (f",slot:{slot}" if slot else "")
+            + f",operation:{operation}"
+            + (f",id:{mod_id}" if mod_id else "")
+            + "}"
+        )
 
     def update_entity_tag(entity_tag: str) -> str:
         entity_tag = rx.sub(
