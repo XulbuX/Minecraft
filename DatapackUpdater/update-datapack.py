@@ -1,6 +1,7 @@
 from xulbux import Console, String, Regex
 from pathlib import Path
 import regex as rx
+import struct
 import sys
 
 
@@ -12,23 +13,38 @@ REGEX = {
     ),
     "unbreakable": rx.compile(r"Unbreakable\s*:\s*1"),
     "enchantment_glint": rx.compile(r"Enchantments\s*:\s*\[\s*\{\s*\}\s*\]"),
+    "block_state_tag": rx.compile(
+        r"BlockStateTag\s*:\s*" + Regex.brackets("{", "}", is_group=True)
+    ),
+    "damage": rx.compile(r"Damage\s*:\s*([0-9]+)"),
     "custom_model_data": rx.compile(r"CustomModelData\s*:\s*([0-9]+)"),
-    "tags": rx.compile(r"Tags\s*:\s*" + Regex.brackets("[", "]", is_group=True)),
     "enchantments": rx.compile(
         r"Enchantments\s*:\s*\[\s*(?:"
+        + Regex.brackets("{", "}", is_group=True)
+        + r"\s*,?\s*)+\s*\]"
+    ),
+    "attribute_modifiers": rx.compile(
+        r"AttributeModifiers\s*:\s*\[\s*(?:"
         + Regex.brackets("{", "}", is_group=True)
         + r"\s*,?\s*)+\s*\]"
     ),
     "display": rx.compile(
         r"display\s*:\s*\{\s*Name\s*:\s*'\s*"
         + Regex.brackets("[", "]", is_group=True)
-        + r"\s*'\s*,\s*Lore\s*:\s*"
+        + r"\s*'\s*(?:,\s*Lore\s*:\s*"
         + Regex.brackets("[", "]", is_group=True)
-        + r"\s*\}"
+        + r"\s*)?\}"
     ),
     "can_place_on": rx.compile(
         r"CanPlaceOn\s*:\s*" + Regex.brackets("[", "]", is_group=True)
     ),
+    "entity_tag": rx.compile(
+        r"EntityTag\s*:\s*" + Regex.brackets("{", "}", is_group=True)
+    ),
+    "tags": rx.compile(r"(?<!\\)Tags\s*:\s*" + Regex.brackets("[", "]", is_group=True)),
+    "esc_tags": rx.compile(r"\\Tags\s*:\s*" + Regex.brackets("[", "]", is_group=True)),
+    "hide_flags": rx.compile(r",?\s*HideFlags\s*:\s*([0-9]+)"),
+    "tags_1b": rx.compile(r",?\s*tags\s*:\s*1b"),
 }
 
 
@@ -50,9 +66,42 @@ def update_content(content: str) -> tuple[str, int]:
         )
 
     def update_enchantment(enchantment: str) -> str:
-        lvl = rx.search(r"lvl\s*:\s*[0-9]+", enchantment)
-        eid = rx.search(r"id\s*:\s*\"[\w_]+\"\s*,\s*", enchantment)
-        return f"{eid.group()}:{lvl.group()}" if lvl and eid else enchantment
+        lvl = rx.search(r"lvl\s*:\s*([0-9]+)", enchantment).group(1)
+        eid = rx.search(r"id\s*:\s*\"([\w_]+)\"\s*,\s*", enchantment).group(1)
+        return f"{eid}:{lvl}" if lvl and eid else enchantment
+
+    def update_attr_mod(modifier: str) -> str:
+        typ = (
+            rx.search(r"AttributeName\s*:\s*\"([\w._]+)\"", modifier)
+            .group(1)
+            .replace("generic.", "")
+        )
+        amount = rx.search(r"Amount\s*:\s*([0-9.]+)", modifier).group(1)
+        slot = (rx.search(r"Slot\s*:\s*\"([\w]+)\"", modifier) or [None])[0]
+        operation = rx.search(r"Operation\s*:\s*([\w_]+)", modifier).group(1)
+        uuid_parts = [
+            int(part)
+            for part in (
+                rx.search(r"UUID\s*:\s*\[I;((?:[0-9-]+,?){4})\]", modifier)
+                .group(1)
+                .split(",")
+            )
+        ]
+        mod_id = str(struct.unpack(">Q", struct.pack(">iiii", *uuid_parts)[8:])[0])[:13]
+        return f"{{type:{typ},amount:{amount}{',slot:' + slot if slot else ''},operation:{operation},id:{mod_id}}}"
+
+    def update_entity_tag(entity_tag: str) -> str:
+        entity_tag = rx.sub(
+            r"Tags\s*:\s*" + Regex.brackets("[", "]", is_group=True),
+            lambda m: "\\Tags:["
+            + ",".join(
+                f'"{String.to_camel_case(tag.strip().strip('"'), upper=False)}"'
+                for tag in m.group(1).split(",")
+            )
+            + "]",
+            entity_tag,
+        )
+        return entity_tag
 
     def update_can_place_on(can_place_on: str) -> str:
         can_place_on = [
@@ -60,7 +109,7 @@ def update_content(content: str) -> tuple[str, int]:
         ]
         options = [
             (
-                opts.group().strip("[]").split(",")
+                opts.group(1).strip("[]").split(",")
                 if (opts := rx.search(Regex.brackets("[", "]", is_group=True), item))
                 else None
             )
@@ -71,42 +120,60 @@ def update_content(content: str) -> tuple[str, int]:
         ]
         return ",".join(
             f'{{blocks:"{item}"'
-            + ((",state:{" + update_options(options[i]) + "}}") if options[i] else "}")
+            + (",state:{" + update_options(options[i]) + "}}" if options[i] else "}")
             for i, item in enumerate(can_place_on)
         )
 
     def update_nbt(nbt: str) -> str:
         nbt = REGEX["unbreakable"].sub("unbreakable={}", nbt)
         nbt = REGEX["enchantment_glint"].sub("enchantment_glint_override=true", nbt)
+        nbt = REGEX["block_state_tag"].sub(r"block_state={\1}", nbt)
+        nbt = REGEX["damage"].sub(r"damage=\1", nbt)
         nbt = REGEX["custom_model_data"].sub(r"custom_model_data=\1", nbt)
-        nbt = REGEX["tags"].sub(
-            lambda m: "custom_data={"
-            + ",".join(
-                f"{String.to_camel_case(tag.strip().strip('"'), upper=False)}:1"
-                for tag in m.groups()
-            )
-            + "}",
-            nbt,
-        )
         nbt = REGEX["enchantments"].sub(
             lambda m: "enchantments={levels:{"
             + ",".join(update_enchantment(enchantment) for enchantment in m.groups())
             + "}}",
             nbt,
         )
+        nbt = REGEX["attribute_modifiers"].sub(
+            lambda m: "attribute_modifiers={modifiers:["
+            + ",".join(update_attr_mod(attr_mod) for attr_mod in m.groups())
+            + "]}",
+            nbt,
+        )
         nbt = REGEX["display"].sub(
-            lambda m: f"custom_name='[\"\",{m.group(1)}]',lore=[{m.group(2)}]", nbt
+            lambda m: (
+                f"custom_name='[\"\",{m.group(1)}]'"
+                + (f",lore=[{m.group(2)}]" if m.group(2) else "")
+            ),
+            nbt,
         )
         nbt = REGEX["can_place_on"].sub(
             lambda m: "can_place_on={predicates:["
-            + update_can_place_on(m.group())
-            + "]",
+            + update_can_place_on(m.group(1))
+            + "]}",
             nbt,
         )
-        return f"[{nbt[1:-1]}]"
+        nbt = REGEX["entity_tag"].sub(
+            lambda m: "entity_data={" + update_entity_tag(m.group(1)) + "}", nbt
+        )
+        nbt = REGEX["tags"].sub(
+            lambda m: "custom_data={"
+            + ",".join(
+                f"{String.to_camel_case(tag.strip().strip('"'), upper=False)}:1"
+                for tag in m.group(1).split(",")
+            )
+            + "}",
+            nbt,
+        )
+        nbt = REGEX["esc_tags"].sub(r"Tags:[\1]", nbt)
+        nbt = REGEX["hide_flags"].sub("", nbt)
+        nbt = REGEX["tags_1b"].sub("", nbt)
+        return f"[{nbt}]"
 
     content = REGEX["hex"].sub(lambda m: f"{m.group(1)}{m.group(2).upper()}", content)
-    content = REGEX["nbt"].sub(lambda m: update_nbt(m.group()), content)
+    content = REGEX["nbt"].sub(lambda m: update_nbt(m.group(1)), content)
     return content, changed
 
 
