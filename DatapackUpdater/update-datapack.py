@@ -110,7 +110,7 @@ def update_content(content: str) -> tuple[str, int]:
         )
         return (
             f'id:"{entity_id}",'
-            if entity_id and not rx.search(r"id\s*:\s*\"\s*[\w_]+\s*\"")
+            if entity_id and not rx.search(r"id\s*:\s*\"\s*[\w_]+\s*\"", entity_tag)
             else ""
         ) + entity_tag
 
