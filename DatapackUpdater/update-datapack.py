@@ -219,6 +219,13 @@ def update_content(content: str) -> tuple[str, int]:
     content = REGEX["tag_usage"].sub(
         lambda m: String.to_delimited_case(m.group(1)), content
     )
+    content = REGEX["score_usage"].sub(
+        lambda m: String.to_delimited_case(m.group(1)), content
+    )
+    content = REGEX["score_operation"].sub(
+        lambda m: f"{String.to_delimited_case(m.group(1))} {m.group(2)} {m.group(3)} {String.to_delimited_case(m.group(4))}",
+        content,
+    )
     return content, changed
 
 
