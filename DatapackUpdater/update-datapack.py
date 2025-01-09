@@ -21,19 +21,22 @@ REGEX = {
         + SELECTOR
         + r"\s+(?:add|remove)\s+))([\w+-._]+)"
     ),
+    "team_usage": rx.compile(
+        r"(?<=team\s+(?:add|empty|join|list|modify|remove)\s+)([\w+-._]+)"
+    ),
     "scoreboard_usage": rx.compile(
         r"(?<=(?:score\s+"
         + SELECTOR
-        + r"\s+)|(?:scoreboard\s+objectives\s+(?:add|modify|remove|setdisplay\s+[\w._]+)\s+)|(?:scoreboard\s+players\s+(?:add|display\s+(?:name|numberformat)\s+"
+        + r"\s+)|(?:scoreboard\s+objectives\s+(?:add|modify|remove|setdisplay\s+[\w+-._]+)\s+)|(?:scoreboard\s+players\s+(?:add|display\s+(?:name|numberformat)\s+"
         + SELECTOR
-        + rf"|enable\s+{SELECTOR}|get\s+{SELECTOR}|remove\s+{SELECTOR}|reset\s+{SELECTOR}|set\s+{SELECTOR})\s+))([\w._]+)"
+        + rf"|enable\s+{SELECTOR}|get\s+{SELECTOR}|remove\s+{SELECTOR}|reset\s+{SELECTOR}|set\s+{SELECTOR})\s+))([\w+-._]+)"
     ),
     "scoreboard_operation": rx.compile(
         r"(?<=scoreboard\s+players\s+operation"
         + SELECTOR
-        + r"\s+)([\w_]+)\s+([%*+-/<>=]+)\s+("
+        + r"\s+)([\w+-._]+)\s+([%*+-/<>=]+)\s+("
         + SELECTOR
-        + r")\s+([\w_]+)"
+        + r")\s+([\w+-._]+)"
     ),
     "unbreakable": rx.compile(r"Unbreakable\s*:\s*1"),
     "enchantment_glint": rx.compile(r"Enchantments\s*:\s*\[\s*\{\s*\}\s*\]"),
