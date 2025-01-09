@@ -1,6 +1,7 @@
 from xulbux import Console, String, Regex
 from pathlib import Path
 import regex as rx
+import difflib
 import random
 import struct
 import sys
@@ -75,28 +76,20 @@ REGEX = {
 }
 
 
-def is_readable(filepath: Path):
-    try:
-        with filepath.open("r", encoding="utf-8") as file:
-            file.read(1024)
-        return True
-    except UnicodeDecodeError:
-        return False
-
-
-def update_content(content: str) -> tuple[str, int]:
-    changed = 0
-
+class NBT:
+    @staticmethod
     def update_options(options: list) -> str:
         return ",".join(
             (mods := opt.split("="))[0] + f':"{mods[1]}"' for opt in options
         )
 
+    @staticmethod
     def update_enchantment(enchantment: str) -> str:
         lvl = rx.search(r"lvl\s*:\s*([0-9]+)", enchantment).group(1)
         eid = rx.search(r"id\s*:\s*\"([\w_]+)\"\s*,\s*", enchantment).group(1)
         return f"{eid}:{lvl}" if lvl and eid else enchantment
 
+    @staticmethod
     def update_attr_mod(modifier: str) -> str:
         typ = (
             rx.search(r"AttributeName\s*:\s*\"([\w._]+)\"", modifier)
@@ -123,6 +116,7 @@ def update_content(content: str) -> tuple[str, int]:
             + f',operation:{operation},id:"{mod_id}"}}'
         )
 
+    @staticmethod
     def update_entity_tag(entity_tag: str, entity_id: str = None) -> str:
         entity_tag = rx.sub(
             r"Tags\s*:\s*" + Regex.brackets("[", "]", is_group=True),
@@ -140,6 +134,7 @@ def update_content(content: str) -> tuple[str, int]:
             else ""
         ) + entity_tag
 
+    @staticmethod
     def update_can_place_on(can_place_on: str) -> str:
         can_place_on = [
             item[1].strip() for item in rx.findall(Regex.quotes(), can_place_on)
@@ -157,11 +152,15 @@ def update_content(content: str) -> tuple[str, int]:
         ]
         return ",".join(
             f'{{blocks:"{item}"'
-            + (",state:{" + update_options(options[i]) + "}}" if options[i] else "}")
+            + (
+                ",state:{" + NBT.update_options(options[i]) + "}}"
+                if options[i]
+                else "}"
+            )
             for i, item in enumerate(can_place_on)
         )
 
-    def update_nbt(nbt: str, entity_id: str = None) -> str:
+    def update(nbt: str, entity_id: str = None) -> str:
         nbt = REGEX["unbreakable"].sub("unbreakable={}", nbt)
         nbt = REGEX["enchantment_glint"].sub("enchantment_glint_override=true", nbt)
         nbt = REGEX["block_state_tag"].sub(r"block_state={\1}", nbt)
@@ -169,13 +168,15 @@ def update_content(content: str) -> tuple[str, int]:
         nbt = REGEX["custom_model_data"].sub(r"custom_model_data=\1", nbt)
         nbt = REGEX["enchantments"].sub(
             lambda m: "enchantments={levels:{"
-            + ",".join(update_enchantment(enchantment) for enchantment in m.groups())
+            + ",".join(
+                NBT.update_enchantment(enchantment) for enchantment in m.groups()
+            )
             + "}}",
             nbt,
         )
         nbt = REGEX["attribute_modifiers"].sub(
             lambda m: "attribute_modifiers={modifiers:["
-            + ",".join(update_attr_mod(attr_mod) for attr_mod in m.groups())
+            + ",".join(NBT.update_attr_mod(attr_mod) for attr_mod in m.groups())
             + "]}",
             nbt,
         )
@@ -188,12 +189,14 @@ def update_content(content: str) -> tuple[str, int]:
         )
         nbt = REGEX["can_place_on"].sub(
             lambda m: "can_place_on={predicates:["
-            + update_can_place_on(m.group(1))
+            + NBT.update_can_place_on(m.group(1))
             + "]}",
             nbt,
         )
         nbt = REGEX["entity_tag"].sub(
-            lambda m: "entity_data={" + update_entity_tag(m.group(1), entity_id) + "}",
+            lambda m: "entity_data={"
+            + NBT.update_entity_tag(m.group(1), entity_id)
+            + "}",
             nbt,
         )
         nbt = REGEX["tags"].sub(
@@ -210,14 +213,39 @@ def update_content(content: str) -> tuple[str, int]:
         nbt = REGEX["tags_1b"].sub("", nbt)
         return f"[{nbt}]"
 
+
+def is_readable(filepath: Path):
+    try:
+        with filepath.open("r", encoding="utf-8") as file:
+            file.read(1024)
+        return True
+    except UnicodeDecodeError:
+        return False
+
+
+def count_diffs(string_1: str, string_2: str) -> int:
+    return sum(
+        1
+        for tag, _, _, _, _ in difflib.SequenceMatcher(
+            None, string_1, string_2
+        ).get_opcodes()
+        if tag != "equal"
+    )
+
+
+def update_content(content: str) -> tuple[str, int]:
+    _content = content
     content = REGEX["hex"].sub(lambda m: f"{m.group(1)}{m.group(2).upper()}", content)
     content = REGEX["nbt"].sub(
         lambda m: (
-            update_nbt(m.group(2), m.group(1)) if m.group(2) else update_nbt(m.group(1))
+            NBT.update(m.group(2), m.group(1)) if m.group(2) else NBT.update(m.group(1))
         ),
         content,
     )
     content = REGEX["tag_usage"].sub(
+        lambda m: String.to_delimited_case(m.group(1)), content
+    )
+    content = REGEX["team_usage"].sub(
         lambda m: String.to_delimited_case(m.group(1)), content
     )
     content = REGEX["scoreboard_usage"].sub(
@@ -227,7 +255,7 @@ def update_content(content: str) -> tuple[str, int]:
         lambda m: f"{String.to_delimited_case(m.group(1))} {m.group(2)} {m.group(3)} {String.to_delimited_case(m.group(4))}",
         content,
     )
-    return content, changed
+    return content, count_diffs(_content, content)
 
 
 def process_file(file_path: Path, root_dir: Path) -> None:
@@ -236,7 +264,8 @@ def process_file(file_path: Path, root_dir: Path) -> None:
     # try:
     content = file_path.read_text(encoding="utf-8")
     new_content, modified = update_content(content)
-    file_path.write_text(new_content, encoding="utf-8")
+    if modified:
+        file_path.write_text(new_content, encoding="utf-8")
     log_path = str(file_path.relative_to(root_dir))
     dim = "[dim]" if modified < 1 else ""
     Console.done(
