@@ -12,6 +12,7 @@ REGEX = {
         r"(?<=(?:give\s+(?:\@[apres]|[^\s]+)\s+([\w_]+)\s*)|(?:nbt\s*=\s*))"
         + Regex.brackets("{", "}", is_group=True)
     ),
+    "tag": rx.compile(r"(?<=(?:\@[apres]|[^\s]+)\s*\[.*?,?)tag\s*=\s*([\w+-._]+)"),
     "unbreakable": rx.compile(r"Unbreakable\s*:\s*1"),
     "enchantment_glint": rx.compile(r"Enchantments\s*:\s*\[\s*\{\s*\}\s*\]"),
     "block_state_tag": rx.compile(
@@ -190,6 +191,9 @@ def update_content(content: str) -> tuple[str, int]:
             update_nbt(m.group(2), m.group(1)) if m.group(2) else update_nbt(m.group(1))
         ),
         content,
+    )
+    content = REGEX["tag"].sub(
+        lambda m: f"tag={String.to_camel_case(m.group(1), upper=False)}", content
     )
     return content, changed
 
