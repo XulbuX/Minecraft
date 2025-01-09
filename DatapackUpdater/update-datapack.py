@@ -81,27 +81,20 @@ def update_content(content: str) -> tuple[str, int]:
         slot = (rx.search(r"Slot\s*:\s*\"([\w]+)\"", modifier) or [None])[0]
         operations = ("add_value", "add_multiplied_base", "add_multiplied_total")
         operation = operations[
-            int((rx.search(r"Operation\s*:\s*([012])", modifier) or [None])[0] or 0)
+            int((rx.search(r"Operation\s*:\s*([012])", modifier) or [0])[0])
         ]
         uuid_parts = (
             int(part)
             for part in (
-                (rx.search(r"UUID\s*:\s*\[I;((?:[0-9-]+,?){4})\]", modifier) or [None])[
-                    0
-                ]  # GET PRESENT UUID
-                or [
-                    random.randint(-2147483648, 2147483647) for _ in range(4)
-                ]  # GENERATE RANDOM UUID
+                rx.search(r"UUID\s*:\s*\[I;((?:[0-9-]+,?){4})\]", modifier).group(1)
+                or (random.randint(-2147483648, 2147483647) for _ in range(4))
             ).split(",")
         )
         mod_id = str(struct.unpack(">Q", struct.pack(">iiii", *uuid_parts)[8:])[0])[:13]
         return (
-            "{"
-            + f"type:{typ},amount:{amount}"
+            f"{{type:{typ},amount:{amount}"
             + (f",slot:{slot}" if slot else "")
-            + f",operation:{operation}"
-            + (f",id:{mod_id}" if mod_id else "")
-            + "}"
+            + f',operation:{operation},id:"{mod_id}"}}'
         )
 
     def update_entity_tag(entity_tag: str) -> str:
