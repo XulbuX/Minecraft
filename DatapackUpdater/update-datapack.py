@@ -50,10 +50,10 @@ REGEX = {
         + r")\s+([\w+-._]+)"
     ),
     "particle_color": rx.compile(
-        r"(?<=particle\s+(?:dust|entity_effect))\s+((?:[0-9-.]+\s+){3})([0-9-.]+\s+)((?:[0-9~-.]+\s+){6})((?:[0-9-.]+\s+){2})"
+        r"(?<=particle\s+(?:dust|entity_effect))\s+((?:[0-9-.]+\s+){3})([0-9-.]+\s+)((?:[0-9\~-.]+\s+){6})((?:[0-9-.]+\s+){2})"
     ),
     "particle_color_transition": rx.compile(
-        r"(?<=particle\s+dust_color_transition)\s+((?:[0-9-.]+\s+){3})([0-9-.]+\s+)((?:[0-9-.]+\s+){3})((?:[0-9~-.]+\s+){6})((?:[0-9-.]+\s+){2})"
+        r"(?<=particle\s+dust_color_transition)\s+((?:[0-9-.]+\s+){3})([0-9-.]+\s+)((?:[0-9-.]+\s+){3})((?:[0-9\~-.]+\s+){6})((?:[0-9-.]+\s+){2})"
     ),
     "unbreakable": rx.compile(r"Unbreakable\s*:\s*1"),
     "enchantment_glint": rx.compile(r"Enchantments\s*:\s*\[\s*\{\s*\}\s*\]"),
