@@ -241,13 +241,13 @@ class Particles:
         content = REGEX["particle_color"].sub(
             lambda m: "{"
             + f"color:[{",".join(m.group(1).strip().split())}],scale:{m.group(2).strip()}"
-            + f"}} {m.group(3).strip()} {m.group(4).strip()}",
+            + f"}} {m.group(3).strip()} {m.group(4).strip()} ",
             content,
         )
         content = REGEX["particle_color_transition"].sub(
             lambda m: "{"
             + f"from_color:[{",".join(m.group(1).strip().split())}],to_color:[{",".join(m.group(3).strip().split())}],scale:{m.group(2).strip()}"
-            + f"}} {m.group(4).strip()} {m.group(5).strip()}",
+            + f"}} {m.group(4).strip()} {m.group(5).strip()} ",
             content,
         )
         return content
