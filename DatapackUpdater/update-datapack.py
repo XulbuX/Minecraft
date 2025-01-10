@@ -172,7 +172,7 @@ class NBT:
             for i, item in enumerate(can_place_on)
         )
 
-    def update(nbt: str, entity_id: str = None) -> str:
+    def update(nbt: str, brackets: str = "[]", entity_id: str = None) -> str:
         nbt = REGEX["unbreakable"].sub("unbreakable={}", nbt)
         nbt = REGEX["enchantment_glint"].sub("enchantment_glint_override=true", nbt)
         nbt = REGEX["block_state_tag"].sub(r"block_state={\1}", nbt)
@@ -223,7 +223,7 @@ class NBT:
         nbt = REGEX["esc_tags"].sub(r"Tags:[\1]", nbt)
         nbt = REGEX["hide_flags"].sub("", nbt)
         nbt = REGEX["tags_1b"].sub("", nbt)
-        return f"[{nbt}]"
+        return f"{brackets[0]}{nbt}{brackets[1]}"
 
 
 class Normalize:
@@ -291,7 +291,9 @@ def update_content(content: str) -> tuple[str, int]:
     content = REGEX["hex"].sub(lambda m: f"{m.group(1)}{m.group(2).upper()}", content)
     content = REGEX["nbt"].sub(
         lambda m: (
-            NBT.update(m.group(2), m.group(1)) if m.group(2) else NBT.update(m.group(1))
+            NBT.update(m.group(2), "[]", m.group(1))
+            if m.group(2)
+            else NBT.update(m.group(1), "{}")
         ),
         content,
     )
