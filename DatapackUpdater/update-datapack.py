@@ -221,7 +221,7 @@ class NBT:
         return f"[{nbt}]"
 
 
-class NamingConvention:
+class Normalize:
     def update(content: str) -> str:
         content = REGEX["tag_usage"].sub(
             lambda m: String.to_delimited_case(m.group(1)), content
@@ -276,7 +276,7 @@ def update_content(content: str) -> tuple[str, int]:
         ),
         content,
     )
-    content = NamingConvention.update(content)
+    content = Normalize.update(content)
     return content, count_diffs(_content, content)
 
 
