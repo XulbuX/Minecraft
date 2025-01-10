@@ -220,15 +220,15 @@ class NBT:
             + "}",
             nbt,
         )
-        nbt = REGEX["not_esc_tags"].sub(
-            lambda m: "custom_data={"
-            + ",".join(
-                f"{String.to_delimited_case(tag.strip().strip('"'))}:1"
-                for tag in m.group(1).split(",")
-            )
-            + "}",
-            nbt,
-        )
+        # nbt = REGEX["not_esc_tags"].sub(
+        #     lambda m: "custom_data={"
+        #     + ",".join(
+        #         f"{String.to_delimited_case(tag.strip().strip('"'))}:1"
+        #         for tag in m.group(1).split(",")
+        #     )
+        #     + "}",
+        #     nbt,
+        # )
         nbt = REGEX["esc_tags"].sub(r"Tags:[\1]", nbt)
         nbt = REGEX["hide_flags"].sub("", nbt)
         nbt = REGEX["tags_1b"].sub("", nbt)
