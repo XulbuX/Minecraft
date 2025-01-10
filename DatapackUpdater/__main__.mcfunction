@@ -10,4 +10,4 @@
       execute as @e[tag=AirLift_active] run effect give @s levitation infinite 5 true
       execute as @e[tag=AirLift_active] at @s run playsound entity.allay.item_thrown player @s ~ ~ ~ 1 .5
    # RESET
-   execute as @e[tag=AirLift_active,scores={Buy_Amount=1..}] run execute unless entity @s[scores={AirLift_active=1..}] run function wpm:blocks/air-lift/reset
+   execute as @e[tag=AirLift_active,scores={Buy_Amount=1..}] run execute unless entity @s[scores={AirLift_active=1..,AirLift_active=..5}] run function wpm:blocks/air-lift/reset
