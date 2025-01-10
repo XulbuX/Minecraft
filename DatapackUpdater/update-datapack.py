@@ -129,12 +129,13 @@ class NBT:
 
     @staticmethod
     def update_entity_tag(entity_tag: str, entity_id: str = None) -> str:
-        entity_tag = rx.sub(
-            r"Tags\s*:\s*" + Regex.brackets("[", "]", is_group=True),
+        entity_tag = REGEX["tags"].sub(
             lambda m: "\\Tags:["
             + ",".join(
-                f'"{String.to_delimited_case(tag.strip().strip('"'))}"'
-                for tag in m.group(1).split(",")
+                set(
+                    f'"{String.to_delimited_case(tag.strip().strip('"'))}"'
+                    for tag in m.group(1).split(",")
+                )
             )
             + "]",
             entity_tag,
@@ -230,7 +231,9 @@ class Normalize:
     def update(content: str) -> str:
         content = REGEX["tags"].sub(
             lambda m: "["
-            + ",".join(f'"{tag.strip().strip("\"")}"' for tag in m.group(1).split(","))
+            + ",".join(
+                set(f'"{tag.strip().strip("\"")}"' for tag in m.group(1).split(","))
+            )
             + "]",
             content,
         )
