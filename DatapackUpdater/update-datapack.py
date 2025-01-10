@@ -230,9 +230,12 @@ class Normalize:
 
     def update(content: str) -> str:
         content = REGEX["tags"].sub(
-            lambda m: "["
+            lambda m: "Tags:["
             + ",".join(
-                set(f'"{tag.strip().strip("\"")}"' for tag in m.group(1).split(","))
+                set(
+                    f'"{String.to_delimited_case(tag.strip().strip("\""))}"'
+                    for tag in m.group(1).split(",")
+                )
             )
             + "]",
             content,
