@@ -9,11 +9,14 @@ import sys
 SELECTOR = r"(?:\*|\@[aenprs]|[^\s]+)"
 REGEX = {
     "hex": rx.compile(r"(#|0x)([0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3,4})\b"),
-    "nbt": rx.compile(
-        r"(?<=(?:give\s+"
+    "give_nbt": rx.compile(
+        r"(?<=give\s+"
         + SELECTOR
-        + r"\s+([\w_]+)\s*)|(?:nbt\s*=\s*))"
+        + r"\s+([\w_]+)\s*)"
         + Regex.brackets("{", "}", is_group=True)
+    ),
+    "selector_nbt": rx.compile(
+        r"(?<=nbt\s*=\s*)" + Regex.brackets("{", "}", is_group=True)
     ),
     "tag_usage": rx.compile(
         r"(?<=(?:"
@@ -289,14 +292,11 @@ def count_diffs(string_1: str, string_2: str) -> int:
 def update_content(content: str) -> tuple[str, int]:
     _content = content
     content = REGEX["hex"].sub(lambda m: f"{m.group(1)}{m.group(2).upper()}", content)
-    content = REGEX["nbt"].sub(
-        lambda m: (
-            NBT.update(m.group(2), "[]", m.group(1))
-            if m.group(2)
-            else NBT.update(m.group(1), "{}")
-        ),
+    content = REGEX["give_nbt"].sub(
+        lambda m: NBT.update(m.group(2), "[]", m.group(1)),
         content,
     )
+    content = REGEX["selector_nbt"].sub(lambda m: NBT.update(m.group(1), "{}"), content)
     content = Normalize.update(content)
     return content, count_diffs(_content, content)
 
