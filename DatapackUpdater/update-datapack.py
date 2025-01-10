@@ -191,7 +191,7 @@ class NBT:
         )
 
     def update(nbt: str, brackets: str, entity_id: str = None) -> str:
-        nbt = REGEX["unbreakable"].sub("unbreakable={}", nbt)
+        nbt = REGEX["unbreakable"].sub("unbreakable={show_in_tooltip:false}", nbt)
         nbt = REGEX["enchantment_glint"].sub("enchantment_glint_override=true", nbt)
         nbt = REGEX["block_state_tag"].sub(r"block_state={\1}", nbt)
         nbt = REGEX["damage"].sub(r"damage=\1", nbt)
