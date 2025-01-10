@@ -49,6 +49,12 @@ REGEX = {
         + SELECTOR
         + r")\s+([\w+-._]+)"
     ),
+    "particle_color": rx.compile(
+        r"(?<=particle\s+(?:dust|entity_effect))\s+((?:[0-9-.]+\s+){3})([0-9-.]+\s+)((?:[0-9~-.]+\s+){6})((?:[0-9-.]+\s+){2})"
+    ),
+    "particle_color_transition": rx.compile(
+        r"(?<=particle\s+dust_color_transition)\s+((?:[0-9-.]+\s+){3})([0-9-.]+\s+)((?:[0-9-.]+\s+){3})((?:[0-9~-.]+\s+){6})((?:[0-9-.]+\s+){2})"
+    ),
     "unbreakable": rx.compile(r"Unbreakable\s*:\s*1"),
     "enchantment_glint": rx.compile(r"Enchantments\s*:\s*\[\s*\{\s*\}\s*\]"),
     "block_state_tag": rx.compile(
@@ -229,6 +235,24 @@ class NBT:
         return f"{brackets[0]}{nbt}{brackets[1]}"
 
 
+class Particles:
+
+    def update(content: str) -> str:
+        content = REGEX["particle_color"].sub(
+            lambda m: "{"
+            + f"color:[{",".join(m.group(1).split())}],scale:{m.group(2)}"
+            + f"}} {m.group(3)} {m.group(4)}",
+            content,
+        )
+        content = REGEX["particle_color_transition"].sub(
+            lambda m: "{"
+            + f"from_color:[{",".join(m.group(1).split())}],to_color:[{",".join(m.group(3).split())}],scale:{m.group(2)}"
+            + f"}} {m.group(4)} {m.group(5)}",
+            content,
+        )
+        return content
+
+
 class Normalize:
 
     def update(content: str) -> str:
@@ -297,6 +321,7 @@ def update_content(content: str) -> tuple[str, int]:
         content,
     )
     content = REGEX["selector_nbt"].sub(lambda m: NBT.update(m.group(1), "{}"), content)
+    content = Particles.update(content)
     content = Normalize.update(content)
     return content, count_diffs(_content, content)
 
