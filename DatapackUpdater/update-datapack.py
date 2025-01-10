@@ -20,12 +20,12 @@ REGEX = {
         + SELECTOR
         + r"\s*\[.*?,?\s*tag\s*=\s*)|(?:tag\s+"
         + SELECTOR
-        + r"\s+(?:add|remove)\s+))([\w+-._]+)"
+        + r"\s+(?:add|remove)\s+))(!?[\w+-._]+)"
     ),
     "team_usage": rx.compile(
         r"(?<=(?:"
         + SELECTOR
-        + r"\s*\[.*?,?\s*team\s*=\s*)|(?:team\s+(?:add|empty|join|list|modify|remove)\s+))([\w+-._]+)"
+        + r"\s*\[.*?,?\s*team\s*=\s*)|(?:team\s+(?:add|empty|join|list|modify|remove)\s+))(!?[\w+-._]+)"
     ),
     "score_usage": rx.compile(
         r"(?<="
@@ -76,7 +76,10 @@ REGEX = {
     "entity_tag": rx.compile(
         r"EntityTag\s*:\s*" + Regex.brackets("{", "}", is_group=True)
     ),
-    "tags": rx.compile(r"(?<!\\)Tags\s*:\s*" + Regex.brackets("[", "]", is_group=True)),
+    "tags": rx.compile(r"Tags\s*:\s*" + Regex.brackets("[", "]", is_group=True)),
+    "not_esc_tags": rx.compile(
+        r"(?<!\\)Tags\s*:\s*" + Regex.brackets("[", "]", is_group=True)
+    ),
     "esc_tags": rx.compile(r"\\Tags\s*:\s*" + Regex.brackets("[", "]", is_group=True)),
     "hide_flags": rx.compile(r",?\s*HideFlags\s*:\s*([0-9]+)"),
     "tags_1b": rx.compile(r",?\s*tags\s*:\s*1b"),
@@ -207,7 +210,7 @@ class NBT:
             + "}",
             nbt,
         )
-        nbt = REGEX["tags"].sub(
+        nbt = REGEX["not_esc_tags"].sub(
             lambda m: "custom_data={"
             + ",".join(
                 f"{String.to_delimited_case(tag.strip().strip('"'))}:1"
@@ -225,6 +228,12 @@ class NBT:
 class Normalize:
 
     def update(content: str) -> str:
+        content = REGEX["tags"].sub(
+            lambda m: "["
+            + ",".join(f'"{tag.strip().strip("\"")}"' for tag in m.group(1).split(","))
+            + "]",
+            content,
+        )
         content = REGEX["tag_usage"].sub(
             lambda m: String.to_delimited_case(m.group(1)), content
         )
