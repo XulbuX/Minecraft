@@ -232,8 +232,8 @@ class NamingConvention:
         content = REGEX["score_usage"].sub(
             lambda m: "{"
             + ",".join(
-                f"{String.to_delimited_case(score_check[0])}={score_check[1]}"
-                for score_check in m.groups()
+                f"{String.to_delimited_case(scoreboard)}={is_val}"
+                for scoreboard, is_val in m.groups()
             )
             + "}",
             content,
