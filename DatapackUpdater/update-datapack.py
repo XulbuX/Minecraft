@@ -30,7 +30,7 @@ REGEX = {
     "score_usage": rx.compile(
         r"(?<="
         + SELECTOR
-        + r"\s*\[.*?,?\s*scores\s*=\s*){\s*(?:([\w+-._]+)\s*=\s*([0-9-.]+)\s*,?\s*)+\s*}"
+        + r"\s*\[.*?,?\s*scores\s*=\s*){\s*((?:[\w+-._]+\s*=\s*[0-9-.]+\s*,?\s*)+)\s*}"
     ),
     "scoreboard_usage": rx.compile(
         r"(?<=(?:score\s+"
@@ -84,6 +84,7 @@ REGEX = {
 
 
 class NBT:
+
     @staticmethod
     def update_options(options: list) -> str:
         return ",".join(
@@ -222,6 +223,7 @@ class NBT:
 
 
 class Normalize:
+
     def update(content: str) -> str:
         content = REGEX["tag_usage"].sub(
             lambda m: String.to_delimited_case(m.group(1)), content
@@ -229,11 +231,14 @@ class Normalize:
         content = REGEX["team_usage"].sub(
             lambda m: String.to_delimited_case(m.group(1)), content
         )
+        print(REGEX["score_usage"].findall(content))
         content = REGEX["score_usage"].sub(
             lambda m: "{"
             + ",".join(
-                f"{String.to_delimited_case(m.group(i))}={m.group(i+1)}"
-                for i in range(1, len(m.groups()), 2)
+                f"{String.to_delimited_case(score_check[0])}={score_check[1]}"
+                for score_check in rx.findall(
+                    r"([\w+-._]+)\s*=\s*([0-9-.]+)\s*,?\s*", m.group(1)
+                )
             )
             + "}",
             content,
