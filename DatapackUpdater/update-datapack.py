@@ -30,7 +30,7 @@ REGEX = {
     "score_usage": rx.compile(
         r"(?<="
         + SELECTOR
-        + r"\s*\[.*?,?\s*score\s*=\s*){\s*(?:([\w+-._]+)\s*=\s*([0-9-.]+)\s*,?\s*)+\s*}"
+        + r"\s*\[.*?,?\s*scores\s*=\s*){\s*(?:([\w+-._]+)\s*=\s*([0-9-.]+)\s*,?\s*)+\s*}"
     ),
     "scoreboard_usage": rx.compile(
         r"(?<=(?:score\s+"
@@ -221,10 +221,38 @@ class NBT:
         return f"[{nbt}]"
 
 
-def is_readable(filepath: Path):
+class NamingConvention:
+    def update(content: str) -> str:
+        print(REGEX["score_usage"].findall(content))
+        content = REGEX["tag_usage"].sub(
+            lambda m: String.to_delimited_case(m.group(1)), content
+        )
+        content = REGEX["team_usage"].sub(
+            lambda m: String.to_delimited_case(m.group(1)), content
+        )
+        content = REGEX["score_usage"].sub(
+            lambda m: "{"
+            + ",".join(
+                f"{String.to_delimited_case(name)}={is_val}"
+                for name, is_val in m.groups()
+            )
+            + "}",
+            content,
+        )
+        content = REGEX["scoreboard_usage"].sub(
+            lambda m: String.to_delimited_case(m.group(1)), content
+        )
+        content = REGEX["scoreboard_operation"].sub(
+            lambda m: f"{String.to_delimited_case(m.group(1))} {m.group(2)} {m.group(3)} {String.to_delimited_case(m.group(4))}",
+            content,
+        )
+        return content
+
+
+def is_readable(file: Path):
     try:
-        with filepath.open("r", encoding="utf-8") as file:
-            file.read(1024)
+        with file.open("r", encoding="utf-8") as f:
+            f.read(1024)
         return True
     except UnicodeDecodeError:
         return False
@@ -249,27 +277,7 @@ def update_content(content: str) -> tuple[str, int]:
         ),
         content,
     )
-    content = REGEX["tag_usage"].sub(
-        lambda m: String.to_delimited_case(m.group(1)), content
-    )
-    content = REGEX["team_usage"].sub(
-        lambda m: String.to_delimited_case(m.group(1)), content
-    )
-    content = REGEX["score_usage"].sub(
-        lambda m: "{"
-        + ",".join(
-            f"{String.to_delimited_case(name)}={is_val}" for name, is_val in m.groups()
-        )
-        + "}",
-        content,
-    )
-    content = REGEX["scoreboard_usage"].sub(
-        lambda m: String.to_delimited_case(m.group(1)), content
-    )
-    content = REGEX["scoreboard_operation"].sub(
-        lambda m: f"{String.to_delimited_case(m.group(1))} {m.group(2)} {m.group(3)} {String.to_delimited_case(m.group(4))}",
-        content,
-    )
+    content = NamingConvention.update(content)
     return content, count_diffs(_content, content)
 
 
