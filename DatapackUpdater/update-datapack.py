@@ -223,7 +223,6 @@ class NBT:
 
 class NamingConvention:
     def update(content: str) -> str:
-        print(REGEX["score_usage"].findall(content))
         content = REGEX["tag_usage"].sub(
             lambda m: String.to_delimited_case(m.group(1)), content
         )
@@ -233,8 +232,8 @@ class NamingConvention:
         content = REGEX["score_usage"].sub(
             lambda m: "{"
             + ",".join(
-                f"{String.to_delimited_case(name)}={is_val}"
-                for name, is_val in m.groups()
+                f"{String.to_delimited_case(score_check[0])}={score_check[1]}"
+                for score_check in m.groups()
             )
             + "}",
             content,
@@ -284,27 +283,27 @@ def update_content(content: str) -> tuple[str, int]:
 def process_file(file_path: Path, root_dir: Path) -> None:
     if not is_readable(file_path):
         return
-    try:
-        content = file_path.read_text(encoding="utf-8")
-        new_content, modified = update_content(content)
-        if modified:
-            file_path.write_text(new_content, encoding="utf-8")
-        log_path = str(file_path.relative_to(root_dir))
-        dim = "[dim]" if modified < 1 else ""
-        Console.done(
-            f"{'[b](Updated)' if modified > 0 else '[dim](Checked)'} [br:cyan]({log_path})"
-            + f" [dim]({((Console.w() - 50) - len(log_path)) * '.'})"
-            + f" {dim}[blue][[b|br:blue]({modified}){dim}[blue]][_]",
-            start="",
-            end="\n",
-        )
-    except Exception as e:
-        Console.fail(
-            f"Error processing [red]({file_path})\n         \t[b|br:red]{e}[_]",
-            start="",
-            end="\n",
-            exit=False,
-        )
+    # try:
+    content = file_path.read_text(encoding="utf-8")
+    new_content, modified = update_content(content)
+    if modified:
+        file_path.write_text(new_content, encoding="utf-8")
+    log_path = str(file_path.relative_to(root_dir))
+    dim = "[dim]" if modified < 1 else ""
+    Console.done(
+        f"{'[b](Updated)' if modified > 0 else '[dim](Checked)'} [br:cyan]({log_path})"
+        + f" [dim]({((Console.w() - 50) - len(log_path)) * '.'})"
+        + f" {dim}[blue][[b|br:blue]({modified}){dim}[blue]][_]",
+        start="",
+        end="\n",
+    )
+    # except Exception as e:
+    #     Console.fail(
+    #         f"Error processing [red]({file_path})\n         \t[b|br:red]{e}[_]",
+    #         start="",
+    #         end="\n",
+    #         exit=False,
+    #     )
 
 
 def main(path: str) -> None:
