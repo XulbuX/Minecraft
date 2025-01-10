@@ -229,12 +229,11 @@ class NamingConvention:
         content = REGEX["team_usage"].sub(
             lambda m: String.to_delimited_case(m.group(1)), content
         )
-        print(REGEX["score_usage"].findall(content))
         content = REGEX["score_usage"].sub(
             lambda m: "{"
             + ",".join(
-                f"{String.to_delimited_case(scoreboard)}={is_val}"
-                for scoreboard, is_val in m.groups()
+                f"{String.to_delimited_case(m.group(i))}={m.group(i+1)}"
+                for i in range(1, len(m.groups()), 2)
             )
             + "}",
             content,
