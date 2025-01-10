@@ -99,6 +99,9 @@ REGEX = {
         r"(?<!\\)Tags\s*:\s*" + Regex.brackets("[", "]", is_group=True)
     ),
     "esc_tags": rx.compile(r"\\Tags\s*:\s*" + Regex.brackets("[", "]", is_group=True)),
+    "tag_tags": rx.compile(
+        r"tag\s*:\s*\{\s*Tags\s*:\s*" + Regex.brackets("[", "]", is_group=True)
+    ),
     "hide_flags": rx.compile(r",?\s*HideFlags\s*:\s*([0-9]+)"),
     "tags_1b": rx.compile(r",?\s*tags\s*:\s*1b"),
 }
@@ -240,6 +243,15 @@ class NBT:
                 nbt,
             )
         nbt = REGEX["esc_tags"].sub(r"Tags:[\1]", nbt)
+        nbt = REGEX["tag_tags"].sub(
+            lambda m: 'components:{"minecraft:custom_data":{'
+            + ",".join(
+                f"{String.to_delimited_case(tag.strip().strip('"'))}:1"
+                for tag in m.group(1).split(",")
+            )
+            + "}",
+            nbt,
+        )
         nbt = REGEX["hide_flags"].sub("", nbt)
         nbt = REGEX["tags_1b"].sub("", nbt)
         return f"{brackets[0]}{nbt}{brackets[1]}"
