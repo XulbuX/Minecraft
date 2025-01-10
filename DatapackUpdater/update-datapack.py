@@ -231,7 +231,6 @@ class Normalize:
         content = REGEX["team_usage"].sub(
             lambda m: String.to_delimited_case(m.group(1)), content
         )
-        print(REGEX["score_usage"].findall(content))
         content = REGEX["score_usage"].sub(
             lambda m: "{"
             + ",".join(
