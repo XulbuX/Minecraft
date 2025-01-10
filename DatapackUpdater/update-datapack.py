@@ -175,7 +175,7 @@ class NBT:
             for i, item in enumerate(can_place_on)
         )
 
-    def update(nbt: str, brackets: str = "[]", entity_id: str = None) -> str:
+    def update(nbt: str, brackets: str, entity_id: str = None) -> str:
         nbt = REGEX["unbreakable"].sub("unbreakable={}", nbt)
         nbt = REGEX["enchantment_glint"].sub("enchantment_glint_override=true", nbt)
         nbt = REGEX["block_state_tag"].sub(r"block_state={\1}", nbt)
