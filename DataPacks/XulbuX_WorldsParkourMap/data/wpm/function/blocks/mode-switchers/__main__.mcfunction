@@ -1,20 +1,20 @@
 ################################ CHECK FOR MODE-SWITCHING ##############################
 # JOIN PARKOUR-MODE
-   execute as @e[team=!ParkourMapPlayers] run function wpm:blocks/mode-switchers/check-join
+   execute as @e[team=!parkour_map_players] run function wpm:blocks/mode-switchers/check-join
 # LEAVE PARKOUR-MODE
-   execute as @e[team=ParkourMapPlayers] run function wpm:blocks/mode-switchers/check-leave
+   execute as @e[team=parkour_map_players] run function wpm:blocks/mode-switchers/check-leave
 
 ################################ MODE-SWITCHES  -  SETUP ##############################
 # JOIN PARKOUR-MODE SETUP
-   execute as @e[team=ParkourMapPlayers,tag=!ParkourMapPlayer,tag=!Parkour_JOIN] run tag @s add Parkour_JOIN
-   execute as @e[tag=Parkour_JOIN] run function wpm:blocks/mode-switchers/setup-join
+   execute as @e[team=parkour_map_players,tag=!parkour_map_player,tag=!parkour_join] run tag @s add parkour_join
+   execute as @e[tag=parkour_join] run function wpm:blocks/mode-switchers/setup-join
 # LEAVE PARKOUR-MODE SETUP
-   execute as @e[team=!ParkourMapPlayers,tag=ParkourMapPlayer] run tag @s add Parkour_RESET
-   execute as @e[tag=ParkourMapPlayer,tag=Parkour_RESET] run tag @s remove ParkourMapPlayer
-   execute as @e[tag=Parkour_RESET] run function wpm:blocks/mode-switchers/setup-leave
+   execute as @e[team=!parkour_map_players,tag=parkour_map_player] run tag @s add parkour_reset
+   execute as @e[tag=parkour_map_player,tag=parkour_reset] run tag @s remove parkour_map_player
+   execute as @e[tag=parkour_reset] run function wpm:blocks/mode-switchers/setup-leave
 
 ################################ CONSTANTLY RUNNING, MODE DEPENDING ##############################
 # WHILE IN PARKOUR-MODE
-execute as @e[team=ParkourMapPlayers] run function wpm:blocks/mode-switchers/in-mode-forcing
+execute as @e[team=parkour_map_players] run function wpm:blocks/mode-switchers/in-mode-forcing
 # WHILE NOT IN PARKOUR-MODE
-execute as @e[team=!ParkourMapPlayers] run scoreboard players reset @s ParkourPlayers_HEALTH
+execute as @e[team=!parkour_map_players] run scoreboard players reset @s parkour_players_health

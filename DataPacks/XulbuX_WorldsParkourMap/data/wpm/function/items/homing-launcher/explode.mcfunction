@@ -1,7 +1,7 @@
-execute at @s run tag @e[distance=..2,sort=nearest,limit=1,tag=Target] add Eliminate
+execute at @s run tag @e[distance=..2,sort=nearest,limit=1,tag=target] add eliminate
 # CUSTOM DEATH MESSAGE
   gamerule showDeathMessages false
-  execute as @a[distance=..10,limit=1] run scoreboard players set @s DeathMessage_ID 3
+  execute as @a[distance=..10,limit=1] run scoreboard players set @s death_message_id 3
 # PARTICLE EFFECT
   execute at @s run summon firework_rocket ~ ~ ~ {LifeTime:0,FireworksItem:{id:"firework_rocket",Count:1,tag:{Fireworks:{Explosions:[{Flicker:1b},{Type:1,Flicker:1b},{Colors:[I;16754688,16711935,65535],FadeColors:[I;16711935,65535],Type:4},{Flicker:1b},{Type:1,Flicker:1b},{Colors:[I;16754688,16711935,65535],FadeColors:[I;16711935,65535],Type:4}]}}}}
 # SOUND

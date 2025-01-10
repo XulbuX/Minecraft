@@ -1,11 +1,11 @@
 # SNAKE  -  RESET
-   execute as @e[type=interaction,tag=Snake_Block,tag=ID_defined] run function wpm:blocks/snake/check_not-active
+   execute as @e[type=interaction,tag=snake_block,tag=id_defined] run function wpm:blocks/snake/check_not-active
 # MANAGE ACTIVATION / RESET  -  TAGS
-   execute as @e[type=interaction,tag=Snake_Block,tag=ID_defined,scores={SnakeBlock_ID=0}] run function wpm:blocks/snake/manage_tags
+   execute as @e[type=interaction,tag=snake_block,tag=id_defined,scores={snake_block_id=0}] run function wpm:blocks/snake/manage_tags
 # BARRIER IF PLAYER HOLDING SPAWNEGG NEARBY
-   execute as @e[type=interaction,tag=Snake_Block,tag=ID_defined] run function wpm:blocks/snake/barrier
+   execute as @e[type=interaction,tag=snake_block,tag=id_defined] run function wpm:blocks/snake/barrier
 # CHECK IF CONNECTED
-   execute as @e[type=interaction,tag=Snake_Block,tag=ID_defined,tag=!Connected] at @s if entity @e[type=interaction,tag=Snake_Block,tag=ID_defined,tag=START,distance=..1.05] run tag @s add Connected
-   execute as @e[type=interaction,tag=Snake_Block,tag=ID_defined,tag=Connected] at @s unless entity @e[type=interaction,tag=Snake_Block,tag=ID_defined,tag=START,distance=..1.05] run tag @s remove Connected
+   execute as @e[type=interaction,tag=snake_block,tag=id_defined,tag=!connected] at @s if entity @e[type=interaction,tag=snake_block,tag=id_defined,tag=start,distance=..1.05] run tag @s add connected
+   execute as @e[type=interaction,tag=snake_block,tag=id_defined,tag=connected] at @s unless entity @e[type=interaction,tag=snake_block,tag=id_defined,tag=start,distance=..1.05] run tag @s remove connected
 # SNAKE FUNCTIONALITY
-   execute as @e[type=interaction,tag=Snake_Block,tag=ID_defined,tag=!Barrier_placed] run function wpm:blocks/snake/check_active
+   execute as @e[type=interaction,tag=snake_block,tag=id_defined,tag=!barrier_placed] run function wpm:blocks/snake/check_active

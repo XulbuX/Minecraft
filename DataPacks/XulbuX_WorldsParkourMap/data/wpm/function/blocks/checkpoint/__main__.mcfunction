@@ -1,8 +1,8 @@
 # DETECT AND ACTIVATE CHECKPOINT
-   execute as @e[tag=!Saved] at @s run execute if block ~ ~ ~ light_weighted_pressure_plate[power=1] run scoreboard players set @s Checkpoint 1
-   execute as @e[scores={Checkpoint=1}] run tag @s add Saved
+   execute as @e[tag=!saved] at @s run execute if block ~ ~ ~ light_weighted_pressure_plate[power=1] run scoreboard players set @s checkpoint 1
+   execute as @e[scores={checkpoint=1}] run tag @s add saved
 # CHECKPOINT SAVED
-   execute as @e[scores={Checkpoint=1},tag=Saved] run function wpm:blocks/checkpoint/save
+   execute as @e[scores={checkpoint=1},tag=saved] run function wpm:blocks/checkpoint/save
 # RESET
-   execute as @e[scores={Checkpoint=1}] run scoreboard players set @s Checkpoint 0
-   execute as @e[tag=Saved] at @s run execute unless block ~ ~ ~ light_weighted_pressure_plate[power=1] run tag @s remove Saved
+   execute as @e[scores={checkpoint=1}] run scoreboard players set @s checkpoint 0
+   execute as @e[tag=saved] at @s run execute unless block ~ ~ ~ light_weighted_pressure_plate[power=1] run tag @s remove saved

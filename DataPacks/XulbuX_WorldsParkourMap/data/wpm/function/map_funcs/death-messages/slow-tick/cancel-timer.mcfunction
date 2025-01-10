@@ -1,1 +1,1 @@
-execute as @a[scores={DeathMessage_timer=1..}] run scoreboard players remove @s DeathMessage_timer 1
+execute as @a[scores={death_message_timer=1..}] run scoreboard players remove @s death_message_timer 1

@@ -4,7 +4,7 @@
   execute at @s run particle large_smoke ~ ~ ~ .25 .25 .25 .25 50 force @a
 # CUSTOM DEATH MESSAGE
   gamerule showDeathMessages false
-  execute at @s as @e[sort=nearest,limit=1,type=!#wpm:not_mob] run scoreboard players set @s DeathMessage_ID 4
+  execute at @s as @e[sort=nearest,limit=1,type=!#wpm:not_mob] run scoreboard players set @s death_message_id 4
 # SOUND
   execute at @s run playsound minecraft:entity.generic.explode player @a ~ ~ ~ 1 0
 # DAMAGE

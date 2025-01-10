@@ -1,3 +1,3 @@
 effect clear @s levitation
-tag @s remove AirLift_active
-scoreboard players reset @s AirLift_active
+tag @s remove air_lift_active
+scoreboard players reset @s air_lift_active

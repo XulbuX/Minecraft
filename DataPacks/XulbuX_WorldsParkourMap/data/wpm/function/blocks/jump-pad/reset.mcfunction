@@ -1,3 +1,3 @@
 effect clear @s levitation
-tag @s remove JumpPad_active
-tag @s remove Sound_played
+tag @s remove jump_pad_active
+tag @s remove sound_played

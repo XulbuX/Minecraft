@@ -1,2 +1,2 @@
-tag @s remove FreezeBomb_Launcher
-scoreboard players reset @s FreezeLauncher_timer
+tag @s remove freeze_bomb_launcher
+scoreboard players reset @s freeze_launcher_timer

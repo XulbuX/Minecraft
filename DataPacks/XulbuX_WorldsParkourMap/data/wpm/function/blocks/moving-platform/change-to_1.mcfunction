@@ -1,3 +1,3 @@
-scoreboard players set @s Moving_break 40
-scoreboard players reset @s Check_Blocks
-scoreboard players set @s Moving_dir 1
+scoreboard players set @s moving_break 40
+scoreboard players reset @s check_blocks
+scoreboard players set @s moving_dir 1

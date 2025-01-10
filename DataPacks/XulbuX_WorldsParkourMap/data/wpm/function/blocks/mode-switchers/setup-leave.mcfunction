@@ -5,6 +5,6 @@ gamemode survival @s
 effect clear @s saturation
 effect clear @s weakness
 effect clear @s glowing
-attribute @s generic.max_health base set 20
+attribute @s max_health base set 20
 effect give @s regeneration 1 255 true
-tag @s remove Parkour_RESET
+tag @s remove parkour_reset

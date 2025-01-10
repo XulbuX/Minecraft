@@ -32,15 +32,15 @@
 ║ permission to do so, you must first give yourself permission. ║
 ║                                                               ║
 ║ To do this, open your chat and execute this command in it:    ║
-║   /tag @s add OP                                              ║
+║   /tag @s add op                                              ║
 ║ To give permission to another player:                         ║
-║   /tag <playername> add OP                                    ║
+║   /tag <playername> add op                                    ║
 ║ ▸ (Always replace <playername> with the player's name.)       ║
 ║                                                               ║
 ║ To remove permission from you again:                          ║
-║   /tag @s remove OP                                           ║
+║   /tag @s remove op                                           ║
 ║ To remove permission from another player again:               ║
-║   /tag <playername> remove OP                                 ║
+║   /tag <playername> remove op                                 ║
 ║                                                               ║
 ║                                                               ║
 ║                                                               ║
@@ -49,7 +49,7 @@
 ║ To be able to place the special map components, you need the  ║
 ║ spawn eggs for them.                                          ║
 ║ To do this, open the chat and execute this command in it:     ║
-║   /scoreboard players set @s get_wpm-item_ID 1000000          ║
+║   /scoreboard players set @s get_wpm_item_id 1000000          ║
 ║                                                               ║
 ║ This command gives you many different spawn eggs and blocks   ║
 ║ that you can use to create your parkour map.                  ║
@@ -63,7 +63,7 @@
 ║ To be able to place the Buy Stations, you also need the       ║
 ║ corresponding Spawn eggs.                                     ║
 ║ Just execute this command in the chat:                        ║
-║   /scoreboard players set @s get_wpm-item_ID 2000000          ║
+║   /scoreboard players set @s get_wpm_item_id 2000000          ║
 ║                                                               ║
 ║ ▸ (You can find out more about how to use these spawn eggs    ║
 ║   below ▼ )                                                   ║
@@ -75,7 +75,7 @@
 ║ To get these items, it is almost the same command as with the ║
 ║ special map components.                                       ║
 ║ Just execute this command in the chat:                        ║
-║   /scoreboard players set @s get_wpm-item_ID 3000000          ║
+║   /scoreboard players set @s get_wpm_item_id 3000000          ║
 ║                                                               ║
 ║ This command simply gives you one of each race item that is   ║
 ║ available.                                                    ║
@@ -89,7 +89,7 @@
 ║ To get single items, it is again pretty much the same         ║
 ║ command, just with different numbers at the end.              ║
 ║ For this execute the following command in the chat:           ║
-║   /scoreboard players set @s get_wpm-item_ID <ID>             ║
+║   /scoreboard players set @s get_wpm_item_id <ID>             ║
 ║ ▸ For it to work, replace <ID> with your item-number.         ║
 ║                                                               ║
 ║ Figuring out an item's number works like this:                ║

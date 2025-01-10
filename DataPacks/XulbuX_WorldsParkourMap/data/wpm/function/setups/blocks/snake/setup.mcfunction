@@ -1,6 +1,6 @@
 # POSITIONING
-   execute unless entity @s[tag=Positioned] at @s align xyz run tp @s ~.5 ~.5 ~.5
+   execute unless entity @s[tag=positioned] at @s align xyz run tp @s ~.5 ~.5 ~.5
 # GET IDs
-   execute unless entity @s[scores={SnakeBlock_ID=0..}] run scoreboard players set @s SnakeBlock_ID 0
-   execute if entity @s[tag=!ID_defined] run function wpm:setups/blocks/snake/get_id-block
-execute if entity @s[tag=NEW] run tag @s remove NEW
+   execute unless entity @s[scores={snake_block_id=0..}] run scoreboard players set @s snake_block_id 0
+   execute if entity @s[tag=!id_defined] run function wpm:setups/blocks/snake/get_id-block
+execute if entity @s[tag=new] run tag @s remove new

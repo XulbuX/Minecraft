@@ -9,8 +9,8 @@ import sys
 SELECTOR = r"(?:\*|\@[aenprs]|[^\s]+)"
 REGEX = {
     "hex": rx.compile(r"(#|0x)([0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3,4})\b"),
-    "give_nbt": rx.compile(
-        r"(?<=give\s+"
+    "give_clear_nbt": rx.compile(
+        r"(?<=(?:give|clear)\s+"
         + SELECTOR
         + r"\s+([\w_]+)\s*)"
         + Regex.brackets("{", "}", is_group=True)
@@ -60,6 +60,9 @@ REGEX = {
     ),
     "particle_color_transition": rx.compile(
         r"(?<=particle\s+dust_color_transition)\s+((?:[0-9-.]+\s+){3})([0-9-.]+\s+)((?:[0-9-.]+\s+){3})((?:[0-9-.~]+\s+){6})((?:[0-9-.]+\s+){2})"
+    ),
+    "generic_attribute": rx.compile(
+        r"(?<=attribute\s+" + SELECTOR + r"\s+)(?:minecraft:)?generic.([\w._]+)"
     ),
     "unbreakable": rx.compile(r"Unbreakable\s*:\s*1"),
     "enchantment_glint": rx.compile(r"Enchantments\s*:\s*\[\s*\{\s*\}\s*\]"),
@@ -331,11 +334,12 @@ def count_diffs(string_1: str, string_2: str) -> int:
 def update_content(content: str) -> tuple[str, int]:
     _content = content
     content = REGEX["hex"].sub(lambda m: f"{m.group(1)}{m.group(2).upper()}", content)
-    content = REGEX["give_nbt"].sub(
+    content = REGEX["give_clear_nbt"].sub(
         lambda m: NBT.update(m.group(2), "[]", m.group(1)),
         content,
     )
     content = REGEX["selector_nbt"].sub(lambda m: NBT.update(m.group(1), "{}"), content)
+    content = REGEX["generic_attribute"].sub(r"\1", content)
     content = Particles.update(content)
     content = Normalize.update(content)
     return content, count_diffs(_content, content)
