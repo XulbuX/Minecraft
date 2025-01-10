@@ -23,7 +23,14 @@ REGEX = {
         + r"\s+(?:add|remove)\s+))([\w+-._]+)"
     ),
     "team_usage": rx.compile(
-        r"(?<=team\s+(?:add|empty|join|list|modify|remove)\s+)([\w+-._]+)"
+        r"(?<=(?:"
+        + SELECTOR
+        + r"\s*\[.*?,?\s*team\s*=\s*)|(?:team\s+(?:add|empty|join|list|modify|remove)\s+))([\w+-._]+)"
+    ),
+    "score_usage": rx.compile(
+        r"(?<="
+        + SELECTOR
+        + r"\s*\[.*?,?\s*score\s*=\s*){\s*(?:([\w+-._]+)\s*=\s*([0-9-.]+)\s*,?\s*)+\s*}"
     ),
     "scoreboard_usage": rx.compile(
         r"(?<=(?:score\s+"
@@ -247,6 +254,14 @@ def update_content(content: str) -> tuple[str, int]:
     )
     content = REGEX["team_usage"].sub(
         lambda m: String.to_delimited_case(m.group(1)), content
+    )
+    content = REGEX["score_usage"].sub(
+        lambda m: "{"
+        + ",".join(
+            f"{String.to_delimited_case(name)}={is_val}" for name, is_val in m.groups()
+        )
+        + "}",
+        content,
     )
     content = REGEX["scoreboard_usage"].sub(
         lambda m: String.to_delimited_case(m.group(1)), content
