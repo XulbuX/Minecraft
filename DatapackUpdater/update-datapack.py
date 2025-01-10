@@ -49,6 +49,12 @@ REGEX = {
         + SELECTOR
         + r")\s+([\w+-._]+)"
     ),
+    "particle_item": rx.compile(
+        r"(?<=particle\s+item)\s+([\w_]+)\s+((?:[0-9-.~]+\s+){6})((?:[0-9-.]+\s+){2})"
+    ),
+    "particle_block": rx.compile(
+        r"(?<=particle\s+(?:block|block_marker))\s+([\w_]+)\s+((?:[0-9-.~]+\s+){6})((?:[0-9-.]+\s+){2})"
+    ),
     "particle_color": rx.compile(
         r"(?<=particle\s+(?:dust|entity_effect))\s+((?:[0-9-.]+\s+){3})([0-9-.]+\s+)((?:[0-9-.~]+\s+){6})((?:[0-9-.]+\s+){2})"
     ),
@@ -239,6 +245,14 @@ class NBT:
 class Particles:
 
     def update(content: str) -> str:
+        content = REGEX["particle_item"].sub(
+            lambda m: f"{{item:{{id:{m.group(1)}}}}} {m.group(2).strip()} {m.group(3).strip()} ",
+            content,
+        )
+        content = REGEX["particle_block"].sub(
+            lambda m: f"{{block_state:{{Name:{m.group(1)}}}}} {m.group(2).strip()} {m.group(3).strip()} ",
+            content,
+        )
         content = REGEX["particle_color"].sub(
             lambda m: "{"
             + f"color:[{",".join(m.group(1).strip().split())}],scale:{m.group(2).strip()}"
