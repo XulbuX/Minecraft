@@ -33,7 +33,7 @@ REGEX = {
     "score_usage": rx.compile(
         r"(?<="
         + SELECTOR
-        + r"\s*\[.*?,?\s*scores\s*=\s*){\s*((?:[\w+-._]+\s*=\s*[0-9-.]+\s*,?\s*)+)\s*}"
+        + r"\s*\[.*?,?\s*scores\s*=\s*)\{\s*((?:[\w+-._]+\s*=\s*[0-9-.]+\s*,?\s*)+)\s*}"
     ),
     "scoreboard_usage": rx.compile(
         r"(?<=(?:score\s+"
@@ -100,7 +100,9 @@ REGEX = {
     ),
     "esc_tags": rx.compile(r"\\Tags\s*:\s*" + Regex.brackets("[", "]", is_group=True)),
     "tag_tags": rx.compile(
-        r"tag\s*:\s*{\s*Tags\s*:\s*" + Regex.brackets("[", "]" + r"\s*}", is_group=True)
+        r"tag\s*:\s*\{\s*Tags\s*:\s*"
+        + Regex.brackets("[", "]", is_group=True)
+        + r"\s*\}"
     ),
     "hide_flags": rx.compile(r",?\s*HideFlags\s*:\s*([0-9]+)"),
     "tags_1b": rx.compile(r",?\s*tags\s*:\s*1b"),
@@ -243,7 +245,6 @@ class NBT:
                 nbt,
             )
         nbt = REGEX["esc_tags"].sub(r"Tags:[\1]", nbt)
-        print(REGEX["tag_tags"].findall(nbt))
         nbt = REGEX["tag_tags"].sub(
             lambda m: 'components:{"minecraft:custom_data":{'
             + ",".join(
