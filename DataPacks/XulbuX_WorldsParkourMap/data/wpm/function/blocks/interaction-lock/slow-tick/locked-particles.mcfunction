@@ -1,1 +1,1 @@
-execute as @e[type=interaction,tag=int_lock] at @s if entity @a[distance=..20,nbt={SelectedItem:{tag:{Tags:["int_lock_spawnegg"]}}}] run particle dust_color_transition{from_color:[.8,0,.2],to_color:[.2,0,.05],scale:1} ~ ~.5 ~ .3 .3 .3 0 5 force @a
+execute as @e[type=interaction,tag=int_lock] at @s if entity @a[distance=..20,nbt={SelectedItem:{components:{"minecraft:custom_data":{int_lock_spawnegg:1}}}}] run particle dust_color_transition{from_color:[.8,0,.2],to_color:[.2,0,.05],scale:1} ~ ~.5 ~ .3 .3 .3 0 5 force @a

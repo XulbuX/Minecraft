@@ -1,10 +1,10 @@
 # DEFINE LAUNCHER OF THE FREEZE-BOMB
-   execute as @e[type=snowball,nbt={Item:{tag:{Tags:["freeze_bomb"]}}},tag=!launched] run function wpm:items/freeze-bomb/get-launcher
+   execute as @e[type=snowball,nbt={Item:{components:{"minecraft:custom_data":{freeze_bomb:1}}}},tag=!launched] run function wpm:items/freeze-bomb/get-launcher
 # TIMER FOR LAUNCHER-PROTECTION
-   execute as @e[tag=freeze_bomb_launcher] at @s run execute if entity @e[type=snowball,nbt={Item:{tag:{Tags:["freeze_bomb"]}}},tag=launched,distance=..4] run scoreboard players set @s freeze_launcher_timer 10
+   execute as @e[tag=freeze_bomb_launcher] at @s run execute if entity @e[type=snowball,nbt={Item:{components:{"minecraft:custom_data":{freeze_bomb:1}}}},tag=launched,distance=..4] run scoreboard players set @s freeze_launcher_timer 10
    execute as @e[scores={freeze_launcher_timer=..0}] run function wpm:items/freeze-bomb/reset-scores
 # DEFINE FROZEN MOBS/PLAYERS
-   execute at @e[type=snowball,nbt={Item:{tag:{Tags:["freeze_bomb"]}}},tag=launched] run execute as @e[distance=..5,tag=!freeze_bomb_launcher,type=!#wpm:not_mob] run tag @s add frozen
+   execute at @e[type=snowball,nbt={Item:{components:{"minecraft:custom_data":{freeze_bomb:1}}}},tag=launched] run execute as @e[distance=..5,tag=!freeze_bomb_launcher,type=!#wpm:not_mob] run tag @s add frozen
 # FREEZE  -  SETUP
    execute as @e[tag=frozen] run function wpm:items/freeze-bomb/start-freeze
 # WHILE FROZEN
