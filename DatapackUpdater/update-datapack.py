@@ -12,7 +12,7 @@ REGEX = {
     "give_clear_nbt": rx.compile(
         r"(?<=(?:give|clear)\s+"
         + SELECTOR
-        + r"\s+([\w_]+)\s*)"
+        + r"\s+(?:minecraft:)?([\w:_]+)\s*)"
         + Regex.brackets("{", "}", is_group=True)
     ),
     "nbt_brackets": rx.compile(Regex.brackets("{", "}", is_group=True)),
@@ -90,7 +90,7 @@ REGEX = {
         r"CanPlaceOn\s*:\s*" + Regex.brackets("[", "]", is_group=True)
     ),
     "entity_tag": rx.compile(
-        r"EntityTag\s*:\s*" + Regex.brackets("{", "}", is_group=True)
+        r"(,?)\s*EntityTag\s*:\s*" + Regex.brackets("{", "}", is_group=True)
     ),
     "tags": rx.compile(r"Tags\s*:\s*" + Regex.brackets("[", "]", is_group=True)),
     "not_esc_tags": rx.compile(
@@ -168,11 +168,9 @@ class NBT:
             + "]",
             entity_tag,
         )
-        return (
-            f'id:"{entity_id}",'
-            if entity_id and not rx.search(r"id\s*:\s*\"\s*[\w_]+\s*\"", entity_tag)
-            else ""
-        ) + entity_tag
+        if not entity_id in ("item_frame", "glow_item_frame"):
+            entity_tag = rx.sub(r",?\s*Invisible\s*:\s*1b?", "", entity_tag)
+        return entity_tag
 
     @staticmethod
     def update_can_place_on(can_place_on: str) -> str:
@@ -234,9 +232,12 @@ class NBT:
             nbt,
         )
         nbt = REGEX["entity_tag"].sub(
-            lambda m: "entity_data={"
-            + NBT.update_entity_tag(m.group(1), entity_id)
-            + "}",
+            lambda m: (
+                ""
+                if (updated := NBT.update_entity_tag(m.group(2), entity_id))
+                in (None, "", "{}")
+                else (m.group(1) + "entity_data={" + updated + "}")
+            ),
             nbt,
         )
         if brackets == "[]":
