@@ -214,7 +214,7 @@ class NBT:
         nbt = REGEX["attribute_modifiers"].sub(
             lambda m: "attribute_modifiers={modifiers:["
             + ",".join(NBT.update_attr_mod(attr_mod) for attr_mod in m.groups())
-            + "]}",
+            + "],show_in_tooltip:false}",
             nbt,
         )
         nbt = REGEX["display"].sub(
