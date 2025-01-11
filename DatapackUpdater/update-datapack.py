@@ -15,9 +15,7 @@ REGEX = {
         + r"\s+([\w_]+)\s*)"
         + Regex.brackets("{", "}", is_group=True)
     ),
-    "selector_nbt": rx.compile(
-        r"(?<=nbt\s*=\s*)" + Regex.brackets("{", "}", is_group=True)
-    ),
+    "nbt_brackets": rx.compile(Regex.brackets("{", "}", is_group=True)),
     "tag_usage": rx.compile(
         r"(?<=(?:"
         + SELECTOR
@@ -115,6 +113,13 @@ class NBT:
     def update_options(options: list) -> str:
         return ",".join(
             (mods := opt.split("="))[0] + f':"{mods[1]}"' for opt in options
+        )
+
+    @staticmethod
+    def update_tags(tags: str) -> str:
+        return ",".join(
+            f"{String.to_delimited_case(tag.strip().strip('"'))}:1"
+            for tag in tags.split(",")
         )
 
     @staticmethod
@@ -236,22 +241,14 @@ class NBT:
         )
         if brackets == "[]":
             nbt = REGEX["not_esc_tags"].sub(
-                lambda m: "custom_data={"
-                + ",".join(
-                    f"{String.to_delimited_case(tag.strip().strip('"'))}:1"
-                    for tag in m.group(1).split(",")
-                )
-                + "}",
+                lambda m: "custom_data={" + NBT.update_tags(m.group(1)) + "}",
                 nbt,
             )
         nbt = REGEX["esc_tags"].sub(r"Tags:[\1]", nbt)
         nbt = REGEX["tag_tags"].sub(
             lambda m: 'components:{"minecraft:custom_data":{'
-            + ",".join(
-                f"{String.to_delimited_case(tag.strip().strip('"'))}:1"
-                for tag in m.group(1).split(",")
-            )
-            + "}",
+            + NBT.update_tags(m.group(1))
+            + "}}",
             nbt,
         )
         nbt = REGEX["hide_flags"].sub("", nbt)
@@ -352,7 +349,7 @@ def update_content(content: str) -> tuple[str, int]:
         lambda m: NBT.update(m.group(2), "[]", m.group(1)),
         content,
     )
-    content = REGEX["selector_nbt"].sub(lambda m: NBT.update(m.group(1), "{}"), content)
+    content = REGEX["nbt_brackets"].sub(lambda m: NBT.update(m.group(1), "{}"), content)
     content = REGEX["generic_attribute"].sub(r"\1", content)
     content = Particles.update(content)
     content = Normalize.update(content)
