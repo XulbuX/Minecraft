@@ -89,6 +89,9 @@ REGEX = {
     "can_place_on": rx.compile(
         r"CanPlaceOn\s*:\s*" + Regex.brackets("[", "]", is_group=True)
     ),
+    "can_destroy": rx.compile(
+        r"CanDestroy\s*:\s*" + Regex.brackets("[", "]", is_group=True)
+    ),
     "entity_tag": rx.compile(
         r"(,?)\s*EntityTag\s*:\s*" + Regex.brackets("{", "}", is_group=True)
     ),
@@ -173,21 +176,17 @@ class NBT:
         return entity_tag
 
     @staticmethod
-    def update_can_place_on(can_place_on: str) -> str:
-        can_place_on = [
-            item[1].strip() for item in rx.findall(Regex.quotes(), can_place_on)
-        ]
+    def update_adventure_rules(rules: str) -> str:
+        rules = [item[1].strip() for item in rx.findall(Regex.quotes(), rules)]
         options = [
             (
                 opts.group(1).strip("[]").split(",")
                 if (opts := rx.search(Regex.brackets("[", "]", is_group=True), item))
                 else None
             )
-            for item in can_place_on
+            for item in rules
         ]
-        can_place_on = [
-            rx.sub(Regex.brackets("[", "]"), "", item) for item in can_place_on
-        ]
+        rules = [rx.sub(Regex.brackets("[", "]"), "", item) for item in rules]
         return ",".join(
             f'{{blocks:"{item}"'
             + (
@@ -195,7 +194,7 @@ class NBT:
                 if options[i]
                 else "}"
             )
-            for i, item in enumerate(can_place_on)
+            for i, item in enumerate(rules)
         )
 
     def update(nbt: str, brackets: str, entity_id: str = None) -> str:
@@ -227,8 +226,14 @@ class NBT:
         )
         nbt = REGEX["can_place_on"].sub(
             lambda m: "can_place_on={predicates:["
-            + NBT.update_can_place_on(m.group(1))
-            + "]}",
+            + NBT.update_adventure_rules(m.group(1))
+            + "],show_in_tooltip:false}",
+            nbt,
+        )
+        nbt = REGEX["can_destroy"].sub(
+            lambda m: "can_break={predicates:["
+            + NBT.update_adventure_rules(m.group(1))
+            + "],show_in_tooltip:false}",
             nbt,
         )
         nbt = REGEX["entity_tag"].sub(
