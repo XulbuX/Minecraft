@@ -47,6 +47,19 @@ REGEX = {
         + SELECTOR
         + r")\s+([\w+-._]+)"
     ),
+    "text": rx.compile(
+        r"\{(?:("
+        + Regex.quotes()
+        + r"\s*:\s*"
+        + Regex.quotes()
+        + r')\s*,?)*?("\s*text\s*":\s*'
+        + Regex.quotes()
+        + r")(?:("
+        + Regex.quotes()
+        + r"\s*:\s*"
+        + Regex.quotes()
+        + r")\s*,?)*?\}"
+    ),
     "particle_item": rx.compile(
         r"(?<=particle\s+item)\s+([\w_]+)\s+((?:[0-9-.~]+\s+){6})((?:[0-9-.]+\s+){2})"
     ),
@@ -326,6 +339,8 @@ class Normalize:
             lambda m: f"{String.to_delimited_case(m.group(1))} {m.group(2)} {m.group(3)} {String.to_delimited_case(m.group(4))}",
             content,
         )
+        print(REGEX["text"].findall(content))
+        # content = REGEX["text"].sub(lambda m: f"text:{m.group(2)}", content)
         return content
 
 
