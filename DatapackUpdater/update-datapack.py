@@ -323,7 +323,7 @@ class Normalize:
             final.append(bold)
         else:
             final.append('"bold":false')
-        final.append(*parts)
+        final |= parts
         return ",".join(final)
 
     def update(content: str) -> str:
