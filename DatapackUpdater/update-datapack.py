@@ -300,26 +300,31 @@ class Normalize:
 
     @staticmethod
     def update_text(text_bracket: str) -> str:
-        if not REGEX["text"].search(text_bracket) or rx.fullmatch(
+        if not REGEX["text"].search(text_bracket) or rx.match(
             r'^\s*"\s*text\s*":\s*"\s*"\s*$', text_bracket
         ):
             return text_bracket
         parts = REGEX["text_part"].findall(text_bracket)
-        result = []
+        final, text, italic, bold = [], None, None, None
         for part in parts:
             if REGEX["text"].search(part):
-                result.insert(0, part)
+                text = part
             elif REGEX["italic"].search(part):
-                result.append(part)
+                italic = part
             elif REGEX["bold"].search(part):
-                result.append(part)
-            else:
-                result.append(part)
-        if not any(REGEX["italic"].search(p) for p in result):
-            result.append('"italic":false')
-        if not any(REGEX["bold"].search(p) for p in result):
-            result.append('"bold":false')
-        return ",".join(result)
+                bold = part
+        if text:
+            final.append(text)
+        if italic:
+            final.append(italic)
+        else:
+            final.append('"italic":false')
+        if bold:
+            final.append(bold)
+        else:
+            final.append('"bold":false')
+        final.append(*parts)
+        return ",".join(final)
 
     def update(content: str) -> str:
         content = REGEX["tags"].sub(
