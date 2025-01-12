@@ -47,9 +47,12 @@ REGEX = {
         + SELECTOR
         + r")\s+([\w+-._]+)"
     ),
-    "text": rx.compile(
-        r'\{(?:[^{}]*?(?:\{[^{}]*\})?)*?"text":"(?:[^\\"]|\\.)*"(?:[^{}]*?(?:\{[^{}]*\})?)*?\}'
+    "text_part": rx.compile(
+        r'("\s*[\w_]+\s*"\s*:\s*(?:"(?:[^\\"]|\\.)*"|"?\s*(?:true|false)\s*"?))'
     ),
+    "text": rx.compile(r'"\s*text\s*":\s*' + Regex.quotes()),
+    "italic": rx.compile(r'"\s*italic\s*":\s*"?\s*(?:true|false)\s*"?'),
+    "bold": rx.compile(r'"\s*bold\s*":\s*"?\s*(?:true|false)\s*"?'),
     "particle_item": rx.compile(
         r"(?<=particle\s+item)\s+([\w_]+)\s+((?:[0-9-.~]+\s+){6})((?:[0-9-.]+\s+){2})"
     ),
@@ -295,6 +298,30 @@ class Particles:
 
 class Normalize:
 
+    @staticmethod
+    def update_text(text_bracket: str) -> str:
+        if not REGEX["text"].search(text_bracket) or rx.fullmatch(
+            r'^\s*"\s*text\s*":\s*"\s*"\s*$', text_bracket
+        ):
+            return text_bracket
+        parts = REGEX["text_part"].findall(text_bracket)
+        result = []
+        for part in parts:
+            if REGEX["text"].search(part):
+                result.insert(0, part)
+            elif REGEX["italic"].search(part):
+                result.append(part)
+            elif REGEX["bold"].search(part):
+                result.append(part)
+            else:
+                result.append(part)
+        if not any(REGEX["italic"].search(p) for p in result):
+            result.append('"italic":false')
+        if not any(REGEX["bold"].search(p) for p in result):
+            result.append('"bold":false')
+
+        return "{" + ",".join(result) + "}"
+
     def update(content: str) -> str:
         content = REGEX["tags"].sub(
             lambda m: "Tags:["
@@ -333,8 +360,11 @@ class Normalize:
             lambda m: f"{String.to_delimited_case(m.group(1))} {m.group(2)} {m.group(3)} {String.to_delimited_case(m.group(4))}",
             content,
         )
-        print(REGEX["text"].findall(content))
-        # content = REGEX["text"].sub(lambda m: f"text:{m.group(2)}", content)
+        print(
+            REGEX["nbt_brackets"].sub(
+                lambda m: f"{{{Normalize.update_text(m.group(1))}}}", content
+            )
+        )
         return content
 
 
