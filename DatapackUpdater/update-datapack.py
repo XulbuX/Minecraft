@@ -319,8 +319,7 @@ class Normalize:
             result.append('"italic":false')
         if not any(REGEX["bold"].search(p) for p in result):
             result.append('"bold":false')
-
-        return "{" + ",".join(result) + "}"
+        return ",".join(result)
 
     def update(content: str) -> str:
         content = REGEX["tags"].sub(
