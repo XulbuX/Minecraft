@@ -47,6 +47,11 @@ REGEX = {
         + SELECTOR
         + r")\s+([\w+-._]+)"
     ),
+    "text_bracket": rx.compile(
+        r'^\s*(?:"\s*[\w_]+\s*"\s*:\s*(?:"(?:[^\\"]|\\.)*"|"?\s*(?:true|false)\s*"?))?\s*"\s*text\s*":\s*'
+        + Regex.quotes()
+        + r'\s*(?:"\s*[\w_]+\s*"\s*:\s*(?:"(?:[^\\"]|\\.)*"|"?\s*(?:true|false)\s*"?))?\s*$'
+    ),
     "text_part": rx.compile(
         r'("\s*[\w_]+\s*"\s*:\s*(?:"(?:[^\\"]|\\.)*"|"?\s*(?:true|false)\s*"?))'
     ),
@@ -300,12 +305,12 @@ class Normalize:
 
     @staticmethod
     def update_text(text_bracket: str) -> str:
-        if not REGEX["text"].search(text_bracket) or rx.match(
+        if not REGEX["text_bracket"].fullmatch(text_bracket) or rx.match(
             r'^\s*"\s*text\s*":\s*"\s*"\s*$', text_bracket
         ):
             return text_bracket
         parts = REGEX["text_part"].findall(text_bracket)
-        final, text, italic, bold = [], None, None, None
+        final, other, text, italic, bold = [], [], None, None, None
         for part in parts:
             if REGEX["text"].search(part):
                 text = part
@@ -313,6 +318,8 @@ class Normalize:
                 italic = part
             elif REGEX["bold"].search(part):
                 bold = part
+            else:
+                other.append(part)
         if text:
             final.append(text)
         if italic:
@@ -323,7 +330,8 @@ class Normalize:
             final.append(bold)
         else:
             final.append('"bold":false')
-        final |= parts
+        if other:
+            final += other
         return ",".join(final)
 
     def update(content: str) -> str:
