@@ -359,10 +359,8 @@ class Normalize:
             lambda m: f"{String.to_delimited_case(m.group(1))} {m.group(2)} {m.group(3)} {String.to_delimited_case(m.group(4))}",
             content,
         )
-        print(
-            REGEX["nbt_brackets"].sub(
-                lambda m: f"{{{Normalize.update_text(m.group(1))}}}", content
-            )
+        content = REGEX["nbt_brackets"].sub(
+            lambda m: f"{{{Normalize.update_text(m.group(1))}}}", content
         )
         return content
 
