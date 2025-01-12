@@ -166,12 +166,12 @@ class NBT:
         entity_tag = REGEX["tags"].sub(
             lambda m: "\\Tags:["
             + ",".join(
-                list(
+                sorted(
                     set(
                         f'"{String.to_delimited_case(tag.strip().strip('"'))}"'
                         for tag in m.group(1).split(",")
                     )
-                ).sort()
+                )
             )
             + "]",
             entity_tag,
@@ -299,12 +299,12 @@ class Normalize:
         content = REGEX["tags"].sub(
             lambda m: "Tags:["
             + ",".join(
-                list(
+                sorted(
                     set(
                         f'"{String.to_delimited_case(tag.strip().strip("\""))}"'
                         for tag in m.group(1).split(",")
                     )
-                ).sort()
+                )
             )
             + "]",
             content,
