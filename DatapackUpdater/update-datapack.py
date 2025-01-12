@@ -314,7 +314,6 @@ class Normalize:
             r'^\s*"\s*text\s*":\s*"\s*"\s*$', text_bracket
         ):
             return text_bracket
-        print(text_bracket)
         parts = REGEX["text_part"].findall(text_bracket)
         final, other, text, italic, bold = [], [], None, None, None
         for part in parts:
