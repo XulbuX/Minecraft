@@ -49,11 +49,11 @@ REGEX = {
     ),
     "text": rx.compile(
         r'\{\s*(?:("\s*[\w_]+\s*"\s*:\s*(?:'
-        + Regex.brackets('"', '"')
+        + Regex.quotes()
         + r'|[\w_]+))\s*,?\s*)*?("\s*text\s*":\s*'
-        + Regex.brackets('"', '"')
+        + Regex.quotes()
         + r')\s*(?:("\s*[\w_]+\s*"\s*:\s*(?:'
-        + Regex.brackets('"', '"')
+        + Regex.quotes()
         + r"|[\w_]+))\s*,?\s*)*?\}"
     ),
     "particle_item": rx.compile(
