@@ -7,6 +7,7 @@ import struct
 import sys
 
 SELECTOR = r"(?:\*|\@[aenprs]|[^\s]+)"
+QUOTES = r'"(?:[^\\"]|\\.)*"'
 REGEX = {
     "hex": rx.compile(r"(#|0x)([0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3,4})\b"),
     "give_clear_nbt": rx.compile(
@@ -48,12 +49,16 @@ REGEX = {
         + r")\s+([\w+-._]+)"
     ),
     "text_bracket": rx.compile(
-        r'^\s*(?:"\s*[\w_]+\s*"\s*:\s*(?:"(?:[^\\"]|\\.)*"|"?\s*(?:true|false)\s*"?))?\s*"\s*text\s*":\s*'
-        + Regex.quotes()
-        + r'\s*(?:"\s*[\w_]+\s*"\s*:\s*(?:"(?:[^\\"]|\\.)*"|"?\s*(?:true|false)\s*"?))?\s*$'
+        r'(?:"\s*[\w_]+\s*"\s*:\s*(?:'
+        + QUOTES
+        + r'|"?\s*(?:true|false)\s*"?)\s*,?\s*)*?"\s*text\s*":\s*'
+        + QUOTES
+        + r'\s*,?\s*(?:"\s*[\w_]+\s*"\s*:\s*(?:'
+        + QUOTES
+        + r'|"?\s*(?:true|false)\s*"?)\s*,?\s*)*?'
     ),
     "text_part": rx.compile(
-        r'("\s*[\w_]+\s*"\s*:\s*(?:"(?:[^\\"]|\\.)*"|"?\s*(?:true|false)\s*"?))'
+        r'("\s*[\w_]+\s*"\s*:\s*(?:' + QUOTES + r'|"?\s*(?:true|false)\s*"?))'
     ),
     "text": rx.compile(r'"\s*text\s*":\s*' + Regex.quotes()),
     "italic": rx.compile(r'"\s*italic\s*":\s*"?\s*(?:true|false)\s*"?'),
@@ -309,6 +314,7 @@ class Normalize:
             r'^\s*"\s*text\s*":\s*"\s*"\s*$', text_bracket
         ):
             return text_bracket
+        print(text_bracket)
         parts = REGEX["text_part"].findall(text_bracket)
         final, other, text, italic, bold = [], [], None, None, None
         for part in parts:
