@@ -48,17 +48,13 @@ REGEX = {
         + r")\s+([\w+-._]+)"
     ),
     "text": rx.compile(
-        r"\{(?:("
+        r'\{\s*(?:("\s*[\w_]+\s*"\s*:\s*'
         + Regex.quotes()
-        + r"\s*:\s*"
+        + r')\s*,?\s*)*?("\s*text\s*":\s*'
         + Regex.quotes()
-        + r')\s*,?)*?("\s*text\s*":\s*'
+        + r')\s*(?:("\s*[\w_]+\s*"\s*:\s*'
         + Regex.quotes()
-        + r")(?:("
-        + Regex.quotes()
-        + r"\s*:\s*"
-        + Regex.quotes()
-        + r")\s*,?)*?\}"
+        + r")\s*,?\s*)*?\}"
     ),
     "particle_item": rx.compile(
         r"(?<=particle\s+item)\s+([\w_]+)\s+((?:[0-9-.~]+\s+){6})((?:[0-9-.]+\s+){2})"
