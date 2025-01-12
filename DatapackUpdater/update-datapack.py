@@ -383,15 +383,6 @@ class Normalize:
         return content
 
 
-def is_readable(file: Path):
-    try:
-        with file.open("r", encoding="utf-8") as f:
-            f.read(1024)
-        return True
-    except UnicodeDecodeError:
-        return False
-
-
 def count_diffs(string_1: str, string_2: str) -> int:
     return sum(
         1
@@ -417,8 +408,6 @@ def update_content(content: str) -> tuple[str, int]:
 
 
 def process_file(file_path: Path, root_dir: Path) -> None:
-    if not is_readable(file_path):
-        return
     # try:
     content = file_path.read_text(encoding="utf-8")
     new_content, modified = update_content(content)
@@ -445,9 +434,10 @@ def process_file(file_path: Path, root_dir: Path) -> None:
 def main(path: str) -> None:
     target = Path(path)
     if target.is_file():
-        process_file(target, target.parent)
+        if target.suffix == ".mcfunction":
+            process_file(target, target.parent)
     elif target.is_dir():
-        for file_path in target.rglob("*"):
+        for file_path in target.rglob("*.mcfunction"):
             if file_path.is_file():
                 process_file(file_path, path)
     else:
