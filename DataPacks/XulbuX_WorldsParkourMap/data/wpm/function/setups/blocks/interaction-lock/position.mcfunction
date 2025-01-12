@@ -25,6 +25,6 @@ execute at @s positioned ~ ~.5 ~ if entity @e[type=#wpm:lockable_entity,distance
 
 tag @s add positioned
 
-execute at @s run tellraw @a[distance=..6] ["",{"text":"Interaction ","color":"#FF4853","bold":true},{"text":"Lock","color":"#E5182E","bold":true},{"text":" has been placed.","color":"green"}]
+execute at @s run tellraw @a[distance=..6] ["",{"text":"Interaction ","italic":false,"bold":true,"color":"#FF4853"},{"text":"Lock","italic":false,"bold":true,"color":"#E5182E"},{"text":" has been placed.","italic":false,"bold":false,"color":"green"}]
 
 execute if entity @s[tag=new] run tag @s remove new

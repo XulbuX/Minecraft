@@ -1,7 +1,7 @@
 ################################ ANNOUNCE RELOAD  -  START ##############################
 tellraw @a ["",{"text":""}]
-tellraw @a ["",{"text":"················································································","color":"#4060FF"}]
-tellraw @a ["",{"text":">>","bold":true,"color":"#2A8BA7"},{"text":" Loading: ","bold":true,"color":"#5FDCFF"},{"text":"W","italic":true,"underlined":true,"color":"#7580FF"},{"text":"M","italic":true,"underlined":true,"color":"#8471F9"},{"text":"P","italic":true,"underlined":true,"color":"#9363F3"},{"text":"-","italic":true,"underlined":true,"color":"#A355EE"},{"text":"e","italic":true,"underlined":true,"color":"#B247E8"},{"text":"n","italic":true,"underlined":true,"color":"#C138E2"},{"text":"g","italic":true,"underlined":true,"color":"#D12ADD"},{"text":"i","italic":true,"underlined":true,"color":"#E01CD7"},{"text":"n","italic":true,"underlined":true,"color":"#EF0ED1"},{"text":"e","italic":true,"underlined":true,"color":"#FF00CC"}]
+tellraw @a ["",{"text":"················································································","italic":false,"bold":false,"color":"#4060FF"}]
+tellraw @a ["",{"text":">>","italic":false,"bold":true,"color":"#2A8BA7"},{"text":" Loading: ","italic":false,"bold":true,"color":"#5FDCFF"},{"text":"W","italic":true,"bold":false,"underlined":true,"color":"#7580FF"},{"text":"M","italic":true,"bold":false,"underlined":true,"color":"#8471F9"},{"text":"P","italic":true,"bold":false,"underlined":true,"color":"#9363F3"},{"text":"-","italic":true,"bold":false,"underlined":true,"color":"#A355EE"},{"text":"e","italic":true,"bold":false,"underlined":true,"color":"#B247E8"},{"text":"n","italic":true,"bold":false,"underlined":true,"color":"#C138E2"},{"text":"g","italic":true,"bold":false,"underlined":true,"color":"#D12ADD"},{"text":"i","italic":true,"bold":false,"underlined":true,"color":"#E01CD7"},{"text":"n","italic":true,"bold":false,"underlined":true,"color":"#EF0ED1"},{"text":"e","italic":true,"bold":false,"underlined":true,"color":"#FF00CC"}]
 
 ################################ SCOREBOARD  -  SETUP ##############################
 # BUILDING BLOCKS & MAP  -  COMPONENTS
@@ -53,12 +53,12 @@ scoreboard objectives add single_buy_price dummy
 scoreboard objectives add items_to_purchase dummy
 scoreboard objectives add death_message_timer dummy
 scoreboard objectives add parkour_players_deaths deathCount
-scoreboard objectives modify parkour_players_deaths displayname ["",{"text":"》","color":"#5055FF"},{"text":"DEATHS","bold":true,"color":"#8085FF"},{"text":"《","color":"#5055FF"}]
+scoreboard objectives modify parkour_players_deaths displayname ["",{"text":"》","italic":false,"bold":false,"color":"#5055FF"},{"text":"DEATHS","italic":false,"bold":true,"color":"#8085FF"},{"text":"《","italic":false,"bold":false,"color":"#5055FF"}]
 scoreboard objectives add parkour_players_health health
-scoreboard objectives modify parkour_players_health displayname ["",{"text":"》","color":"#D03530"},{"text":"HEALTH","bold":true,"color":"#FF5550"},{"text":"《","color":"#D03530"}]
+scoreboard objectives modify parkour_players_health displayname ["",{"text":"》","italic":false,"bold":false,"color":"#D03530"},{"text":"HEALTH","italic":false,"bold":true,"color":"#FF5550"},{"text":"《","italic":false,"bold":false,"color":"#D03530"}]
 scoreboard objectives modify parkour_players_health rendertype hearts
 scoreboard objectives add parkour_players_money dummy
-scoreboard objectives modify parkour_players_money displayname ["",{"text":"》","color":"#E06020"},{"text":"MONEY","bold":true,"color":"#FF8540"},{"text":"《","color":"#E06020"}]
+scoreboard objectives modify parkour_players_money displayname ["",{"text":"》","italic":false,"bold":false,"color":"#E06020"},{"text":"MONEY","italic":false,"bold":true,"color":"#FF8540"},{"text":"《","italic":false,"bold":false,"color":"#E06020"}]
 # FUNCTIONS  -  GENERAL
 scoreboard objectives add check_blocks dummy
 scoreboard objectives add check_blocks_2 dummy
@@ -70,11 +70,11 @@ scoreboard objectives add chat_expanded_03 dummy
 
 ################################ TEAMS  -  SETUP ##############################
 team add item_lock
-team add parkour_map_players ["",{"text":"[","color":"blue"},{"text":"PARKOUR","color":"#7575FF"},{"text":"]","color":"blue"}," ",{"text":"Players","color":"#E8FF00","bold":true}]
+team add parkour_map_players ["",{"text":"[","italic":false,"bold":false,"color":"blue"},{"text":"PARKOUR","italic":false,"bold":false,"color":"#7575FF"},{"text":"]","italic":false,"bold":false,"color":"blue"}," ",{"text":"Players","italic":false,"bold":true,"color":"#E8FF00"}]
 team modify parkour_map_players collisionRule pushOtherTeams
 team modify parkour_map_players color blue
 
 ################################ ANNOUNCE RELOAD  -  SUCCESS ##############################
-tellraw @a ["",{"text":">>","bold":true,"color":"#2A8BA7"},{"text":" ","color":"#5FDCFF"},{"text":"W","italic":true,"underlined":true,"color":"#7580FF"},{"text":"M","italic":true,"underlined":true,"color":"#8471F9"},{"text":"P","italic":true,"underlined":true,"color":"#9363F3"},{"text":"-","italic":true,"underlined":true,"color":"#A355EE"},{"text":"e","italic":true,"underlined":true,"color":"#B247E8"},{"text":"n","italic":true,"underlined":true,"color":"#C138E2"},{"text":"g","italic":true,"underlined":true,"color":"#D12ADD"},{"text":"i","italic":true,"underlined":true,"color":"#E01CD7"},{"text":"n","italic":true,"underlined":true,"color":"#EF0ED1"},{"text":"e","italic":true,"underlined":true,"color":"#FF00CC"},{"text":" is now ","color":"#9B75FF"},{"text":"started\n   up","color":"#9B75FF","bold":true},{"text":" and ready to use.","color":"#9B75FF"}]
-tellraw @a ["",{"text":"················································································","color":"#4060FF"}]
+tellraw @a ["",{"text":">>","italic":false,"bold":true,"color":"#2A8BA7"},{"text":" ","italic":false,"bold":false,"color":"#5FDCFF"},{"text":"W","italic":true,"bold":false,"underlined":true,"color":"#7580FF"},{"text":"M","italic":true,"bold":false,"underlined":true,"color":"#8471F9"},{"text":"P","italic":true,"bold":false,"underlined":true,"color":"#9363F3"},{"text":"-","italic":true,"bold":false,"underlined":true,"color":"#A355EE"},{"text":"e","italic":true,"bold":false,"underlined":true,"color":"#B247E8"},{"text":"n","italic":true,"bold":false,"underlined":true,"color":"#C138E2"},{"text":"g","italic":true,"bold":false,"underlined":true,"color":"#D12ADD"},{"text":"i","italic":true,"bold":false,"underlined":true,"color":"#E01CD7"},{"text":"n","italic":true,"bold":false,"underlined":true,"color":"#EF0ED1"},{"text":"e","italic":true,"bold":false,"underlined":true,"color":"#FF00CC"},{"text":" is now ","italic":false,"bold":false,"color":"#9B75FF"},{"text":"started\n   up","italic":false,"bold":true,"color":"#9B75FF"},{"text":" and ready to use.","italic":false,"bold":false,"color":"#9B75FF"}]
+tellraw @a ["",{"text":"················································································","italic":false,"bold":false,"color":"#4060FF"}]
 tellraw @a ["",{"text":""}]

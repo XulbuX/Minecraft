@@ -1,4 +1,4 @@
-execute at @s positioned ^ ^ ^.5 run summon area_effect_cloud ~ ~ ~ {Radius:0f,Duration:200,Tags:["not_rotated","no_target","homing_missile"],CustomName:'[{"text":"Homing Missile","color":"red"}]'}
+execute at @s positioned ^ ^ ^.5 run summon area_effect_cloud ~ ~ ~ {Radius:0f,Duration:200,Tags:["homing_missile","no_target","not_rotated"],CustomName:'[{"text":"Homing Missile","color":"red"}]'}
 execute as @e[tag=homing_missile,tag=not_rotated] run function wpm:items/homing-launcher/rotate
 playsound minecraft:entity.ender_dragon.flap player @a ~ ~ ~ .5 1.2
 playsound minecraft:entity.generic.burn player @a ~ ~ ~ .25 1
