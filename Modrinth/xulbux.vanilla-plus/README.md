@@ -37,7 +37,7 @@ Configurations for inside the mod config files for the best experience.
 
 ### 📟 Better Fabric Console
 For the best looking console log, use this as the `log-pattern` value:
-```conf
+```bash
 log-pattern="%highlight{[%d{HH:mm:ss} %level] [%t]: [%logger{1}] }{FATAL=bright_magenta, ERROR=bright_red, WARN=bright_yellow, INFO=bright_cyan, DEBUG=bright_black, TRACE=bright_blue}%highlight{%paperMinecraftFormatting{%msg}}{FATAL=magenta, ERROR=red, WARN=yellow, INFO=white, DEBUG=bright_black, TRACE=white}%n"
 ```
 
