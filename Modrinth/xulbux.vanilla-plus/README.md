@@ -5,7 +5,7 @@
 ![Vanilla+ Banner](https://github.com/XulbuX/Minecraft/blob/main/Modrinth/xulbux.vanilla-plus/images/jungle-village.jpg?raw=true)
 
 
-### 🌟 Experience Minecraft in a new way!
+### 🌟 Experience Minecraft in a new but familiar way!
 Vanilla+ enhances your Minecraft server without changing what makes the game special. This carefully assembled collection of mods improves performance, adds quality-of-life features and more — all while maintaining the authentic Minecraft feel:
 
 ### ✨ What's included?
