@@ -2,7 +2,7 @@
 **All the server mods you need, for the perfect vanilla** (_but better_) **experience!**
 
 
-![Vanilla+ Banner](https://github.com/XulbuX/Minecraft/blob/main/Modrinth/xulbux.vanilla-plus/images/jungle-village.jpg?raw=true)
+![Vanilla+ Banner](https://github.com/XulbuX/Minecraft/blob/main/Modrinth/xulbux.vanilla-plus/images/jungle-village.jpg)
 
 
 ### 🌟 Experience Minecraft in a new but familiar way!
