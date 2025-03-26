@@ -1,4 +1,4 @@
-# **Vanilla+** Modpack
+# **VANILLA+** mod pack with resource packs
 **All the server mods you need, for the perfect vanilla** (_but better_) **experience!**
 
 
@@ -6,7 +6,7 @@
 
 
 ### 🌟 Experience Minecraft in a new but familiar way!
-Vanilla+ enhances your Minecraft server without changing what makes the game special. This carefully assembled collection of mods improves performance, adds quality-of-life features and more — all while maintaining the authentic Minecraft feel:
+Vanilla+ enhances your Minecraft server without changing what makes the game special. This carefully assembled collection of mods, in combination with a few resource packs, improves performance, adds quality-of-life features and more — all while maintaining the authentic Minecraft feel:
 
 ### ✨ What's included?
 - **Performance optimization** - enjoy smoother gameplay even with many players
