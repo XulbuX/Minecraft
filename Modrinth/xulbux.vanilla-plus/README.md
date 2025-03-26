@@ -1,12 +1,12 @@
-# **VANILLA+** mod pack with resource packs
-**All the server mods you need, for the perfect vanilla** (_but better_) **experience!**
+# **VANILLA+** mods and resource packs
+**All the server mods and resource packs you need, for the perfect vanilla** (_but better_) **minecraft experience!**
 
 
-[![Vanilla+ Banner](https://github.com/XulbuX/Minecraft/blob/main/Modrinth/xulbux.vanilla-plus/images/banner.webp?raw=true)](https://github.com/XulbuX/Minecraft/blob/main/Modrinth/xulbux.vanilla-plus)
+<a href="https://github.com/XulbuX/Minecraft/blob/main/Modrinth/xulbux.vanilla-plus/images/banner.webp" target="_blank">![Vanilla+ Banner](https://github.com/XulbuX/Minecraft/blob/main/Modrinth/xulbux.vanilla-plus/images/banner.webp?raw=true)</a>
 
 
 ### 🌟 Experience Minecraft in a new but familiar way!
-Vanilla+ enhances your Minecraft server without changing what makes the game special. This carefully assembled collection of mods, in combination with a few resource packs, improves performance, adds quality-of-life features and more — all while maintaining the authentic Minecraft feel:
+**Vanilla+** enhances your Minecraft server without changing what makes the game special. This carefully assembled collection of mods, in combination with a few resource packs, improves performance, adds quality-of-life features and more — all while maintaining the authentic Minecraft feel:
 
 ### ✨ What's included?
 - **Performance optimization** - enjoy smoother gameplay even with many players
