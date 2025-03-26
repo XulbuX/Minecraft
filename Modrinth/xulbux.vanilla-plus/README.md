@@ -2,7 +2,7 @@
 **All the server mods and resource packs you need, for the perfect vanilla** (_but better_) **minecraft experience!**
 
 
-<a href="https://github.com/XulbuX/Minecraft/blob/main/Modrinth/xulbux.vanilla-plus/images/banner.webp" target="_blank">![Vanilla+ Banner](https://github.com/XulbuX/Minecraft/blob/main/Modrinth/xulbux.vanilla-plus/images/banner.webp?raw=true)</a>
+<a href="https://raw.githubusercontent.com/XulbuX/Minecraft/refs/heads/main/Modrinth/xulbux.vanilla-plus/images/banner.webp">![Vanilla+ Banner](https://github.com/XulbuX/Minecraft/blob/main/Modrinth/xulbux.vanilla-plus/images/banner.webp?raw=true)</a>
 
 
 ### 🌟 Experience Minecraft in a new but familiar way!
