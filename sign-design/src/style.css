@@ -1,0 +1,15 @@
+/* Import Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom font */
+@font-face {
+  font-family: 'Minecraft';
+  src: url('./assets/minecraft-font.ttf') format('truetype');
+}
+
+/* Global styles */
+body {
+  @apply bg-gray-50;
+}
