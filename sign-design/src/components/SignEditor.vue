@@ -7,7 +7,7 @@
       <div v-for="idx in 4" :key="idx" class="flex items-center mb-2.5">
         <div class="w-5 mr-2.5 font-bold text-gray-700">{{ idx }}</div>
         <div
-          class="sign-line bg-white/10 min-h-[24px] flex-grow p-1.5 border border-amber-800 rounded text-white font-minecraft whitespace-nowrap overflow-hidden cursor-text select-text"
+          class="sign-line bg-white/10 min-h-6 flex-grow p-1.5 border border-amber-800 rounded text-white font-minecraft whitespace-nowrap overflow-hidden cursor-text select-text"
           :class="{ 'border-white/50 bg-white/15': activeLineIndex === idx-1 }"
           contenteditable="true"
           :data-line="idx-1"
@@ -32,7 +32,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, nextTick } from 'vue';
-import { SIGN_TYPES } from '../utils/minecraftColors';
+import { SIGN_TYPES } from '../helpers/minecraftColors';
 
 type TextSegment = {
   text: string;
@@ -376,18 +376,15 @@ defineExpose({
 </script>
 
 <style>
-/* We'll keep the Minecraft font style as it's a custom font import */
 .font-minecraft {
   font-family: 'Minecraft', monospace;
 }
 
-/* Empty state placeholder using data attribute - can't be done easily with just Tailwind */
 .sign-lines [contenteditable]:empty:before {
   content: attr(data-placeholder);
   color: rgba(255, 255, 255, 0.5);
 }
 
-/* These styles are hard to implement in Tailwind directly */
 .sign-line:empty:before {
   content: attr(data-placeholder);
   @apply text-white/50;

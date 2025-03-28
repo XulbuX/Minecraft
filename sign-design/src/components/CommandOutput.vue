@@ -25,7 +25,7 @@
         </label>
       </div>
     </div>
-    <div class="p-2.5 bg-gray-900 rounded overflow-x-auto whitespace-nowrap border border-gray-600 mb-2.5">
+    <div class="p-2.5 bg-gray-900 rounded overflow-x-auto whitespace-nowrap border border-gray-600 mb-2.5 font-minecraft">
       {{ generatedCommand }}
     </div>
     <button 
@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { getMinecraftColorFormat } from '../utils/minecraftColors';
+import { getMinecraftColorFormat } from '../helpers/minecraftColors';
 
 type TextSegment = {
   text: string;
@@ -103,7 +103,7 @@ function generateGiveCommand(): string {
     return `'[${segments.join(',')}]'`;
   });
   
-  return `/give @p ${props.signType || 'oak_sign'}{BlockEntityTag:{front_text:{messages:[${messages.join(',')}]}}} 1`;
+  return `/give @p ${props.signType ?? 'oak_sign'}{BlockEntityTag:{front_text:{messages:[${messages.join(',')}]}}} 1`;
 }
 
 function escapeText(text: string): string {

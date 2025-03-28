@@ -26,7 +26,7 @@ import SignTypeSelector from './components/SignTypeSelector.vue'
 import SignEditor from './components/SignEditor.vue'
 import ColorControls from './components/ColorControls.vue'
 import CommandOutput from './components/CommandOutput.vue'
-import { MC_COLORS_ARRAY, SIGN_TYPES_ARRAY } from './utils/minecraftColors';
+import { MC_COLORS_ARRAY, SIGN_TYPES_ARRAY } from './helpers/minecraftColors';
 
 const signType = ref('oak_sign');
 const formattedLines = ref<any[][]>([[], [], [], []]);
