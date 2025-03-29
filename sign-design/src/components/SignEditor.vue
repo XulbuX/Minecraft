@@ -1,14 +1,14 @@
 <template>
   <div 
-    class="border-2 border-amber-900 rounded-md p-4 mb-5 relative select-text"
-    :class="getSignBackgroundColor()"
+    class="border-2 rounded-md p-4 mb-5 relative select-text"
+    :class="`${signSpecificBg} ${signSpecificBorder}`"
     @mousedown.prevent="handleEditorMouseDown">
     <div class="sign-lines">
       <div v-for="idx in 4" :key="idx" class="flex items-center mb-2.5">
         <div class="w-5 mr-2.5 font-bold text-gray-700">{{ idx }}</div>
         <div
-          class="sign-line bg-white/10 min-h-6 flex-grow p-1.5 border border-amber-800 rounded text-white font-minecraft whitespace-nowrap overflow-hidden cursor-text select-text"
-          :class="{ 'border-white/50 bg-white/15': activeLineIndex === idx-1 }"
+          class="sign-line bg-white/10 min-h-6 flex-grow p-1.5 border rounded text-white font-minecraft whitespace-nowrap overflow-hidden cursor-text select-text"
+          :class="`${signSpecificBorder}${activeLineIndex === idx-1 ? ' border-white/50 bg-white/15' : ''}`"
           contenteditable="true"
           :data-line="idx-1"
           :data-placeholder="'Line ' + idx"
@@ -31,8 +31,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue';
-import { SIGN_TYPES } from '../helpers/minecraftColors';
+import { ref, onMounted, nextTick, computed } from 'vue';
+import { SIGN_TYPES } from 'helpers/minecraftColors';
 
 type TextSegment = {
   text: string;
@@ -54,9 +54,12 @@ const selectedLineIndex = ref<number | null>(null);
 const activeLineIndex = ref<number | null>(null);
 const lineEditors = ref<HTMLElement[]>([]);
 
-function getSignBackgroundColor(): string {
-  return SIGN_TYPES[props.signType]?.bgColor || 'bg-amber-800';
-}
+const signSpecificBg = computed(() => {
+  return SIGN_TYPES[props.signType]?.style[0] || SIGN_TYPES['oak_sign'].style[0];
+});
+const signSpecificBorder = computed(() => {
+  return SIGN_TYPES[props.signType]?.style[1] || SIGN_TYPES['oak_sign'].style[1];
+});
 
 onMounted(() => {
   nextTick(() => {
@@ -376,10 +379,6 @@ defineExpose({
 </script>
 
 <style>
-.font-minecraft {
-  font-family: 'Minecraft', monospace;
-}
-
 .sign-lines [contenteditable]:empty:before {
   content: attr(data-placeholder);
   color: rgba(255, 255, 255, 0.5);

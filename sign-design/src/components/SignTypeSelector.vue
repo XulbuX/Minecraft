@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { SignType } from '../helpers/minecraftColors';
+import { SignType } from 'helpers/minecraftColors';
 
 type Props = {
   signTypes: SignType[];

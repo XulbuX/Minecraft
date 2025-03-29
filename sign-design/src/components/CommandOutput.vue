@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { getMinecraftColorFormat } from '../helpers/minecraftColors';
+import { getMinecraftColorFormat } from 'helpers/minecraftColors';
 
 type TextSegment = {
   text: string;

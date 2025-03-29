@@ -3,4 +3,5 @@ import App from './App.vue';
 import './css/style.css';
 import 'uno.css';
 
-createApp(App).mount('#app');
+const app = createApp(App);
+app.mount('#app');

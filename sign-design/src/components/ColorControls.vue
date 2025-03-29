@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { MinecraftColor } from '../helpers/minecraftColors';
+import { MinecraftColor } from 'helpers/minecraftColors';
 
 type Props = {
   minecraftColors: MinecraftColor[]

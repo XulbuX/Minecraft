@@ -1,11 +1,11 @@
 export type MinecraftColor = {
-  name: string;
+  label: string;
   value: string;
 }
 
 export type SignType = {
   label: string;
-  bgColor: string;
+  style: string[];
 }
 
 export type MCColors = {
@@ -17,39 +17,38 @@ export type SignTypes = {
 }
 
 export const MC_COLORS: MCColors = {
-  black: { name: 'Black', value: 'rgb(0, 0, 0)' },
-  dark_blue: { name: 'Dark Blue', value: 'rgb(0, 0, 170)' },
-  dark_green: { name: 'Dark Green', value: 'rgb(0, 170, 0)' },
-  dark_aqua: { name: 'Dark Aqua', value: 'rgb(0, 170, 170)' },
-  dark_red: { name: 'Dark Red', value: 'rgb(170, 0, 0)' },
-  dark_purple: { name: 'Dark Purple', value: 'rgb(170, 0, 170)' },
-  gold: { name: 'Gold', value: 'rgb(255, 170, 0)' },
-  gray: { name: 'Gray', value: 'rgb(170, 170, 170)' },
-  dark_gray: { name: 'Dark Gray', value: 'rgb(85, 85, 85)' },
-  blue: { name: 'Blue', value: 'rgb(85, 85, 255)' },
-  green: { name: 'Green', value: 'rgb(85, 255, 85)' },
-  aqua: { name: 'Aqua', value: 'rgb(85, 255, 255)' },
-  red: { name: 'Red', value: 'rgb(255, 85, 85)' },
-  light_purple: { name: 'Light Purple', value: 'rgb(255, 85, 255)' },
-  yellow: { name: 'Yellow', value: 'rgb(255, 255, 85)' },
-  white: { name: 'White', value: 'rgb(255, 255, 255)' }
+  black: { label: 'Black', value: 'rgb(0, 0, 0)' },
+  dark_blue: { label: 'Dark Blue', value: 'rgb(0, 0, 170)' },
+  dark_green: { label: 'Dark Green', value: 'rgb(0, 170, 0)' },
+  dark_aqua: { label: 'Dark Aqua', value: 'rgb(0, 170, 170)' },
+  dark_red: { label: 'Dark Red', value: 'rgb(170, 0, 0)' },
+  dark_purple: { label: 'Dark Purple', value: 'rgb(170, 0, 170)' },
+  gold: { label: 'Gold', value: 'rgb(255, 170, 0)' },
+  gray: { label: 'Gray', value: 'rgb(170, 170, 170)' },
+  dark_gray: { label: 'Dark Gray', value: 'rgb(85, 85, 85)' },
+  blue: { label: 'Blue', value: 'rgb(85, 85, 255)' },
+  green: { label: 'Green', value: 'rgb(85, 255, 85)' },
+  aqua: { label: 'Aqua', value: 'rgb(85, 255, 255)' },
+  red: { label: 'Red', value: 'rgb(255, 85, 85)' },
+  light_purple: { label: 'Light Purple', value: 'rgb(255, 85, 255)' },
+  yellow: { label: 'Yellow', value: 'rgb(255, 255, 85)' },
+  white: { label: 'White', value: 'rgb(255, 255, 255)' }
 };
 
 export const SIGN_TYPES: SignTypes = {
-  oak_sign: { label: 'Oak Sign', bgColor: 'bg-amber-800' },
-  spruce_sign: { label: 'Spruce Sign', bgColor: 'bg-amber-900' },
-  birch_sign: { label: 'Birch Sign', bgColor: 'bg-amber-200' },
-  jungle_sign: { label: 'Jungle Sign', bgColor: 'bg-amber-700' },
-  acacia_sign: { label: 'Acacia Sign', bgColor: 'bg-orange-700' },
-  dark_oak_sign: { label: 'Dark Oak Sign', bgColor: 'bg-neutral-800' },
-  mangrove_sign: { label: 'Mangrove Sign', bgColor: 'bg-red-800' },
-  cherry_sign: { label: 'Cherry Sign', bgColor: 'bg-pink-300' },
-  bamboo_sign: { label: 'Bamboo Sign', bgColor: 'bg-yellow-700' },
-  crimson_sign: { label: 'Crimson Sign', bgColor: 'bg-red-900' },
-  warped_sign: { label: 'Warped Sign', bgColor: 'bg-teal-800' }
+  oak_sign: { label: 'Oak Sign', style: ['bg-#97714A', 'border-#97714A'] },
+  spruce_sign: { label: 'Spruce Sign', style: ['bg-#624B2E', 'border-#624B2E'] },
+  birch_sign: { label: 'Birch Sign', style: ['bg-#D1BC8A', 'border-#D1BC8A'] },
+  jungle_sign: { label: 'Jungle Sign', style: ['bg-#B1753A', 'border-#B1753A'] },
+  acacia_sign: { label: 'Acacia Sign', style: ['bg-#B15635', 'border-#B15635'] },
+  dark_oak_sign: { label: 'Dark Oak Sign', style: ['bg-#492F17', 'border-#492F17'] },
+  mangrove_sign: { label: 'Mangrove Sign', style: ['bg-#7F3325', 'border-#7F3325'] },
+  cherry_sign: { label: 'Cherry Sign', style: ['bg-#ECCECF', 'border-#ECCECF'] },
+  bamboo_sign: { label: 'Bamboo Sign', style: ['bg-#D8C166', 'border-#D8C166'] },
+  crimson_sign: { label: 'Crimson Sign', style: ['bg-#7E3A55', 'border-#7E3A55'] },
+  warped_sign: { label: 'Warped Sign', style: ['bg-#366B66', 'border-#366B66'] },
 };
 
-// Create arrays for iteration in templates
 export const MC_COLORS_ARRAY = Object.entries(MC_COLORS).map(([mcName, color]) => ({
   ...color,
   mcName
@@ -60,7 +59,6 @@ export const SIGN_TYPES_ARRAY = Object.entries(SIGN_TYPES).map(([value, type]) =
   value
 }));
 
-// RGB to MC color name mapping
 export const RGB_TO_MC_COLOR: Record<string, string> = {};
 Object.entries(MC_COLORS).forEach(([mcName, color]) => {
   RGB_TO_MC_COLOR[color.value.toLowerCase()] = mcName;
@@ -74,17 +72,14 @@ Object.entries(MC_COLORS).forEach(([mcName, color]) => {
 export function getMinecraftColorFormat(color: string): string {
   if (!color) return 'white';
   
-  // Check if it's a standard Minecraft color in rgb format
   if (RGB_TO_MC_COLOR[color.toLowerCase()]) {
     return RGB_TO_MC_COLOR[color.toLowerCase()];
   }
   
-  // For custom colors, convert to proper hex format (#RRGGBB)
   if (color.startsWith('rgb')) {
     return rgbToHex(color);
   }
-  
-  // For colors already in hex format, ensure uppercase
+
   if (color.startsWith('#')) {
     return color.toUpperCase();
   }
@@ -93,9 +88,9 @@ export function getMinecraftColorFormat(color: string): string {
 }
 
 /**
- * Convert RGB color to hex
+ * Convert RGB color to HEX
  * @param rgb RGB color string in format rgb(r, g, b)
- * @returns Hex color string in format #RRGGBB
+ * @returns HEX color string in format #RRGGBB
  */
 export function rgbToHex(rgb: string): string {
   const rgbMatch = rgb.match(/rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i);
@@ -113,17 +108,4 @@ export function rgbToHex(rgb: string): string {
   }
   
   return rgb;
-}
-
-/**
- * Convert RGB to Hex
- * For utility use when needed
- */
-export function getRgbToHex(r: number, g: number, b: number): string {
-  const toHex = (c: number): string => {
-    const hex = c.toString(16);
-    return hex.length === 1 ? '0' + hex : hex;
-  };
-  
-  return `#${toHex(r)}${toHex(g)}${toHex(b)}`.toUpperCase();
 }

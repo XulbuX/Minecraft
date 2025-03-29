@@ -13,7 +13,7 @@ export default defineConfig({
     colors: {
     },
     fontFamily: {
-      minecraft: ['Minecraft', 'monospace'],
+      minecraft: ['Minecraft Regular', 'monospace'],
     }
   },
   shortcuts: {
@@ -25,7 +25,7 @@ export default defineConfig({
       layer: 'base',
       getCSS: () => `
         @font-face {
-          font-family: 'Minecraft';
+          font-family: 'Minecraft Regular';
           src: url('/font/mc-regular.otf') format('opentype');
           font-weight: normal;
           font-style: normal;
