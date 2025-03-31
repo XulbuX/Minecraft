@@ -6,12 +6,9 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "paths": {
-      "helpers/*": [
-        "./src/helpers/*"
-      ],
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"],
+      "helpers/*": ["./src/helpers/*"],
+      "img/*": ["./public/img/*"]
     },
     "allowJs": true,
     "strict": true,
