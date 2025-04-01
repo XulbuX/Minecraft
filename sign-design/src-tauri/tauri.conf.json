@@ -19,8 +19,7 @@
       "resizable": true,
       "fullscreen": false,
       "decorations": true,
-      "transparent": true,
-      "shadow": false
+      "transparent": false
     }],
     "security": { "csp": null }
   },
