@@ -10,19 +10,19 @@
     "frontendDist": "../dist"
   },
   "app": {
-    "windows": [
-      {
-        "title": "Sign Design • XulbuX",
-        "width": 800,
-        "height": 800,
-        "resizable": true,
-        "fullscreen": false,
-        "decorations": true
-      }
-    ],
-    "security": {
-      "csp": null
-    }
+    "withGlobalTauri": true,
+    "windows": [{
+      "title": "Sign Design • XulbuX",
+      "width": 800,
+      "height": 800,
+      "center": true,
+      "resizable": true,
+      "fullscreen": false,
+      "decorations": true,
+      "transparent": true,
+      "shadow": false
+    }],
+    "security": { "csp": null }
   },
   "bundle": {
     "active": true,

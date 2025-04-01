@@ -1,6 +1,6 @@
 <template>
-  <div class="flex items-center justify-end overflow-clip rounded-lg bg-gray-9">
-    <div class="w-full overflow-x-auto whitespace-nowrap p-2.5 text-white font-minecraft">
+  <div class="flex items-center justify-end overflow-clip rounded-lg bg-gray-8">
+    <div class="w-full overflow-x-auto whitespace-nowrap p-2.5 font-minecraft">
       {{ generatedCommand }}
     </div>
     <button
@@ -25,7 +25,6 @@
 <script setup lang="ts">
 import { getMinecraftColorFormat } from 'minecraft';
 import { motion } from 'motion-v';
-import { computed, ref } from 'vue';
 
 type TextSegment = {
   text: string;
@@ -47,7 +46,7 @@ const generatedCommand = computed(() => {
 });
 
 const buttonClass = computed(() => {
-  if (!copied.value) return 'bg-gray-7 hover:bg-gray-6';
+  if (!copied.value) return 'bg-gray-6 hover:bg-gray-5';
   return copySuccess.value ? 'bg-teal-6 hover:bg-teal-5' : 'bg-red-6 hover:bg-red-5';
 });
 

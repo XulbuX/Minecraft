@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto max-w-3xl p-5 font-sans">
+  <div class="mx-auto max-w-3xl p-5 text-white font-sans">
     <h1 class="mb-4 select-none text-2xl font-bold">
       Minecraft Sign Editor
     </h1>
@@ -26,12 +26,8 @@
 </template>
 
 <script setup lang="ts">
+import SignEditor from '@/components/SignEditor.vue';
 import { MC_COLORS_ARRAY, SIGN_TYPES_ARRAY } from 'minecraft';
-import { ref } from 'vue';
-import ColorControls from './Partials/ColorControls.vue';
-import CommandOutput from './Partials/CommandOutput.vue';
-import SignEditor from './Partials/SignEditor.vue';
-import SignTypeSelect from './Partials/SignTypeSelect.vue';
 
 const signType = ref('oak_sign');
 const formattedLines = ref<any[][]>([[], [], [], []]);

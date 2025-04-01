@@ -46,7 +46,6 @@
 <script setup lang="ts">
 import { vOnClickOutside } from '@vueuse/components';
 import { motion } from 'motion-v';
-import { computed, ref } from 'vue';
 
 type Option = {
   label: string;

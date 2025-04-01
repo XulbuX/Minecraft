@@ -7,7 +7,7 @@
       <div v-for="idx in 4" :key="idx" class="flex items-center gap-4">
         <div
           ref="lineEditors"
-          class="h-5 w-full cursor-text overflow-clip whitespace-nowrap rounded bg-white/10 p-1.5 text-white font-minecraft"
+          class="h-5 w-full cursor-text overflow-clip whitespace-nowrap rounded bg-white/10 p-1.5 font-minecraft"
           :class="activeLineIndex === idx - 1 ? 'border-white/50 bg-white/15' : ''"
           contenteditable="true"
           spellcheck="false"
@@ -17,7 +17,7 @@
           @mousedown="handleLineMouseDown($event, idx - 1)"
           @mouseup="onTextSelection(idx - 1)" />
         <div
-          class="select-none text-xs text-white"
+          class="select-none text-xs"
           :class="{ 'text-red-5 font-bold': isLineTooLong(idx - 1) }">
           {{ getLineLength(idx - 1) }}/{{ maxLineLength }}
         </div>
@@ -28,7 +28,6 @@
 
 <script setup lang="ts">
 import { SIGN_TYPES } from 'minecraft';
-import { computed, nextTick, onMounted, ref } from 'vue';
 
 type TextSegment = {
   text: string;
