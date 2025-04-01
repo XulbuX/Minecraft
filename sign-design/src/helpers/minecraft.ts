@@ -1,25 +1,3 @@
-export type MinecraftColor = {
-  idx: number;
-  label: string;
-  rgb: string;
-  value?: string;
-};
-
-export type SignType = {
-  idx: number;
-  label: string;
-  rgb: string;
-  value?: string;
-};
-
-export type MinecraftColors = {
-  [key: string]: MinecraftColor;
-};
-
-export type SignTypes = {
-  [key: string]: SignType;
-};
-
 export const MC_COLORS: MinecraftColors = {
   aqua: { idx: 11, label: 'Aqua', rgb: 'rgb(85, 255, 255)' },
   black: { idx: 0, label: 'Black', rgb: 'rgb(0, 0, 0)' },
@@ -40,17 +18,18 @@ export const MC_COLORS: MinecraftColors = {
 };
 
 export const SIGN_TYPES: SignTypes = {
-  acacia_sign: { idx: 4, label: 'Acacia Sign', rgb: 'rgb(171, 86, 53)' },
-  bamboo_sign: { idx: 8, label: 'Bamboo Sign', rgb: 'rgb(216, 193, 102)' },
-  birch_sign: { idx: 2, label: 'Birch Sign', rgb: 'rgb(209, 188, 138)' },
-  cherry_sign: { idx: 7, label: 'Cherry Sign', rgb: 'rgb(236, 198, 200)' },
-  crimson_sign: { idx: 9, label: 'Crimson Sign', rgb: 'rgb(126, 58, 85)' },
-  dark_oak_sign: { idx: 5, label: 'Dark Oak Sign', rgb: 'rgb(73, 47, 23)' },
-  jungle_sign: { idx: 3, label: 'Jungle Sign', rgb: 'rgb(177, 117, 58)' },
-  mangrove_sign: { idx: 6, label: 'Mangrove Sign', rgb: 'rgb(127, 51, 37)' },
-  oak_sign: { idx: 0, label: 'Oak Sign', rgb: 'rgb(151, 113, 74)' },
-  spruce_sign: { idx: 1, label: 'Spruce Sign', rgb: 'rgb(98, 75, 46)' },
-  warped_sign: { idx: 10, label: 'Warped Sign', rgb: 'rgb(54, 107, 102)' },
+  acacia_sign: { idx: 4, label: 'Acacia Sign', rgb: 'rgb(165, 88, 49)' },
+  bamboo_sign: { idx: 8, label: 'Bamboo Sign', rgb: 'rgb(207, 186, 87)' },
+  birch_sign: { idx: 2, label: 'Birch Sign', rgb: 'rgb(190, 174, 118)' },
+  cherry_sign: { idx: 7, label: 'Cherry Sign', rgb: 'rgb(228, 180, 173)' },
+  crimson_sign: { idx: 9, label: 'Crimson Sign', rgb: 'rgb(103, 49, 72)' },
+  dark_oak_sign: { idx: 5, label: 'Dark Oak Sign', rgb: 'rgb(66, 42, 20)' },
+  jungle_sign: { idx: 3, label: 'Jungle Sign', rgb: 'rgb(167, 120, 83)' },
+  mangrove_sign: { idx: 6, label: 'Mangrove Sign', rgb: 'rgb(116, 53, 48)' },
+  oak_sign: { idx: 0, label: 'Oak Sign', rgb: 'rgb(163, 133, 79)' },
+  pale_oak_sign: { idx: 11, label: 'Pale Oak Sign', rgb: 'rgb(222, 210, 209)' },
+  spruce_sign: { idx: 1, label: 'Spruce Sign', rgb: 'rgb(114, 85, 49)' },
+  warped_sign: { idx: 10, label: 'Warped Sign', rgb: 'rgb(34, 109, 103)' },
 };
 
 export const MC_COLORS_ARRAY = Object.entries(MC_COLORS)

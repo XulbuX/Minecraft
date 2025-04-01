@@ -13,8 +13,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      'helpers': path.resolve(__dirname, './src/helpers'),
-      'img': path.resolve(__dirname, './public/img'),
+      'minecraft': path.resolve(__dirname, './src/helpers/minecraft.ts'),
     },
   },
   server: {

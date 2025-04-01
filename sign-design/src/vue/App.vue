@@ -1,11 +1,14 @@
 <template>
   <div class="mx-auto max-w-3xl p-5 font-sans">
-    <h1 class="mb-4 text-2xl font-bold">
+    <h1 class="mb-4 select-none text-2xl font-bold">
       Minecraft Sign Editor
     </h1>
-    <SignTypeSelector
-      v-model="signType"
-      :sign-types="SIGN_TYPES_ARRAY" />
+    <SignTypeSelect
+      class="mb-4"
+      :model-value="signType"
+      :options="SIGN_TYPES_ARRAY"
+      placeholder="Select a sign type"
+      @update:model-value="signType = $event" />
     <SignEditor
       ref="signEditor"
       v-model:formatted-lines="formattedLines"
@@ -23,12 +26,12 @@
 </template>
 
 <script setup lang="ts">
-import { MC_COLORS_ARRAY, SIGN_TYPES_ARRAY } from 'helpers/minecraftColors';
+import { MC_COLORS_ARRAY, SIGN_TYPES_ARRAY } from 'minecraft';
 import { ref } from 'vue';
-import ColorControls from './components/ColorControls.vue';
-import CommandOutput from './components/CommandOutput.vue';
-import SignEditor from './components/SignEditor.vue';
-import SignTypeSelector from './components/SignTypeSelector.vue';
+import ColorControls from './Partials/ColorControls.vue';
+import CommandOutput from './Partials/CommandOutput.vue';
+import SignEditor from './Partials/SignEditor.vue';
+import SignTypeSelect from './Partials/SignTypeSelect.vue';
 
 const signType = ref('oak_sign');
 const formattedLines = ref<any[][]>([[], [], [], []]);

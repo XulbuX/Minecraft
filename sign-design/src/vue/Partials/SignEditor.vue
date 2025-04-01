@@ -17,7 +17,7 @@
           @mousedown="handleLineMouseDown($event, idx - 1)"
           @mouseup="onTextSelection(idx - 1)" />
         <div
-          class="text-xs text-white"
+          class="select-none text-xs text-white"
           :class="{ 'text-red-5 font-bold': isLineTooLong(idx - 1) }">
           {{ getLineLength(idx - 1) }}/{{ maxLineLength }}
         </div>
@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { SIGN_TYPES } from 'helpers/minecraftColors';
+import { SIGN_TYPES } from 'minecraft';
 import { computed, nextTick, onMounted, ref } from 'vue';
 
 type TextSegment = {
