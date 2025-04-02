@@ -4,7 +4,7 @@
       {{ generatedCommand }}
     </div>
     <button
-      class="m-1 size-8 select-none rounded p-1 text-white transition-all duration-200"
+      class="m-1 size-8 select-none rounded p-1 transition-all duration-200"
       :class="buttonClass"
       @click="copyCommand">
       <motion.svg

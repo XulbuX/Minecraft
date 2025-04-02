@@ -1,12 +1,16 @@
-html,
-body {
+* {
   margin: 0;
   padding: 0;
+  border: solid 0;
+  outline: solid 0;
   font-family: sans-serif;
-  background-color: hsl(0, 0%, 8%);
+  color: hsl(215, 30%, 98%);
+}
+
+html, body {
+  background-color: hsl(215 30% 8%);
 }
 
 button {
-  border: 0;
   cursor: pointer;
 }

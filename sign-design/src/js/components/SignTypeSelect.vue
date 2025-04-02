@@ -1,5 +1,5 @@
 <template>
-  <div v-click-outside="closeDropdown" class="relative max-w-300px w-full select-none">
+  <div class="relative max-w-300px w-full select-none">
     <div
       class="flex cursor-pointer items-center justify-between border border-gray-3 rounded p-3 transition-all duration-200 hover:border-gray-6"
       :style="headerStyle"
@@ -16,7 +16,6 @@
         <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
       </motion.svg>
     </div>
-
     <motion.div
       v-if="isOpen"
       v-on-click-outside="closeDropdown"
@@ -85,13 +84,8 @@ const headerStyle = computed(() => {
   };
 });
 
-function toggleDropdown() {
-  isOpen.value = !isOpen.value;
-}
-
-function closeDropdown() {
-  isOpen.value = false;
-}
+const toggleDropdown = () => isOpen.value = !isOpen.value;
+const closeDropdown = () => isOpen.value = false;
 
 function selectOption(option: Option) {
   emit('update:modelValue', option.value ?? '');

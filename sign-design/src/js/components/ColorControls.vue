@@ -26,7 +26,7 @@
         @change="applyCustomColor" />
     </div>
     <motion.button
-      class="select-none rounded bg-red-5 px-3 py-1 text-white transition-all duration-200 hover:bg-red-6"
+      class="select-none rounded bg-red-5 px-3 py-1 transition-all duration-200 hover:bg-red-6"
       @click="$emit('resetFormatting')">
       Reset All Formatting
     </motion.button>

@@ -1,4 +1,4 @@
-import type * as Interfaces from '@/interfaces';
+import type * as Interfaces from '../interfaces';
 
 declare global {
   export interface MinecraftColor extends Interfaces.MinecraftColor { }

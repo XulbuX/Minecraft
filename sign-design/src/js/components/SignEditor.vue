@@ -1,14 +1,14 @@
 <template>
   <div
-    class="relative mb-5 select-text border-2 rounded-md p-4"
+    class="relative mb-5 select-text rounded-md p-4"
     :style="signSpecificStyle"
     @mousedown.prevent="handleEditorMouseDown">
     <div class="flex flex-col gap-2">
       <div v-for="idx in 4" :key="idx" class="flex items-center gap-4">
         <div
           ref="lineEditors"
-          class="h-5 w-full cursor-text overflow-clip whitespace-nowrap rounded bg-white/10 p-1.5 font-minecraft"
-          :class="activeLineIndex === idx - 1 ? 'border-white/50 bg-white/15' : ''"
+          class="h-5 w-full cursor-text overflow-clip whitespace-nowrap rounded bg-white/05 p-1.5 font-minecraft transition-all duration-200"
+          :class="activeLineIndex === idx - 1 ? 'ring-2 ring-white/12' : ''"
           contenteditable="true"
           spellcheck="false"
           @input="handleInput($event, idx - 1)"
