@@ -16,35 +16,37 @@
         <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
       </motion.svg>
     </div>
-    <motion.div
-      v-if="isOpen"
-      v-on-click-outside="closeDropdown"
-      :animate="{ opacity: 1, y: 0 }"
-      class="absolute z-10 max-h-250px w-full overflow-y-auto border border-t-0 border-gray-3 rounded-b bg-white shadow-md"
-      :exit="{ opacity: 0, y: -10 }"
-      :initial="{ opacity: 0, y: -10 }"
-      :transition="{ duration: 0.2 }">
+    <AnimatePresence>
       <motion.div
-        v-for="(option, index) in options"
-        :key="option.value"
-        :animate="{ opacity: 1, x: 0 }"
-        class="cursor-pointer p-3 transition-all duration-200"
-        :class="{ 'font-bold': modelValue === option.value }"
-        :initial="{ opacity: 0, x: -5 }"
-        :style="getOptionStyle(option)"
-        :transition="{ delay: index * 0.03, duration: 0.2 }"
-        @click="selectOption(option)"
-        @mouseout="hoveredOption = null"
-        @mouseover="hoveredOption = option">
-        {{ option.label }}
+        v-if="isOpen"
+        v-on-click-outside="closeDropdown"
+        :animate="{ opacity: 1, y: 0 }"
+        class="absolute z-10 max-h-250px w-full overflow-y-auto border border-t-0 border-gray-3 rounded-b bg-white shadow-md"
+        :exit="{ opacity: 0, y: -10 }"
+        :initial="{ opacity: 0, y: -10 }"
+        :transition="{ duration: 0.2 }">
+        <motion.div
+          v-for="(option, index) in options"
+          :key="option.value"
+          :animate="{ opacity: 1, x: 0 }"
+          class="cursor-pointer p-3 transition-all duration-200"
+          :class="{ 'font-bold': modelValue === option.value }"
+          :initial="{ opacity: 0, x: -5 }"
+          :style="getOptionStyle(option)"
+          :transition="{ delay: index * 0.03, duration: 0.2 }"
+          @click="selectOption(option)"
+          @mouseout="hoveredOption = null"
+          @mouseover="hoveredOption = option">
+          {{ option.label }}
+        </motion.div>
       </motion.div>
-    </motion.div>
+    </AnimatePresence>
   </div>
 </template>
 
 <script setup lang="ts">
 import { vOnClickOutside } from '@vueuse/components';
-import { motion } from 'motion-v';
+import { AnimatePresence, motion } from 'motion-v';
 
 type Option = {
   label: string;
