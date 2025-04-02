@@ -111,12 +111,9 @@ function getOptionStyle(option: Option) {
     backgroundColor = darkenColor(backgroundColor, 0.15);
   }
 
-  const textColor = getContrastingTextColor(option.rgb);
-
   return {
     backgroundColor,
-    borderLeft: isSelected ? '4px solid #ffffff' : '4px solid transparent',
-    color: textColor,
+    borderLeft: isSelected ? '4px solid #FFF' : '4px solid transparent',
     fontWeight: isSelected ? 'bold' : 'normal',
   };
 }
@@ -144,17 +141,5 @@ function darkenColor(color: string, amount: number) {
     return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
   }
   return color;
-}
-
-function getContrastingTextColor(color: string) {
-  const rgbMatch = color.match(/rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i);
-  if (rgbMatch) {
-    const r = Number.parseInt(rgbMatch[1], 10);
-    const g = Number.parseInt(rgbMatch[2], 10);
-    const b = Number.parseInt(rgbMatch[3], 10);
-    const brightness = (0.299 * r + 0.587 * g + 0.114 * b);
-    return brightness < 128 ? '#FFFFFF' : '#000000';
-  }
-  return '#000000';
 }
 </script>

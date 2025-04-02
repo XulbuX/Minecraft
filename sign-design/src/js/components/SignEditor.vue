@@ -1,14 +1,16 @@
 <template>
   <div
-    class="relative mb-5 select-text rounded-md p-4"
+    class="relative mb-5 select-text rounded-md p-4 transition-all duration-200"
     :style="signSpecificStyle"
     @mousedown.prevent="handleEditorMouseDown">
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-2 transition-all duration-200">
       <div v-for="idx in 4" :key="idx" class="flex items-center gap-4">
         <div
           ref="lineEditors"
-          class="h-5 w-full cursor-text overflow-clip whitespace-nowrap rounded bg-white/05 p-1.5 font-minecraft transition-all duration-200"
-          :class="activeLineIndex === idx - 1 ? 'ring-2 ring-white/12' : ''"
+          class="h-5 w-full cursor-text overflow-clip whitespace-nowrap rounded p-1.5 font-minecraft transition-all duration-200"
+          :class="bgBrightness < 127
+            ? `backdrop-brightness-107 ${activeLineIndex === idx - 1 ? 'ring-2 ring-white/10' : ''}`
+            : `backdrop-brightness-97 ${activeLineIndex === idx - 1 ? 'ring-2 ring-black/8' : ''}`"
           contenteditable="true"
           spellcheck="false"
           @input="handleInput($event, idx - 1)"
@@ -17,8 +19,8 @@
           @mousedown="handleLineMouseDown($event, idx - 1)"
           @mouseup="onTextSelection(idx - 1)" />
         <div
-          class="select-none text-xs"
-          :class="{ 'text-red-5 font-bold': isLineTooLong(idx - 1) }">
+          class="select-none text-xs transition-all duration-200"
+          :class="isLineTooLong(idx - 1) ? 'text-red-5 font-bold' : (bgBrightness > 127 ? 'text-gray-8' : 'text-white')">
           {{ getLineLength(idx - 1) }}/{{ maxLineLength }}
         </div>
       </div>
@@ -50,9 +52,14 @@ const activeLineIndex = ref<number | null>(null);
 const lineEditors = ref<HTMLElement[]>([]);
 
 const signSpecificStyle = computed(() => {
-  return {
-    backgroundColor: SIGN_TYPES[props.signType]?.rgb || SIGN_TYPES.oak_sign.rgb,
-  };
+  return { backgroundColor: SIGN_TYPES[props.signType]?.rgb || SIGN_TYPES.oak_sign.rgb };
+});
+const bgBrightness = computed(() => {
+  const rgbMatch = signSpecificStyle.value.backgroundColor.match(/rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i) || [];
+  const r = Number.parseInt(rgbMatch[1], 10);
+  const g = Number.parseInt(rgbMatch[2], 10);
+  const b = Number.parseInt(rgbMatch[3], 10);
+  return (0.299 * r + 0.587 * g + 0.114 * b);
 });
 
 onMounted(() => {
@@ -60,9 +67,7 @@ onMounted(() => {
     if (lineEditors.value) {
       lineEditors.value.forEach((editor, index) => {
         const htmlContent = renderFormattedLine(index);
-        if (htmlContent) {
-          editor.innerHTML = htmlContent;
-        }
+        if (htmlContent) editor.innerHTML = htmlContent;
       });
     }
 
@@ -84,7 +89,6 @@ function handleInput(event: Event, index: number): void {
 
   if (plainText.length > props.maxLineLength) {
     const selectionStart = getCaretPosition(editor);
-
     const truncated = plainText.substring(0, props.maxLineLength);
     if (editor.textContent !== truncated) {
       editor.textContent = truncated;
@@ -99,9 +103,7 @@ function handleInput(event: Event, index: number): void {
 function handleKeyDown(event: KeyboardEvent, index: number): void {
   if (event.key === 'Enter') {
     event.preventDefault();
-    if (index < 3) {
-      focusLine(index + 1);
-    }
+    if (index < 3) focusLine(index + 1);
     return;
   }
 
@@ -152,7 +154,6 @@ function setCaretToPosition(element: HTMLElement, position: number): void {
   if (!selection) return;
 
   const range = document.createRange();
-
   let currentPos = 0;
   let targetNode: Node | null = null;
   let targetOffset = 0;
@@ -201,7 +202,6 @@ function parseFormattedLine(lineIndex: number, htmlContent: string): void {
   tempDiv.innerHTML = htmlContent;
 
   processFormattedNodes(tempDiv.childNodes, formattedLine);
-
   emit('update:formattedLines', updateFormattedLineAt(lineIndex, formattedLine));
 }
 
@@ -217,10 +217,7 @@ function processFormattedNodes(nodes: NodeListOf<ChildNode> | Node[], formattedL
 
   const flushSegment = () => {
     if (currentText) {
-      formattedLine.push({
-        color: currentColor,
-        text: currentText,
-      });
+      formattedLine.push({ color: currentColor, text: currentText });
       currentText = '';
     }
   };
@@ -261,11 +258,9 @@ function processFormattedNodes(nodes: NodeListOf<ChildNode> | Node[], formattedL
           }
         }
       }
-
       flushSegment();
     }
   }
-
   flushSegment();
 }
 
@@ -275,9 +270,7 @@ function renderFormattedLine(index: number): string {
   }
 
   return props.formattedLines[index].map((segment) => {
-    if (!segment.color) {
-      return segment.text;
-    }
+    if (!segment.color) return segment.text;
     return `<span style="color: ${segment.color}">${segment.text}</span>`;
   }).join('');
 }
@@ -291,7 +284,6 @@ function onTextSelection(index: number): void {
     selectedRange.value = range.cloneRange();
     selectedLineIndex.value = index;
     activeLineIndex.value = index;
-
     setTimeout(() => {
       const currentSelection = window.getSelection();
       if (currentSelection && currentSelection.isCollapsed) {
@@ -339,7 +331,6 @@ function resetFormatting(): void {
   lineEditors.value.forEach((editor, index) => {
     const plainText = editor.textContent ?? '';
     editor.innerHTML = plainText;
-
     const formattedLine = plainText ? [{ color: null, text: plainText }] : [];
     emit('update:formattedLines', updateFormattedLineAt(index, formattedLine));
   });
@@ -352,7 +343,6 @@ function isLineTooLong(index: number): boolean {
 function getLineLength(index: number): number {
   const line = props.formattedLines[index];
   if (!line || line.length === 0) return 0;
-
   return line.reduce((total, segment) => total + segment.text.length, 0);
 }
 
@@ -371,8 +361,5 @@ function getCaretPosition(element: HTMLElement): number {
   return caretPos;
 }
 
-defineExpose({
-  applyColorToSelection,
-  resetFormatting,
-});
+defineExpose({ applyColorToSelection, resetFormatting });
 </script>

@@ -18,11 +18,8 @@
       <div class="w-36 select-none font-bold">
         Custom Color:
       </div>
-      <motion.input
+      <ColorPicker
         v-model="customColorValue"
-        class="h-6 w-6 rounded"
-        type="color"
-        :while-hover="{ scale: 1.1 }"
         @change="applyCustomColor" />
     </div>
     <motion.button
@@ -35,6 +32,7 @@
 
 <script setup lang="ts">
 import { motion } from 'motion-v';
+import ColorPicker from './ColorPicker.vue';
 
 type MinecraftColor = {
   idx: number;
@@ -55,8 +53,5 @@ const emit = defineEmits<{
 }>();
 
 const customColorValue = ref('#FFFFFF');
-
-function applyCustomColor() {
-  emit('applyColor', customColorValue.value);
-}
+const applyCustomColor = () => emit('applyColor', customColorValue.value);
 </script>
