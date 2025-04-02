@@ -14,22 +14,23 @@ export default defineConfig({
   envPrefix: ['VITE_', 'TAURI_ENV_*'],
   plugins: [
     AutoImport({
-      dts: './src/types/auto-imports.d.ts',
+      dts: './src/js/types/auto-imports.d.ts',
       imports: ['vue', '@vueuse/core'],
     }),
     Vue(),
     UnoCSS(),
     Components({
       deep: true,
-      dirs: ['./src/components'],
-      dts: './src/types/components.d.ts',
+      dirs: ['./src/js/components'],
+      dts: './src/js/types/components.d.ts',
       resolvers: [VueUseComponentsResolver(), VueUseDirectiveResolver()],
     }),
   ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      'minecraft': path.resolve(__dirname, './src/helpers/minecraft.ts'),
+      '@@': path.resolve(__dirname, './src/js'),
+      'minecraft': path.resolve(__dirname, './src/js/helpers/minecraft.ts'),
     },
   },
   server: {

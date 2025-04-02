@@ -6,12 +6,19 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "paths": {
-      "@/*": ["./src/*"],
-      "minecraft": ["./src/helpers/minecraft.ts"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@@/*": [
+        "./src/js/*"
+      ],
+      "minecraft": [
+        "./src/js/helpers/minecraft.ts"
+      ]
     },
     "typeRoots": [
       "./node_modules/@types",
-      "./src/types"
+      "src/js/types"
     ],
     "allowJs": true,
     "strict": true,

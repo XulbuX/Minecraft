@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import SignEditor from '@/components/SignEditor.vue';
+import SignEditor from '@@/components/SignEditor.vue';
 import { MC_COLORS_ARRAY, SIGN_TYPES_ARRAY } from 'minecraft';
 
 const signType = ref('oak_sign');
