@@ -34,7 +34,7 @@
           @click="selectOption(option)"
           @mouseout="hoveredOption = null"
           @mouseover="hoveredOption = option">
-          <div class="w-1.5" :class="`bg-gradient-to-r from-${option.rgb} to-transparent`" />
+          <div class="w-1.5" :class="`bg-gradient-to-r from-${option.rgb} to-transparent`" /> <!-- ! MAKE WORK -->
           {{ option.label }}
         </div>
       </motion.div>
