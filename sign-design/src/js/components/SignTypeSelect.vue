@@ -22,20 +22,24 @@
         v-if="isOpen"
         v-on-click-outside="closeDropdown"
         :animate="{ opacity: 1, y: 0 }"
-        class="absolute z-10 max-h-62 w-full overflow-y-auto border border-t-0 border-gray-6 rounded-b-lg shadow-md"
+        class="absolute z-10 max-h-62 w-full flex flex-col overflow-y-auto border border-t-0 border-gray-6 rounded-b-lg shadow-lg"
         :exit="{ opacity: 0, y: -10 }"
         :initial="{ opacity: 0, y: -10 }"
         :transition="{ duration: 0.2 }">
         <div
           v-for="option in options"
           :key="option.value"
-          class="cursor-pointer bg-gray-8 p-3 transition-all duration-200"
-          :class="{ 'font-bold': modelValue === option.value }"
+          class="cursor-pointer bg-gray-8 transition-all duration-200"
+          :class="{ 'font-bold bg-gray-7!': modelValue === option.value }"
           @click="selectOption(option)"
           @mouseout="hoveredOption = null"
           @mouseover="hoveredOption = option">
-          <div class="w-1.5" :class="`bg-gradient-to-r from-${option.rgb} to-transparent`" /> <!-- ! MAKE WORK ! -->
-          {{ option.label }}
+          <div class="flex flex-row">
+            <div class="w-2" :style="{ backgroundColor: option.rgb }" />
+            <div class="p-2">
+              {{ option.label }}
+            </div>
+          </div>
         </div>
       </motion.div>
     </AnimatePresence>

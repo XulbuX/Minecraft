@@ -2,9 +2,11 @@
   <div class="relative">
     <div
       ref="colorPickerRef"
-      class="size-6 cursor-pointer rounded"
-      :style="{ backgroundColor: modelValue }"
-      @click="togglePicker" />
+      class="flex cursor-pointer items-center justify-center b-3 b-white/25 rounded-md px-1.5 py-0.5 font-mono"
+      :style="colorPickerButtonStyle(modelValue)"
+      @click="togglePicker">
+      {{ modelValue }}
+    </div>
     <Teleport to="body">
       <div v-if="isOpen" class="fixed inset-0 z-50">
         <div
@@ -92,17 +94,27 @@ const SAT = ref(100);
 const VAL = ref(100);
 const HEX = ref('');
 
-const cleanHex = (hexStr: string) => hexStr.replace(/^(#+|0x)/, '').toUpperCase();
+const cleanHex = (hexStr: string) => hexStr.replace(/^(#+|0x)/i, '').toUpperCase();
+
+function colorPickerButtonStyle(hexStr: string) {
+  const hex = cleanHex(hexStr);
+  const r = Number.parseInt(hex.substring(0, 2), 16);
+  const g = Number.parseInt(hex.substring(2, 4), 16);
+  const b = Number.parseInt(hex.substring(4, 6), 16);
+  const bright = (r * 0.299 + g * 0.587 + b * 0.114) > 150;
+  return {
+    backgroundColor: hexStr,
+    color: bright ? '#000' : '#FFF',
+  };
+}
 
 function rgbToHsv(r: number, g: number, b: number) {
   r /= 255;
   g /= 255;
   b /= 255;
-
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
   const delta = max - min;
-
   let h = 0;
   let s = max === 0 ? 0 : delta / max;
   let v = max;

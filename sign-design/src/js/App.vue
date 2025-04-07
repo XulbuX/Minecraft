@@ -12,7 +12,7 @@
     <SignEditor
       ref="signEditor"
       v-model:formatted-lines="formattedLines"
-      :max-line-length="MAX_LINE_LENGTH"
+      :max-line-length="15"
       :sign-type="signType" />
     <ColorControls
       :minecraft-colors="MC_COLORS_ARRAY"
@@ -31,7 +31,6 @@ import { MC_COLORS_ARRAY, SIGN_TYPES_ARRAY } from 'minecraft';
 
 const signType = ref('oak_sign');
 const formattedLines = ref<any[][]>([[], [], [], []]);
-const MAX_LINE_LENGTH = 15;
 const commandType = ref('data');
 const signEditor = ref<InstanceType<typeof SignEditor> | null>(null);
 

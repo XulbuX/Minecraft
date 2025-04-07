@@ -8,6 +8,7 @@ export default defineConfig({
   theme: {
     fontFamily: {
       minecraft: ['Minecraft', 'monospace'],
+      montserrat: ['Montserrat', 'sans-serif'],
     },
   },
 });

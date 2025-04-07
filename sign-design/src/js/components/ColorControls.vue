@@ -1,7 +1,7 @@
 <template>
   <div class="mb-5 flex flex-col gap-2 rounded-lg bg-gray-8 p-4">
     <div class="mr-5 flex flex-wrap items-center">
-      <div class="w-36 select-none font-bold">
+      <div class="w-40 select-none font-bold">
         Minecraft Colors:
       </div>
       <motion.div
@@ -15,7 +15,7 @@
         @click="$emit('applyColor', color.rgb)" />
     </div>
     <div class="mr-5 flex items-center">
-      <div class="w-36 select-none font-bold">
+      <div class="w-40 select-none font-bold">
         Custom Color:
       </div>
       <ColorPicker
