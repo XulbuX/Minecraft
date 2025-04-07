@@ -44,7 +44,7 @@
             <div class="mb-3 flex items-center">
               <input
                 v-model="HEX"
-                class="flex-1 rounded bg-gray-8 p-1 text-white outline-1 outline-gray-6"
+                class="flex-1 rounded bg-gray-8 p-1 text-white font-mono outline-1 outline-gray-6"
                 type="text"
                 @input="updateFromHex">
             </div>
