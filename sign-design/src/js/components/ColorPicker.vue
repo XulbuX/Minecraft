@@ -2,7 +2,7 @@
   <div class="relative">
     <div
       ref="colorPickerRef"
-      class="flex cursor-pointer items-center justify-center b-3 b-white/25 rounded-md px-1.5 py-0.5 font-mono"
+      class="flex cursor-pointer select-none items-center justify-center b-3 b-white/25 rounded-md px-1.5 py-0.5 font-mono"
       :style="colorPickerButtonStyle(modelValue)"
       @click="togglePicker">
       {{ modelValue }}
@@ -49,7 +49,7 @@
                 @input="updateFromHex">
             </div>
             <!-- PREVIEW AND ACTIONS -->
-            <div class="flex items-center">
+            <div class="flex select-none items-center">
               <div class="mr-3 h-6 w-6 rounded outline-1 outline-gray-6" :style="{ backgroundColor: HEX }" />
               <button class="mr-1 cursor-pointer rounded border-none bg-gray-6 p-1 px-2 text-white duration-200 hover:bg-gray-5" @click="applyColor">
                 Apply
@@ -197,9 +197,9 @@ function updateHexFromHsv() {
 function initializeFromHex(hexColor: string) {
   const hex = cleanHex(hexColor);
   const hsv = rgbToHsv(
-    Number.parseInt(hex.substring(4, 6), 16),
-    Number.parseInt(hex.substring(2, 4), 16),
     Number.parseInt(hex.substring(0, 2), 16),
+    Number.parseInt(hex.substring(2, 4), 16),
+    Number.parseInt(hex.substring(4, 6), 16),
   );
 
   if (hsv.s === 0 && HUE.value !== 0) {
