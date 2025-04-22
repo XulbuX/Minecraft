@@ -1,2 +1,2 @@
-tag @s add tp1
-tag @s add tp
+tag @s add wpm_tp_1
+tag @s add wpm_tp

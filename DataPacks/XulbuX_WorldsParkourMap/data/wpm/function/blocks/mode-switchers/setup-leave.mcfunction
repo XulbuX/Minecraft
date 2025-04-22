@@ -7,4 +7,4 @@ effect clear @s weakness
 effect clear @s glowing
 attribute @s max_health base set 20
 effect give @s regeneration 1 255 true
-tag @s remove parkour_reset
+tag @s remove wpm_reset

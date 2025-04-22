@@ -1,35 +1,35 @@
 {
-   "values":[
-      "minecraft:air",
-      "minecraft:cave_air",
-      "minecraft:void_air",
+  "values":[
+    "minecraft:air",
+    "minecraft:cave_air",
+    "minecraft:void_air",
 
-      "minecraft:light",
-      "minecraft:structure_void",
+    "minecraft:light",
+    "minecraft:structure_void",
 
-      "minecraft:vine",
-      "minecraft:sculk_vein",
-      "minecraft:glow_lichen",
+    "minecraft:vine",
+    "minecraft:sculk_vein",
+    "minecraft:glow_lichen",
 
-      "minecraft:white_carpet",
-      "minecraft:light_gray_carpet",
-      "minecraft:gray_carpet",
-      "minecraft:black_carpet",
-      "minecraft:brown_carpet",
-      "minecraft:red_carpet",
-      "minecraft:orange_carpet",
-      "minecraft:yellow_carpet",
-      "minecraft:lime_carpet",
-      "minecraft:green_carpet",
-      "minecraft:cyan_carpet",
-      "minecraft:light_blue_carpet",
-      "minecraft:blue_carpet",
-      "minecraft:purple_carpet",
-      "minecraft:magenta_carpet",
-      "minecraft:pink_carpet",
-      "minecraft:moss_carpet",
+    "minecraft:white_carpet",
+    "minecraft:light_gray_carpet",
+    "minecraft:gray_carpet",
+    "minecraft:black_carpet",
+    "minecraft:brown_carpet",
+    "minecraft:red_carpet",
+    "minecraft:orange_carpet",
+    "minecraft:yellow_carpet",
+    "minecraft:lime_carpet",
+    "minecraft:green_carpet",
+    "minecraft:cyan_carpet",
+    "minecraft:light_blue_carpet",
+    "minecraft:blue_carpet",
+    "minecraft:purple_carpet",
+    "minecraft:magenta_carpet",
+    "minecraft:pink_carpet",
+    "minecraft:moss_carpet",
 
-      "minecraft:scaffolding",
-      "minecraft:tripwire"
-   ]
+    "minecraft:scaffolding",
+    "minecraft:tripwire"
+  ]
 }

@@ -1,3 +1,3 @@
-scoreboard players reset @s chat_expanded_02
+scoreboard players reset @s wpm_chat_expanded_02
 tag @s add no_reset
 function wpm:___chat___

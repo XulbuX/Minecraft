@@ -19,7 +19,7 @@ execute at @s positioned ~ ~.5 ~ if entity @e[type=#wpm:lockable_entity,distance
    # SPECIAL FOR DOORS 2
       execute if entity @s[tag=!positioned_door] run execute at @s if block ~ ~-.995 ~ #doors[half=lower] run tp @s ~ ~-1 ~
       execute at @s if block ~ ~.005 ~ #doors[half=lower] run tag @s add positioned_door
-   # SPECIAL FOR hanging_signs
+   # SPECIAL FOR HANGING SIGNS
       execute if entity @s[tag=!positioned_hanging_sign] run execute at @s if block ~ ~-.995 ~ #wall_hanging_signs run tp @s ~ ~-1 ~
       execute at @s if block ~ ~.005 ~ #wall_hanging_signs run tag @s add positioned_hanging_sign
 

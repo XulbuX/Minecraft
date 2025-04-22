@@ -29,5 +29,5 @@
 # OTHER MAP FUNCTIONS
    function wpm:map_funcs/kill-items
    function wpm:map_funcs/death-messages/__main__
-   function wpm:map_funcs/get_items/by_id/__main__
+   function wpm:map_funcs/give_items/by_id/__main__
    function wpm:map_funcs/death-messages/display_deaths

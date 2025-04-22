@@ -1,7 +1,7 @@
 {
   "replace": false,
-    "values": [
-      "minecraft:glow_item_frame",
-      "minecraft:item_frame"
-    ]
+  "values": [
+    "minecraft:glow_item_frame",
+    "minecraft:item_frame"
+  ]
 }

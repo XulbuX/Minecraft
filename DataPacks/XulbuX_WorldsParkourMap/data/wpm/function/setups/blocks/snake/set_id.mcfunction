@@ -1,14 +1,14 @@
 # SET ID
-   execute at @s positioned ~ ~-1 ~ run execute if entity @e[type=interaction,nbt={Tags:["snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] run scoreboard players operation @s SnakeBlock_ID = @e[type=interaction,nbt={Tags:["snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] SnakeBlock_ID
-   execute at @s positioned ~1 ~ ~ run execute if entity @e[type=interaction,nbt={Tags:["snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] run scoreboard players operation @s SnakeBlock_ID = @e[type=interaction,nbt={Tags:["snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] SnakeBlock_ID
-   execute at @s positioned ~-1 ~ ~ run execute if entity @e[type=interaction,nbt={Tags:["snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] run scoreboard players operation @s SnakeBlock_ID = @e[type=interaction,nbt={Tags:["snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] SnakeBlock_ID
-   execute at @s positioned ~ ~ ~1 run execute if entity @e[type=interaction,nbt={Tags:["snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] run scoreboard players operation @s SnakeBlock_ID = @e[type=interaction,nbt={Tags:["snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] SnakeBlock_ID
-   execute at @s positioned ~ ~ ~-1 run execute if entity @e[type=interaction,nbt={Tags:["snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] run scoreboard players operation @s SnakeBlock_ID = @e[type=interaction,nbt={Tags:["snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] SnakeBlock_ID
-   execute at @s positioned ~ ~1 ~ run execute if entity @e[type=interaction,nbt={Tags:["snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] run scoreboard players operation @s SnakeBlock_ID = @e[type=interaction,nbt={Tags:["snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] SnakeBlock_ID
-   scoreboard players add @s SnakeBlock_ID 1
+   execute at @s positioned ~ ~-1 ~ run execute if entity @e[type=interaction,nbt={Tags:["wpm_snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] run scoreboard players operation @s wpm_snake_block_id = @e[type=interaction,nbt={Tags:["wpm_snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] wpm_snake_block_id
+   execute at @s positioned ~1 ~ ~ run execute if entity @e[type=interaction,nbt={Tags:["wpm_snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] run scoreboard players operation @s wpm_snake_block_id = @e[type=interaction,nbt={Tags:["wpm_snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] wpm_snake_block_id
+   execute at @s positioned ~-1 ~ ~ run execute if entity @e[type=interaction,nbt={Tags:["wpm_snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] run scoreboard players operation @s wpm_snake_block_id = @e[type=interaction,nbt={Tags:["wpm_snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] wpm_snake_block_id
+   execute at @s positioned ~ ~ ~1 run execute if entity @e[type=interaction,nbt={Tags:["wpm_snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] run scoreboard players operation @s wpm_snake_block_id = @e[type=interaction,nbt={Tags:["wpm_snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] wpm_snake_block_id
+   execute at @s positioned ~ ~ ~-1 run execute if entity @e[type=interaction,nbt={Tags:["wpm_snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] run scoreboard players operation @s wpm_snake_block_id = @e[type=interaction,nbt={Tags:["wpm_snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] wpm_snake_block_id
+   execute at @s positioned ~ ~1 ~ run execute if entity @e[type=interaction,nbt={Tags:["wpm_snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] run scoreboard players operation @s wpm_snake_block_id = @e[type=interaction,nbt={Tags:["wpm_snake_block"]},distance=...05,sort=nearest,limit=1,tag=id_defined] wpm_snake_block_id
+   scoreboard players add @s wpm_snake_block_id 1
 # SET BEFORE-ID
-   scoreboard players operation @s SnakeBlock_before_ID = @s SnakeBlock_ID
-   scoreboard players remove @s snake_block_before_id 1
+   scoreboard players operation @s wpm_snake_block_before_id = @s wpm_snake_block_id
+   scoreboard players remove @s wpm_snake_block_before_id 1
 # SET AFTER-ID
-   scoreboard players operation @s SnakeBlock_after_ID = @s SnakeBlock_ID
-   scoreboard players add @s SnakeBlock_after_ID 1
+   scoreboard players operation @s wpm_snake_block_after_id = @s wpm_snake_block_id
+   scoreboard players add @s wpm_snake_block_after_id 1
