@@ -26,6 +26,9 @@ Vanilla+ is lightweight and server-friendly, designed to:
 - Optimize chunk loading and entity handling
 - Improve overall stability
 
+> **NOTE:**
+> _This modpack has been tested on several servers, and it has been confirmed that none of the mods, not even a fabric installation, is required to join a server using this modpack._
+
 ### 📋 Compatibility
 - Works with Minecraft version **1.21.4**
 - Compatible with most client-side mods
