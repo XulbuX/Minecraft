@@ -1,23 +1,19 @@
 <template>
-  <div class="mx-auto max-w-3xl p-5 text-white font-sans">
-    <h1 class="mb-4 select-none text-2xl font-bold">
+  <div class="mx-auto max-w-3xl flex flex-col gap-5 p-5 text-white font-sans">
+    <h1 class="select-none text-2xl font-bold">
       Minecraft Sign Editor
     </h1>
     <SignTypeSelect
-      class="mb-4"
       :model-value="signType"
       :options="SIGN_TYPES_ARRAY"
       placeholder="Select a sign type"
       @update:model-value="signType = $event" />
     <SignEditor
       ref="signEditor"
-      v-model:formatted-lines="formattedLines"
+      v-model="formattedLines"
       :max-line-length="15"
-      :sign-type="signType" />
-    <ColorControls
       :minecraft-colors="MC_COLORS_ARRAY"
-      @apply-color="applyColor"
-      @reset-formatting="resetFormatting" />
+      :sign-type-details="selectedSignDetails" />
     <CommandOutput
       v-model:command-type="commandType"
       :formatted-lines="formattedLines"
@@ -34,10 +30,7 @@ const formattedLines = ref<any[][]>([[], [], [], []]);
 const commandType = ref('data');
 const signEditor = ref<InstanceType<typeof SignEditor> | null>(null);
 
-function applyColor(color: string) {
-  signEditor.value?.applyColorToSelection(color);
-}
-function resetFormatting() {
-  signEditor.value?.resetFormatting();
-}
+const selectedSignDetails = computed<SignType | undefined>(() => {
+  return SIGN_TYPES_ARRAY.find(s => s.value === signType.value);
+});
 </script>

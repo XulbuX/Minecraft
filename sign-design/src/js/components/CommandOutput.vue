@@ -4,7 +4,7 @@
       {{ generatedCommand }}
     </div>
     <button
-      class="m-1 size-8 select-none rounded p-1 transition-all duration-200"
+      class="absolute right-6 m-1 size-8 select-none border border-white/8 rounded p-1 backdrop-blur-5 transition-all duration-200"
       :class="buttonClass"
       @click="copyCommand">
       <motion.svg
@@ -29,6 +29,8 @@ import { motion } from 'motion-v';
 type TextSegment = {
   text: string;
   color: string | null;
+  bold?: boolean;
+  italic?: boolean;
 };
 type Props = {
   formattedLines: TextSegment[][];
@@ -46,8 +48,8 @@ const generatedCommand = computed(() => {
 });
 
 const buttonClass = computed(() => {
-  if (!copied.value) return 'bg-gray-6 hover:bg-gray-5';
-  return copySuccess.value ? 'bg-teal-6 hover:bg-teal-5' : 'bg-red-6 hover:bg-red-5';
+  if (!copied.value) return 'bg-gray-6/50 hover:bg-gray-5/50';
+  return copySuccess.value ? 'bg-teal-4/40' : 'bg-red-4/40';
 });
 
 const iconState = computed(() => {
@@ -67,18 +69,26 @@ function generateGiveCommand(): string {
     }
 
     const segments = line.map((segment) => {
-      if (!segment.color) {
-        return `{text:"${escapeText(segment.text)}"}`;
+      const parts = [`text:"${escapeText(segment.text)}"`];
+      if (segment.color) {
+        const formattedColor = getMinecraftColorFormat(segment.color);
+        parts.push(`color:"${formattedColor}"`);
       }
-
-      const formattedColor = getMinecraftColorFormat(segment.color);
-      return `{text:"${escapeText(segment.text)}",color:"${formattedColor}"}`;
+      if (segment.bold) {
+        parts.push('bold:true');
+      }
+      if (segment.italic) {
+        parts.push('italic:true');
+      }
+      return `{${parts.join(',')}}`;
     });
 
     return `'[${segments.join(',')}]'`;
   });
 
-  return `/give @p ${props.signType ?? 'oak_sign'}{BlockEntityTag:{front_text:{messages:[${messages.join(',')}]}}} 1`;
+  const blockEntityTag = `{BlockEntityTag:{front_text:{messages:[${messages.join(',')}]}}}`;
+
+  return `/give @p ${props.signType ?? 'oak_sign'}${blockEntityTag} 1`;
 }
 
 function escapeText(text: string): string {

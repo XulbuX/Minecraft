@@ -11,6 +11,7 @@ declare module 'vue' {
     ColorControls: typeof import('./../components/ColorControls.vue')['default']
     ColorPicker: typeof import('./../components/ColorPicker.vue')['default']
     CommandOutput: typeof import('./../components/CommandOutput.vue')['default']
+    EditorToolbar: typeof import('./../components/EditorToolbar.vue')['default']
     SignEditor: typeof import('./../components/SignEditor.vue')['default']
     SignTypeSelect: typeof import('./../components/SignTypeSelect.vue')['default']
   }
