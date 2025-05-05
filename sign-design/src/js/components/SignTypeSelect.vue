@@ -1,8 +1,8 @@
 <template>
-  <div class="relative max-w-300px w-full select-none">
+  <div class="relative z-1000 max-w-300px w-full select-none">
     <div
-      class="flex cursor-pointer items-center justify-between rounded-lg p-3 duration-200"
-      :class="{ 'rounded-b-none': isOpen }"
+      class="flex cursor-pointer items-center justify-between rounded-lg p-3 outline-1 outline-white/20 backdrop-blur-5 duration-200"
+      :class="{ 'rounded-b-0': isOpen }"
       :style="headerStyle"
       @click="toggleDropdown">
       <span class="truncate">{{ selectedOption ? selectedOption.label : placeholder }}</span>
@@ -22,21 +22,21 @@
         v-if="isOpen"
         v-on-click-outside="closeDropdown"
         :animate="{ opacity: 1, y: 0 }"
-        class="absolute z-10 max-h-62 w-full flex flex-col overflow-y-auto border border-t-0 border-gray-6 rounded-b-lg shadow-lg"
+        class="absolute max-h-62 w-full flex flex-col overflow-y-auto rounded-b-lg bg-gray-8/90 shadow-lg outline-1 outline-white/20 backdrop-blur-5"
         :exit="{ opacity: 0, y: -10 }"
         :initial="{ opacity: 0, y: -10 }"
         :transition="{ duration: 0.2 }">
         <div
           v-for="option in options"
           :key="option.value"
-          class="cursor-pointer bg-gray-8 transition-all duration-200"
-          :class="{ 'font-bold bg-gray-7!': modelValue === option.value }"
+          class="cursor-pointer transition-all duration-200"
+          :class="{ 'font-bold bg-white/10!': modelValue === option.value }"
           @click="selectOption(option)"
           @mouseout="hoveredOption = null"
           @mouseover="hoveredOption = option">
           <div class="flex flex-row">
             <div class="w-2" :style="{ backgroundColor: option.rgb }" />
-            <div class="p-2">
+            <div class="px-2.5 py-2">
               {{ option.label }}
             </div>
           </div>
@@ -83,7 +83,7 @@ const headerStyle = computed(() => {
   }
 
   return {
-    backgroundColor: washOut(selectedOption.value.rgb, 0.5),
+    backgroundColor: selectedOption.value.rgb,
     borderColor: selectedOption.value.rgb,
   };
 });
@@ -94,19 +94,5 @@ const closeDropdown = () => isOpen.value = false;
 function selectOption(option: Option) {
   emit('update:modelValue', option.value ?? '');
   closeDropdown();
-}
-
-function washOut(color: string, strength: number) {
-  const rgbMatch = color.match(/rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i);
-  if (rgbMatch) {
-    const r = Number.parseInt(rgbMatch[1], 10);
-    const g = Number.parseInt(rgbMatch[2], 10);
-    const b = Number.parseInt(rgbMatch[3], 10);
-    const washedR = Math.round(r * (1 - strength) + 255 * strength);
-    const washedG = Math.round(g * (1 - strength) + 255 * strength);
-    const washedB = Math.round(b * (1 - strength) + 255 * strength);
-    return `rgb(${washedR}, ${washedG}, ${washedB})`;
-  }
-  return color;
 }
 </script>

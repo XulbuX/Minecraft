@@ -5,32 +5,33 @@
     </h1>
     <SignTypeSelect
       :model-value="signType"
-      :options="SIGN_TYPES_ARRAY"
+      :options="MC_SIGNS_ARRAY"
       placeholder="Select a sign type"
       @update:model-value="signType = $event" />
     <SignEditor
       ref="signEditor"
       v-model="formattedLines"
-      :max-line-length="15"
+      :max-line-width-px="200"
       :minecraft-colors="MC_COLORS_ARRAY"
       :sign-type-details="selectedSignDetails" />
     <CommandOutput
-      v-model:command-type="commandType"
+      :command-type="commandType"
       :formatted-lines="formattedLines"
       :sign-type="signType" />
   </div>
 </template>
 
 <script setup lang="ts">
+import type { CommandType } from '@@/interfaces';
 import SignEditor from '@@/components/SignEditor.vue';
-import { MC_COLORS_ARRAY, SIGN_TYPES_ARRAY } from 'minecraft';
+import { MC_COLORS_ARRAY, MC_SIGNS_ARRAY } from 'minecraft';
 
 const signType = ref('oak_sign');
 const formattedLines = ref<any[][]>([[], [], [], []]);
-const commandType = ref('data');
+const commandType = ref('give' as CommandType);
 const signEditor = ref<InstanceType<typeof SignEditor> | null>(null);
 
 const selectedSignDetails = computed<SignType | undefined>(() => {
-  return SIGN_TYPES_ARRAY.find(s => s.value === signType.value);
+  return MC_SIGNS_ARRAY.find(s => s.value === signType.value);
 });
 </script>

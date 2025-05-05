@@ -17,7 +17,7 @@ export const MC_COLORS: MinecraftColors = {
   yellow: { idx: 8, label: 'Yellow', rgb: 'rgb(255, 255, 85)' },
 };
 
-export const SIGN_TYPES: SignTypes = {
+export const MC_SIGNS: SignTypes = {
   acacia_sign: { idx: 4, label: 'Acacia Sign', rgb: 'rgb(165, 88, 49)' },
   bamboo_sign: { idx: 8, label: 'Bamboo Sign', rgb: 'rgb(207, 186, 87)' },
   birch_sign: { idx: 2, label: 'Birch Sign', rgb: 'rgb(190, 174, 118)' },
@@ -39,7 +39,7 @@ export const MC_COLORS_ARRAY = Object.entries(MC_COLORS)
   }))
   .sort((a, b) => a.idx - b.idx);
 
-export const SIGN_TYPES_ARRAY = Object.entries(SIGN_TYPES)
+export const MC_SIGNS_ARRAY = Object.entries(MC_SIGNS)
   .map(([value, type]) => ({
     ...type,
     value,

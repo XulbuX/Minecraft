@@ -4,14 +4,20 @@
       <button
         class="border border-gray-6 rounded bg-gray-7 px-2 py-1 hover:bg-gray-6"
         :class="{ 'bg-gray-6! font-bold border-gray-5!': editor.isActive('bold') }"
-        @click="editor.chain().focus().toggleBold().run()">
+        @click="toggleBold">
         Bold
       </button>
       <button
         class="border border-gray-6 rounded bg-gray-7 px-2 py-1 hover:bg-gray-6"
         :class="{ 'bg-gray-6! font-bold border-gray-5!': editor.isActive('italic') }"
-        @click="editor.chain().focus().toggleItalic().run()">
+        @click="toggleItalic">
         Italic
+      </button>
+      <button
+        class="border border-gray-6 rounded bg-gray-7 px-2 py-1 hover:bg-gray-6"
+        :class="{ 'bg-gray-6! font-bold border-gray-5!': editor.isActive('underline') }"
+        @click="toggleUnderline">
+        Underline
       </button>
     </div>
 
@@ -46,11 +52,12 @@
 </template>
 
 <script setup lang="ts">
+import type { EditorInstance } from '@@/interfaces';
 import { motion } from 'motion-v';
 import ColorPicker from './ColorPicker.vue';
 
-defineProps<{
-  editor: any;
+const { editor } = defineProps<{
+  editor: EditorInstance;
   minecraftColors: MinecraftColor[];
 }>();
 
@@ -60,5 +67,18 @@ const emit = defineEmits<{
 }>();
 
 const customColorValue = ref('#FFFFFF');
+
+function toggleBold() {
+  editor.chain().focus().toggleBold({ keepMarks: true }).run();
+}
+
+function toggleItalic() {
+  editor.chain().focus().toggleItalic({ keepMarks: true }).run();
+}
+
+function toggleUnderline() {
+  editor.chain().focus().toggleUnderline({ keepMarks: true }).run();
+}
+
 const applyCustomColor = () => emit('applyColor', customColorValue.value);
 </script>

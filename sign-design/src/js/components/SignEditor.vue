@@ -6,58 +6,137 @@
       :minecraft-colors="minecraftColors"
       @apply-color="handleApplyColor"
       @reset-formatting="handleResetFormatting" />
-    <EditorContent class="tiptap font-minecraft" :editor="editor" :style="editorStyle" />
+    <EditorContent class="tiptap font-minecraft duration-200" :editor="editor" :style="editorStyle" />
   </div>
 </template>
 
 <script setup lang="ts">
+import type { FormattedLines, TextSegment } from '@@/interfaces';
+import type { Node as EditorNode } from 'prosemirror-model';
+import type { EditorView } from 'prosemirror-view';
+import Bold from '@tiptap/extension-bold';
 import { Color } from '@tiptap/extension-color';
+import Italic from '@tiptap/extension-italic';
 import TextStyle from '@tiptap/extension-text-style';
+import Underline from '@tiptap/extension-underline';
 import StarterKit from '@tiptap/starter-kit';
 import { EditorContent, useEditor } from '@tiptap/vue-3';
 import EditorToolbar from './EditorToolbar.vue';
 
-type TextSegment = {
-  text: string;
-  bold?: boolean;
-  italic?: boolean;
-  color?: string | null;
-};
-type FormattedLines = TextSegment[][];
-
-const { signTypeDetails } = defineProps<{
+const { maxLineWidthPx, signTypeDetails } = defineProps<{
   modelValue: FormattedLines;
-  maxLineLength?: number;
   signTypeDetails?: SignType;
+  maxLineWidthPx: number;
   minecraftColors: MinecraftColor[];
 }>();
 
 const emit = defineEmits<{ (e: 'update:modelValue', value: FormattedLines): void }>();
 
+const CustomBold = Bold.configure({
+  HTMLAttributes: { class: 'font-minecraft' },
+});
+const CustomItalic = Italic.configure({
+  HTMLAttributes: { class: 'font-minecraft' },
+});
+
 const editor = useEditor({
   content: '<p></p><p></p><p></p><p></p>',
+  editorProps: {
+    handleKeyDown: (view, event) => {
+      if (event.key === 'Enter' && view.state.doc.content.childCount >= 4) {
+        return true;
+      }
+      return false;
+    },
+    handlePaste: (view, event, slice) => {
+      const { state } = view;
+      const currentLineCount = state.doc.content.childCount;
+      let pastedLineCount = 0;
+      slice.content.forEach((node) => {
+        if (node.type.name === 'paragraph') {
+          pastedLineCount++;
+        }
+      });
+
+      const potentialLineCount = currentLineCount + pastedLineCount - (pastedLineCount > 0 ? 1 : 0);
+
+      if (potentialLineCount > 4) {
+        return true;
+      }
+
+      return false;
+    },
+    handleTextInput: (view, from, to, text) => {
+      const { state } = view;
+      const transaction = state.tr.insertText(text, from, to);
+      const nodeCount = transaction.doc.content.childCount;
+
+      if (text === '\n' && nodeCount >= 4) {
+        return true;
+      }
+
+      if (maxLineWidthExceeded(view, from, text)) {
+        return true;
+      }
+
+      view.dispatch(transaction);
+      return true;
+    },
+  },
   extensions: [
     StarterKit.configure({
       blockquote: false,
+      bold: false,
       bulletList: false,
       codeBlock: false,
       hardBreak: false,
       heading: false,
       horizontalRule: false,
+      italic: false,
       listItem: false,
       orderedList: false,
     }),
+    CustomBold,
+    CustomItalic,
     TextStyle,
     Color,
+    Underline,
   ],
   onUpdate: () => {
     emit('update:modelValue', transformToCustomJson(editor.value?.getJSON()));
   },
 });
 
-const editorStyle = computed(() => ({
-  backgroundColor: signTypeDetails?.rgb ?? '#333',
-}));
+const editorStyle = computed(() => ({ backgroundColor: signTypeDetails?.rgb ?? '#333' }));
+
+function maxLineWidthExceeded(view: EditorView, pos: number, newText: string): boolean {
+  if (!view || !newText) return false;
+
+  const { state } = view;
+  const $pos = state.doc.resolve(pos);
+  const paragraph = $pos.parent;
+
+  let textBefore = '';
+  paragraph.nodesBetween(0, $pos.parentOffset, (node: EditorNode) => {
+    if (node.isText) {
+      textBefore += node.text;
+    }
+  });
+
+  const testElement = document.createElement('span');
+  testElement.className = 'font-minecraft';
+  testElement.style.visibility = 'hidden';
+  testElement.style.position = 'absolute';
+  testElement.style.whiteSpace = 'nowrap';
+
+  testElement.textContent = textBefore + newText;
+
+  document.body.appendChild(testElement);
+  const width = testElement.getBoundingClientRect().width;
+  document.body.removeChild(testElement);
+
+  return width > maxLineWidthPx;
+}
 
 function transformToCustomJson(proseMirrorJson: any): FormattedLines {
   const result: FormattedLines = [];
@@ -80,6 +159,7 @@ function transformToCustomJson(proseMirrorJson: any): FormattedLines {
                 segment.color = mark.attrs.color;
                 hasColorMark = true;
               }
+              if (mark.type === 'underline') segment.underline = true;
             });
             if (!hasColorMark) segment.color = null;
           }
@@ -91,12 +171,14 @@ function transformToCustomJson(proseMirrorJson: any): FormattedLines {
           if (lastSegment
             && !!lastSegment.bold === !!segment.bold
             && !!lastSegment.italic === !!segment.italic
+            && !!lastSegment.underline === !!segment.underline
             && lastSegment.color === segment.color) {
             lastSegment.text += segment.text;
           }
           else {
             if (segment.bold === undefined) segment.bold = false;
             if (segment.italic === undefined) segment.italic = false;
+            if (segment.underline === undefined) segment.underline = false;
             line.push(segment);
           }
         }
@@ -132,7 +214,7 @@ function applyColorToSelection(color: string) {
 
 function resetFormatting() {
   if (!editor.value) return;
-  editor.value.chain().focus().unsetColor().unsetBold().unsetItalic().run();
+  editor.value.chain().focus().unsetColor().unsetBold().unsetItalic().unsetUnderline().run();
 }
 
 onBeforeUnmount(() => {
@@ -144,18 +226,31 @@ onBeforeUnmount(() => {
 
 <style>
 .tiptap {
-  border: 1px solid #666;
   padding: 0.5rem;
   min-height: 100px;
-  color: #eee;
   border-radius: 0 0 0.5rem 0.5rem;
+  font-family: 'Minecraft', monospace;
 }
 .tiptap p {
   margin: 0;
   min-height: 1.2em;
+  font-family: 'Minecraft', monospace;
+  overflow: hidden;
+  white-space: nowrap;
 }
-.tiptap:focus {
-  outline: none;
-  border-color: #888;
+.tiptap span {
+  font-family: 'Minecraft', monospace;
+}
+.tiptap strong {
+  font-weight: bold;
+  font-family: 'Minecraft', monospace;
+}
+.tiptap em {
+  font-style: italic;
+  font-family: 'Minecraft', monospace;
+}
+.tiptap u {
+  text-decoration: underline 2px;
+  font-family: 'Minecraft', monospace;
 }
 </style>

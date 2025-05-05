@@ -4,7 +4,7 @@
       {{ generatedCommand }}
     </div>
     <button
-      class="absolute right-6 m-1 size-8 select-none border border-white/8 rounded p-1 backdrop-blur-5 transition-all duration-200"
+      class="absolute right-5 m-1 size-8 select-none border border-white/8 rounded p-1 backdrop-blur-5 transition-all duration-200"
       :class="buttonClass"
       @click="copyCommand">
       <motion.svg
@@ -23,28 +23,29 @@
 </template>
 
 <script setup lang="ts">
+import type { CommandType, FormattedLines } from '@@/interfaces';
 import { getMinecraftColorFormat } from 'minecraft';
 import { motion } from 'motion-v';
 
-type TextSegment = {
-  text: string;
-  color: string | null;
-  bold?: boolean;
-  italic?: boolean;
-};
-type Props = {
-  formattedLines: TextSegment[][];
+const props = defineProps<{
+  formattedLines: FormattedLines;
   signType: string;
-};
-
-const props = defineProps<Props>();
+  commandType: CommandType;
+}>();
 
 const copied = ref(false);
 const copySuccess = ref(false);
 const animationTimer = ref<number | null>(null);
 
 const generatedCommand = computed(() => {
-  return generateGiveCommand();
+  switch (props.commandType) {
+    case 'give':
+      return generateGiveCommand();
+    case 'setblock':
+      return generateSetBlockCommand();
+    default:
+      return generateDataCommand();
+  }
 });
 
 const buttonClass = computed(() => {
@@ -80,6 +81,9 @@ function generateGiveCommand(): string {
       if (segment.italic) {
         parts.push('italic:true');
       }
+      if (segment.underline) {
+        parts.push('underlined:true');
+      }
       return `{${parts.join(',')}}`;
     });
 
@@ -89,6 +93,47 @@ function generateGiveCommand(): string {
   const blockEntityTag = `{BlockEntityTag:{front_text:{messages:[${messages.join(',')}]}}}`;
 
   return `/give @p ${props.signType ?? 'oak_sign'}${blockEntityTag} 1`;
+}
+
+function generateSetBlockCommand(): string {
+  const messages = formatSignMessages();
+  const blockEntityTag = `{BlockEntityTag:{front_text:{messages:[${messages.join(',')}]}}}`;
+
+  return `/setblock ~ ~ ~ ${props.signType ?? 'oak_sign'}${blockEntityTag}`;
+}
+
+function generateDataCommand(): string {
+  const messages = formatSignMessages();
+
+  return `/data merge block ~ ~ ~ {front_text:{messages:[${messages.join(',')}]}}`;
+}
+
+function formatSignMessages(): string[] {
+  return props.formattedLines.map((line) => {
+    if (line.length === 0) {
+      return '""';
+    }
+
+    const segments = line.map((segment) => {
+      const parts = [`text:"${escapeText(segment.text)}"`];
+      if (segment.color) {
+        const formattedColor = getMinecraftColorFormat(segment.color);
+        parts.push(`color:"${formattedColor}"`);
+      }
+      if (segment.bold) {
+        parts.push('bold:true');
+      }
+      if (segment.italic) {
+        parts.push('italic:true');
+      }
+      if (segment.underline) {
+        parts.push('underlined:true');
+      }
+      return `{${parts.join(',')}}`;
+    });
+
+    return `'[${segments.join(',')}]'`;
+  });
 }
 
 function escapeText(text: string): string {
