@@ -7,7 +7,7 @@
       @apply-color="handleApplyColor"
       @reset-formatting="handleResetFormatting" />
     <EditorContent
-      class="tiptap h-5 border-5 border-white/10 rounded-b-lg font-minecraft duration-200"
+      class="tiptap m-1 border-5 border-white/10 rounded-b-lg text-center duration-200"
       :editor
       :style="editorStyle" />
   </div>
@@ -34,13 +34,6 @@ const { maxLineWidthPx, signTypeDetails } = defineProps<{
 }>();
 
 const emit = defineEmits<{ (e: 'update:modelValue', value: FormattedLines): void }>();
-
-const CustomBold = Bold.configure({
-  HTMLAttributes: { class: 'font-minecraft' },
-});
-const CustomItalic = Italic.configure({
-  HTMLAttributes: { class: 'font-minecraft' },
-});
 
 const editor = useEditor({
   content: '<p></p><p></p><p></p><p></p>',
@@ -99,11 +92,11 @@ const editor = useEditor({
       listItem: false,
       orderedList: false,
     }),
-    CustomBold,
-    CustomItalic,
+    Bold.configure({ HTMLAttributes: { class: 'font-minecraft' } }),
+    Italic.configure({ HTMLAttributes: { class: 'font-minecraft' } }),
+    Underline.configure({ HTMLAttributes: { class: 'font-minecraft' } }),
     TextStyle,
     Color,
-    Underline,
   ],
   onUpdate: () => {
     emit('update:modelValue', transformToCustomJson(editor.value?.getJSON()));
@@ -228,11 +221,6 @@ onBeforeUnmount(() => {
 </script>
 
 <style>
-.tiptap {
-  padding: 0.5rem;
-  text-align: center;
-  font-family: 'Minecraft', monospace;
-}
 .tiptap p {
   margin: 0;
   overflow: hidden;
