@@ -1,20 +1,30 @@
 <template>
   <div>
     <EditorToolbar
-      v-if="editor"
-      :editor
+      :editor="activeEditor"
       :minecraft-colors
-      @apply-color="handleApplyColor"
-      @reset-formatting="handleResetFormatting" />
-    <EditorContent
-      class="tiptap m-1 border-5 border-white/10 rounded-b-lg text-center duration-200"
-      :editor
-      :style="editorStyle" />
+      @apply-color="applyColorToSelection"
+      @reset-formatting="resetFormatting" />
+    <div
+      class="top-shadow flex items-center justify-center gap-3 border border-t-0 border-white/10 rounded-b-lg p-3 duration-200"
+      :style="{ backgroundColor: `${textAreaBg}CC` }">
+      <EditorContent
+        class="tiptap h-19 rounded p-2 text-center shadow-md duration-200"
+        :class="signTypeDetails?.isDark ? 'border-white/10' : 'border-black/10'"
+        :editor-1
+        :style="textAreaStyle" />
+      <EditorContent
+        class="tiptap h-19 rounded p-2 text-center shadow-md duration-200"
+        :class="signTypeDetails?.isDark ? 'border-white/10' : 'border-black/10'"
+        :editor-2
+        :style="textAreaStyle" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { FormattedLines, TextSegment } from '@@/interfaces';
+import type { Editor, EditorOptions } from '@tiptap/vue-3';
 import type { Node as EditorNode } from 'prosemirror-model';
 import type { EditorView } from 'prosemirror-view';
 import Bold from '@tiptap/extension-bold';
@@ -26,7 +36,7 @@ import StarterKit from '@tiptap/starter-kit';
 import { EditorContent, useEditor } from '@tiptap/vue-3';
 import EditorToolbar from './EditorToolbar.vue';
 
-const { maxLineWidthPx, signTypeDetails } = defineProps<{
+const { maxLineWidthPx, modelValue, signTypeDetails } = defineProps<{
   modelValue: FormattedLines;
   signTypeDetails?: SignType;
   maxLineWidthPx: number;
@@ -35,7 +45,13 @@ const { maxLineWidthPx, signTypeDetails } = defineProps<{
 
 const emit = defineEmits<{ (e: 'update:modelValue', value: FormattedLines): void }>();
 
-const editor = useEditor({
+const textAreaBg = computed(() => signTypeDetails?.hex ?? '#374151');
+const textAreaStyle = computed(() => ({
+  width: `${maxLineWidthPx + 4}px`,
+  backgroundColor: textAreaBg.value,
+}));
+
+const editorConfig: Partial<EditorOptions> = {
   content: '<p></p><p></p><p></p><p></p>',
   editorProps: {
     handleKeyDown: (view, event) => {
@@ -44,7 +60,7 @@ const editor = useEditor({
       }
       return false;
     },
-    handlePaste: (view, event, slice) => {
+    handlePaste: (view, _, slice) => {
       const { state } = view;
       const currentLineCount = state.doc.content.childCount;
       let pastedLineCount = 0;
@@ -53,13 +69,10 @@ const editor = useEditor({
           pastedLineCount++;
         }
       });
-
       const potentialLineCount = currentLineCount + pastedLineCount - (pastedLineCount > 0 ? 1 : 0);
-
       if (potentialLineCount > 4) {
         return true;
       }
-
       return false;
     },
     handleTextInput: (view, from, to, text) => {
@@ -85,12 +98,15 @@ const editor = useEditor({
       bold: false,
       bulletList: false,
       codeBlock: false,
+      dropcursor: false,
+      gapcursor: false,
       hardBreak: false,
       heading: false,
       horizontalRule: false,
       italic: false,
       listItem: false,
       orderedList: false,
+      paragraph: {},
     }),
     Bold.configure({ HTMLAttributes: { class: 'font-minecraft' } }),
     Italic.configure({ HTMLAttributes: { class: 'font-minecraft' } }),
@@ -98,12 +114,29 @@ const editor = useEditor({
     TextStyle,
     Color,
   ],
-  onUpdate: () => {
-    emit('update:modelValue', transformToCustomJson(editor.value?.getJSON()));
+};
+
+const editor1 = useEditor({
+  ...editorConfig,
+  onUpdate: ({ editor }) => {
+    const frontData = transformToCustomJson(editor.getJSON());
+    emit('update:modelValue', { ...modelValue, front: frontData });
   },
 });
 
-const editorStyle = computed(() => ({ backgroundColor: signTypeDetails?.rgb ?? '#333' }));
+const editor2 = useEditor({
+  ...editorConfig,
+  onUpdate: ({ editor }) => {
+    const backData = transformToCustomJson(editor.getJSON());
+    emit('update:modelValue', { ...modelValue, back: backData });
+  },
+});
+
+const activeEditor = computed<Editor | undefined>(() => {
+  if (editor1.value?.isFocused) return editor1.value;
+  if (editor2.value?.isFocused) return editor2.value;
+  return editor1.value;
+});
 
 function maxLineWidthExceeded(view: EditorView, pos: number, newText: string): boolean {
   if (!view || !newText) return false;
@@ -134,11 +167,9 @@ function maxLineWidthExceeded(view: EditorView, pos: number, newText: string): b
   return width > maxLineWidthPx;
 }
 
-function transformToCustomJson(proseMirrorJson: any): FormattedLines {
-  const result: FormattedLines = [];
-  if (!proseMirrorJson || !proseMirrorJson.content) {
-    return [[], [], [], []];
-  }
+function transformToCustomJson(proseMirrorJson: any): TextSegment[][] {
+  const result: TextSegment[][] = [];
+  if (!proseMirrorJson || !proseMirrorJson.content) return [[], [], [], []];
 
   proseMirrorJson.content.forEach((paragraphNode: any) => {
     const line: TextSegment[] = [];
@@ -190,37 +221,34 @@ function transformToCustomJson(proseMirrorJson: any): FormattedLines {
   return result.slice(0, 4);
 }
 
-function handleApplyColor(color: string) {
-  applyColorToSelection(color);
-}
-
-function handleResetFormatting() {
-  resetFormatting();
-}
-
 function applyColorToSelection(color: string) {
-  if (!editor.value) return;
+  const targetEditor = activeEditor.value;
+  if (!targetEditor) return;
   if (color) {
-    editor.value.chain().focus().setColor(color).run();
+    targetEditor.chain().focus().setColor(color).run();
   }
   else {
-    editor.value.chain().focus().unsetColor().run();
+    targetEditor.chain().focus().unsetColor().run();
   }
 }
 
 function resetFormatting() {
-  if (!editor.value) return;
-  editor.value.chain().focus().unsetColor().unsetBold().unsetItalic().unsetUnderline().run();
+  const targetEditor = activeEditor.value;
+  if (!targetEditor) return;
+  targetEditor.chain().focus().unsetColor().unsetBold().unsetItalic().unsetUnderline().run();
 }
 
 onBeforeUnmount(() => {
-  if (editor.value) {
-    editor.value.destroy();
-  }
+  editor1.value?.destroy();
+  editor2.value?.destroy();
 });
 </script>
 
 <style>
+.top-shadow {
+  box-shadow: inset 0 5px 5px 0 #03030520;
+}
+
 .tiptap p {
   margin: 0;
   overflow: hidden;

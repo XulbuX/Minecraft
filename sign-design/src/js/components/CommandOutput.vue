@@ -1,5 +1,5 @@
 <template>
-  <div class="relative flex items-center justify-end overflow-clip rounded-lg bg-gray-8">
+  <div class="relative flex items-center justify-end overflow-clip border border-white/10 rounded-lg bg-gray-8">
     <div class="hide-scrollbar w-full overflow-x-auto whitespace-nowrap px-3 py-2.5 font-minecraft">
       {{ generatedCommand }}
     </div>
@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import type { CommandType, FormattedLines } from '@@/interfaces';
+import type { CommandType, FormattedLines, TextSegment } from '@@/interfaces';
 import { getMinecraftColorFormat } from 'minecraft';
 import { motion } from 'motion-v';
 
@@ -38,14 +38,21 @@ const copySuccess = ref(false);
 const animationTimer = ref<number | null>(null);
 
 const generatedCommand = computed(() => {
-  const messages = formatSignMessages();
+  const frontMessages = formatSignMessages(formattedLines.front);
+  const backMessages = formatSignMessages(formattedLines.back);
+  const frontTextTag = `front_text:{messages:[${frontMessages.join(',')}]}`;
+  const backTextTag = `back_text:{messages:[${backMessages.join(',')}]}`;
+
+  const hasBackContent = formattedLines.back.some(line => line.length > 0);
+  const backTagPart = hasBackContent ? `,${backTextTag}` : '';
+
   switch (commandType) {
     case 'give':
-      return `/give @p ${signType ?? 'oak_sign'}{BlockEntityTag:{front_text:{messages:[${messages.join(',')}]}}} 1`;
+      return `/give @p ${signType ?? 'oak_sign'}{BlockEntityTag:{${frontTextTag}${backTagPart}}} 1`;
     case 'setblock':
-      return `/setblock ~ ~ ~ ${signType ?? 'oak_sign'}{BlockEntityTag:{front_text:{messages:[${messages.join(',')}]}}}`;
+      return `/setblock ~ ~ ~ ${signType ?? 'oak_sign'}{${frontTextTag}${backTagPart}}`;
     default:
-      return `/data merge block ~ ~ ~ {front_text:{messages:[${messages.join(',')}]}}`;
+      return `/data merge block ~ ~ ~ {${frontTextTag}${backTagPart}}`;
   }
 });
 
@@ -66,11 +73,11 @@ const iconState = computed(() => {
 
 const escapeText = (text: string): string => text.replace(/"/g, '\\"');
 
-function formatSignMessages(): string[] {
-  return formattedLines.map((line) => {
+function formatSignMessages(lines: TextSegment[][]): string[] {
+  return lines.map((line) => {
     if (line.length === 0) return '""';
 
-    const segments = line.map((segment) => {
+    const segments = line.map((segment: TextSegment) => {
       const parts = [`text:"${escapeText(segment.text)}"`];
       if (segment.color) {
         const formattedColor = getMinecraftColorFormat(segment.color);

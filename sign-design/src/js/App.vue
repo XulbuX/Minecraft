@@ -16,20 +16,20 @@
       :sign-type-details="selectedSignDetails" />
     <CommandOutput
       :command-type="commandType"
-      :formatted-lines="formattedLines"
+      :formatted-lines
       :sign-type="signType" />
   </div>
 </template>
 
 <script setup lang="ts">
-import type { CommandType } from '@@/interfaces';
+import type { CommandType, FormattedLines } from '@@/interfaces';
 import SignEditor from '@@/components/SignEditor.vue';
 import { MC_COLORS_ARRAY, MC_SIGNS_ARRAY } from 'minecraft';
 
 const signType = ref('oak_sign');
-const formattedLines = ref<any[][]>([[], [], [], []]);
 const commandType = ref('give' as CommandType);
 const signEditor = ref<InstanceType<typeof SignEditor> | null>(null);
+const formattedLines = ref<FormattedLines>({ back: [[], [], [], []], front: [[], [], [], []] });
 
 const selectedSignDetails = computed<SignType | undefined>(() => {
   return MC_SIGNS_ARRAY.find(s => s.value === signType.value);

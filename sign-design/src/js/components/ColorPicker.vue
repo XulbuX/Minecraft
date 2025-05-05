@@ -2,7 +2,7 @@
   <div class="relative">
     <div
       ref="colorPickerRef"
-      class="flex cursor-pointer select-none items-center justify-center b-3 b-white/25 rounded-md px-1.5 py-0.5 font-mono"
+      class="flex cursor-pointer select-none items-center justify-center b-3 border-white/25 rounded-md px-1.5 py-0.5 font-mono"
       :style="colorPickerButtonStyle(modelValue)"
       @click="togglePicker">
       {{ modelValue }}
@@ -11,7 +11,7 @@
       <div v-if="isOpen" class="fixed inset-0 z-50">
         <div
           v-on-click-outside="handleClickOutside"
-          class="widget-shadow absolute rounded-lg bg-gray-7 p-3"
+          class="widget-shadow absolute border border-white/10 rounded-lg bg-gray-7/80 p-3 backdrop-blur-5"
           :style="popupPosition">
           <div class="w-60">
             <div class="mb-3 space-y-3">
@@ -44,17 +44,17 @@
             <div class="mb-3 flex items-center">
               <input
                 v-model="HEX"
-                class="flex-1 rounded bg-gray-8 p-1 text-white font-mono outline-1 outline-gray-6"
+                class="flex-1 rounded bg-gray-9/30 p-1 text-white font-mono outline-1 outline-white/10"
                 type="text"
                 @input="updateFromHex">
             </div>
             <!-- PREVIEW AND ACTIONS -->
             <div class="flex select-none items-center">
               <div class="inset-border mr-3 h-6 w-6 rounded" :style="{ backgroundColor: HEX }" />
-              <button class="mr-1 cursor-pointer rounded border-none bg-gray-6 p-1 px-2 text-white duration-200 hover:bg-gray-5" @click="applyColor">
+              <button class="mr-1 cursor-pointer rounded border-none bg-gray-5/40 p-1 px-2 text-white duration-200 hover:bg-gray-4/40" @click="applyColor">
                 Apply
               </button>
-              <button class="mr-1 cursor-pointer rounded border-none bg-gray-6 p-1 px-2 text-white/50 duration-200 hover:(border-2 border-white/50)" @click="togglePicker">
+              <button class="mr-1 cursor-pointer rounded border-none bg-gray-5/40 p-1 px-2 text-white/50 duration-200 hover:(border-2 border-white/50)" @click="togglePicker">
                 Cancel
               </button>
             </div>
@@ -104,7 +104,7 @@ function colorPickerButtonStyle(hexStr: string) {
   const bright = (r * 0.299 + g * 0.587 + b * 0.114) > 150;
   return {
     backgroundColor: hexStr,
-    color: bright ? '#000' : '#FFF',
+    color: bright ? '#030305' : '#FCFCFF',
   };
 }
 
@@ -400,7 +400,7 @@ watch(() => modelValue, (newValue) => {
 
 <style scoped>
 .widget-shadow {
-  box-shadow: 0 0 10px 2px #000;
+  box-shadow: 0 0 10px 2px #03030580;
 }
 
 .slider-shadow {

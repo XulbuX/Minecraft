@@ -1,4 +1,5 @@
 export interface MinecraftColor {
+  hex: string;
   idx: number;
   isDark: boolean;
   label: string;
@@ -7,6 +8,7 @@ export interface MinecraftColor {
 };
 
 export interface SignType {
+  hex: string;
   idx: number;
   isDark: boolean;
   label: string;

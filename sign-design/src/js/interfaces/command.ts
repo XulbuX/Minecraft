@@ -6,7 +6,10 @@ export interface TextSegment {
   underline?: boolean;
 }
 
-export type FormattedLines = TextSegment[][];
+export interface FormattedLines {
+  back: TextSegment[][];
+  front: TextSegment[][];
+};
 
 export interface CommandConfiguration {
   options?: {
