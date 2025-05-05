@@ -7,7 +7,7 @@
       @apply-color="handleApplyColor"
       @reset-formatting="handleResetFormatting" />
     <EditorContent
-      class="tiptap font-minecraft duration-200"
+      class="tiptap h-5 border-5 border-white/10 rounded-b-lg font-minecraft duration-200"
       :editor
       :style="editorStyle" />
   </div>
@@ -230,29 +230,27 @@ onBeforeUnmount(() => {
 <style>
 .tiptap {
   padding: 0.5rem;
-  min-height: 100px;
-  border-radius: 0 0 0.5rem 0.5rem;
+  text-align: center;
   font-family: 'Minecraft', monospace;
 }
 .tiptap p {
   margin: 0;
-  min-height: 1.2em;
-  font-family: 'Minecraft', monospace;
   overflow: hidden;
   white-space: nowrap;
+  font-family: 'Minecraft', monospace;
 }
 .tiptap span {
   font-family: 'Minecraft', monospace;
 }
-.tiptap strong {
+.tiptap strong, .format-b {
   font-weight: bold;
   font-family: 'Minecraft', monospace;
 }
-.tiptap em {
+.tiptap em, .format-i {
   font-style: italic;
   font-family: 'Minecraft', monospace;
 }
-.tiptap u {
+.tiptap u, .format-u {
   text-decoration: underline 2px;
   font-family: 'Minecraft', monospace;
 }

@@ -1,10 +1,10 @@
 <template>
-  <div class="flex items-center justify-end overflow-clip rounded-lg bg-gray-8">
-    <div class="w-full overflow-x-auto whitespace-nowrap p-2.5 font-minecraft">
+  <div class="relative flex items-center justify-end overflow-clip rounded-lg bg-gray-8">
+    <div class="hide-scrollbar w-full overflow-x-auto whitespace-nowrap px-3 py-2.5 font-minecraft">
       {{ generatedCommand }}
     </div>
     <button
-      class="absolute right-5 m-1 size-8 select-none border border-white/8 rounded p-1 backdrop-blur-5 transition-all duration-200"
+      class="absolute right-0 m-1 size-8 select-none border border-white/10 rounded p-1 backdrop-blur-5 transition-all duration-200"
       :class="buttonClass"
       @click="copyCommand">
       <motion.svg
@@ -27,7 +27,7 @@ import type { CommandType, FormattedLines } from '@@/interfaces';
 import { getMinecraftColorFormat } from 'minecraft';
 import { motion } from 'motion-v';
 
-const props = defineProps<{
+const { commandType, formattedLines, signType } = defineProps<{
   formattedLines: FormattedLines;
   signType: string;
   commandType: CommandType;
@@ -38,13 +38,14 @@ const copySuccess = ref(false);
 const animationTimer = ref<number | null>(null);
 
 const generatedCommand = computed(() => {
-  switch (props.commandType) {
+  const messages = formatSignMessages();
+  switch (commandType) {
     case 'give':
-      return generateGiveCommand();
+      return `/give @p ${signType ?? 'oak_sign'}{BlockEntityTag:{front_text:{messages:[${messages.join(',')}]}}} 1`;
     case 'setblock':
-      return generateSetBlockCommand();
+      return `/setblock ~ ~ ~ ${signType ?? 'oak_sign'}{BlockEntityTag:{front_text:{messages:[${messages.join(',')}]}}}`;
     default:
-      return generateDataCommand();
+      return `/data merge block ~ ~ ~ {front_text:{messages:[${messages.join(',')}]}}`;
   }
 });
 
@@ -63,56 +64,11 @@ const iconState = computed(() => {
   }
 });
 
-function generateGiveCommand(): string {
-  const messages = props.formattedLines.map((line) => {
-    if (line.length === 0) {
-      return '""';
-    }
-
-    const segments = line.map((segment) => {
-      const parts = [`text:"${escapeText(segment.text)}"`];
-      if (segment.color) {
-        const formattedColor = getMinecraftColorFormat(segment.color);
-        parts.push(`color:"${formattedColor}"`);
-      }
-      if (segment.bold) {
-        parts.push('bold:true');
-      }
-      if (segment.italic) {
-        parts.push('italic:true');
-      }
-      if (segment.underline) {
-        parts.push('underlined:true');
-      }
-      return `{${parts.join(',')}}`;
-    });
-
-    return `'[${segments.join(',')}]'`;
-  });
-
-  const blockEntityTag = `{BlockEntityTag:{front_text:{messages:[${messages.join(',')}]}}}`;
-
-  return `/give @p ${props.signType ?? 'oak_sign'}${blockEntityTag} 1`;
-}
-
-function generateSetBlockCommand(): string {
-  const messages = formatSignMessages();
-  const blockEntityTag = `{BlockEntityTag:{front_text:{messages:[${messages.join(',')}]}}}`;
-
-  return `/setblock ~ ~ ~ ${props.signType ?? 'oak_sign'}${blockEntityTag}`;
-}
-
-function generateDataCommand(): string {
-  const messages = formatSignMessages();
-
-  return `/data merge block ~ ~ ~ {front_text:{messages:[${messages.join(',')}]}}`;
-}
+const escapeText = (text: string): string => text.replace(/"/g, '\\"');
 
 function formatSignMessages(): string[] {
-  return props.formattedLines.map((line) => {
-    if (line.length === 0) {
-      return '""';
-    }
+  return formattedLines.map((line) => {
+    if (line.length === 0) return '""';
 
     const segments = line.map((segment) => {
       const parts = [`text:"${escapeText(segment.text)}"`];
@@ -120,24 +76,14 @@ function formatSignMessages(): string[] {
         const formattedColor = getMinecraftColorFormat(segment.color);
         parts.push(`color:"${formattedColor}"`);
       }
-      if (segment.bold) {
-        parts.push('bold:true');
-      }
-      if (segment.italic) {
-        parts.push('italic:true');
-      }
-      if (segment.underline) {
-        parts.push('underlined:true');
-      }
+      if (segment.bold) parts.push('bold:true');
+      if (segment.italic) parts.push('italic:true');
+      if (segment.underline) parts.push('underlined:true');
       return `{${parts.join(',')}}`;
     });
 
     return `'[${segments.join(',')}]'`;
   });
-}
-
-function escapeText(text: string): string {
-  return text.replace(/"/g, '\\"');
 }
 
 function copyCommand(): void {
@@ -162,3 +108,13 @@ function copyCommand(): void {
     });
 }
 </script>
+
+<style scoped>
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+</style>

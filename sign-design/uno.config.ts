@@ -6,6 +6,10 @@ export default defineConfig({
     presetTagify(),
   ],
   theme: {
+    colors: {
+      black: '#020205',
+      white: '#FCFCFF',
+    },
     fontFamily: {
       minecraft: ['Minecraft', 'monospace'],
       montserrat: ['Montserrat', 'sans-serif'],

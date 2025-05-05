@@ -4,11 +4,16 @@
   border: solid 0;
   outline: solid 0;
   font-family: 'Montserrat', sans-serif;
-  color: hsl(215, 30%, 98%);
+}
+
+html, body, main, section, div,
+button, input, textarea, select,
+a, p, h1, h2, h3, h4, h5, h6 {
+  color: #FCFCFF;
 }
 
 html, body {
-  background-color: hsl(215 30% 8%);
+  background-color: #0E131B;
 }
 
 button {
@@ -28,7 +33,7 @@ button {
 }
 ::-webkit-scrollbar-thumb {
   border-radius: 4px;
-  background: rgba(128, 128, 130, 0.5);
+  background: #80808280;
   backdrop-filter: blur(5px);
 }
 ::-webkit-scrollbar-button {
@@ -38,8 +43,8 @@ button {
 /********************** TEXT SELECTION ***********************/
 
 ::selection {
-  background-color: rgba(128, 128, 130, 0.5);
+  background-color: #80808280;
 }
 ::-moz-selection {
-  background-color: rgba(128, 128, 130, 0.5);
+  background-color: #80808280;
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto max-w-3xl flex flex-col gap-5 p-5 text-white font-sans">
+  <div class="mx-auto max-w-3xl flex flex-col gap-5 p-5 font-sans">
     <h1 class="select-none text-2xl font-bold">
       Minecraft Sign Editor
     </h1>

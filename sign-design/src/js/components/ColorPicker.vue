@@ -31,7 +31,7 @@
               <!-- HUE SLIDER -->
               <div
                 ref="hueSliderRef"
-                class="relative h-4 cursor-pointer rounded"
+                class="relative h-4 cursor-e-resize rounded"
                 @mousedown="startHueDrag"
                 @touchstart="startHueDrag">
                 <div class="hue-gradient absolute inset-0 rounded" />
@@ -50,7 +50,7 @@
             </div>
             <!-- PREVIEW AND ACTIONS -->
             <div class="flex select-none items-center">
-              <div class="mr-3 h-6 w-6 rounded outline-1 outline-gray-6" :style="{ backgroundColor: HEX }" />
+              <div class="inset-border mr-3 h-6 w-6 rounded" :style="{ backgroundColor: HEX }" />
               <button class="mr-1 cursor-pointer rounded border-none bg-gray-6 p-1 px-2 text-white duration-200 hover:bg-gray-5" @click="applyColor">
                 Apply
               </button>
@@ -405,6 +405,10 @@ watch(() => modelValue, (newValue) => {
 
 .slider-shadow {
   box-shadow: 0 0 4px 3px #0008;
+}
+
+.inset-border {
+  box-shadow: inset 0 0 0 0.5px #FCFCFF60;
 }
 
 .hue-gradient {
