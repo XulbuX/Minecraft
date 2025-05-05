@@ -52,12 +52,12 @@
 </template>
 
 <script setup lang="ts">
-import type { EditorInstance } from '@@/interfaces';
+import type { Editor } from '@tiptap/vue-3';
 import { motion } from 'motion-v';
 import ColorPicker from './ColorPicker.vue';
 
 const { editor } = defineProps<{
-  editor: EditorInstance;
+  editor: Editor;
   minecraftColors: MinecraftColor[];
 }>();
 
@@ -69,15 +69,15 @@ const emit = defineEmits<{
 const customColorValue = ref('#FFFFFF');
 
 function toggleBold() {
-  editor.chain().focus().toggleBold({ keepMarks: true }).run();
+  editor.chain().focus().toggleBold().run();
 }
 
 function toggleItalic() {
-  editor.chain().focus().toggleItalic({ keepMarks: true }).run();
+  editor.chain().focus().toggleItalic().run();
 }
 
 function toggleUnderline() {
-  editor.chain().focus().toggleUnderline({ keepMarks: true }).run();
+  editor.chain().focus().toggleUnderline().run();
 }
 
 const applyCustomColor = () => emit('applyColor', customColorValue.value);

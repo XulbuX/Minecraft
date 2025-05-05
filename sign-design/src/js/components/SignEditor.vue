@@ -2,11 +2,14 @@
   <div>
     <EditorToolbar
       v-if="editor"
-      :editor="editor"
-      :minecraft-colors="minecraftColors"
+      :editor
+      :minecraft-colors
       @apply-color="handleApplyColor"
       @reset-formatting="handleResetFormatting" />
-    <EditorContent class="tiptap font-minecraft duration-200" :editor="editor" :style="editorStyle" />
+    <EditorContent
+      class="tiptap font-minecraft duration-200"
+      :editor
+      :style="editorStyle" />
   </div>
 </template>
 
