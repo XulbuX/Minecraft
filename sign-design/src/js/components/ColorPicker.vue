@@ -1,8 +1,8 @@
 <template>
-  <div class="relative">
+  <div class="relative" :title>
     <div
       ref="colorPickerRef"
-      class="flex cursor-pointer select-none items-center justify-center b-3 border-white/25 rounded-md px-1.5 py-0.5 font-mono"
+      class="inset-border h-6 flex cursor-pointer select-none items-center justify-center rounded-md px-1.5 font-mono"
       :style="colorPickerButtonStyle(modelValue)"
       @click="togglePicker">
       {{ modelValue }}
@@ -10,6 +10,7 @@
     <Teleport to="body">
       <div v-if="isOpen" class="fixed inset-0 z-50">
         <div
+          ref="popupRef"
           v-on-click-outside="handleClickOutside"
           class="widget-shadow absolute border border-white/10 rounded-lg bg-gray-7/80 p-3 backdrop-blur-5"
           :style="popupPosition">
@@ -68,11 +69,10 @@
 <script setup lang="ts">
 import { vOnClickOutside } from '@vueuse/components';
 
-type Props = {
+const { modelValue } = defineProps<{
   modelValue: string;
-};
-
-const { modelValue } = defineProps<Props>();
+  title?: string;
+}>();
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void;
@@ -84,6 +84,7 @@ const isDraggingHue = ref(false);
 const isDraggingSatVal = ref(false);
 const justFinishedDragging = ref(false);
 
+const popupRef = ref<HTMLElement | null>(null);
 const popupPosition = ref({ left: '0px', top: '0px' });
 const colorPickerRef = ref<HTMLElement | null>(null);
 const satValAreaRef = ref<HTMLElement | null>(null);
@@ -216,13 +217,55 @@ function initializeFromHex(hexColor: string) {
 
 initializeFromHex(modelValue);
 
+function calculateAndSetPopupPosition() {
+  if (!isOpen.value) return;
+
+  nextTick(() => {
+    const buttonRect = colorPickerRef.value?.getBoundingClientRect();
+    const popupEl = popupRef.value;
+
+    if (buttonRect && popupEl) {
+      const margin = 10;
+      const popupWidth = popupEl.offsetWidth;
+      const popupHeight = popupEl.offsetHeight;
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      let newLeft = buttonRect.left;
+      let newTop = buttonRect.bottom + 5;
+
+      if (newLeft + popupWidth > viewportWidth - margin) {
+        newLeft = viewportWidth - popupWidth - margin;
+      }
+      if (newLeft < margin) newLeft = margin;
+      if (newTop + popupHeight > viewportHeight - margin) {
+        const topAbove = buttonRect.top - popupHeight - 5;
+        if (topAbove >= margin) {
+          newTop = topAbove;
+        }
+        else {
+          newTop = viewportHeight - popupHeight - margin;
+        }
+      }
+      if (newTop < margin) {
+        newTop = margin;
+      }
+
+      newLeft = Math.max(margin, Math.min(newLeft, viewportWidth - popupWidth - margin));
+      newTop = Math.max(margin, Math.min(newTop, viewportHeight - popupHeight - margin));
+
+      popupPosition.value = { left: `${newLeft}px`, top: `${newTop}px` };
+    }
+    else if (buttonRect) {
+      popupPosition.value = { left: `${buttonRect.left}px`, top: `${buttonRect.bottom + 5}px` };
+    }
+  });
+}
+
 function togglePicker() {
   isOpen.value = !isOpen.value;
   if (isOpen.value) {
-    nextTick(() => {
-      const rect = colorPickerRef.value?.getBoundingClientRect();
-      if (rect) popupPosition.value = { left: `${rect.left}px`, top: `${rect.bottom + 5}px` };
-    });
+    calculateAndSetPopupPosition(); // Calculate position when opening
   }
 }
 
@@ -379,22 +422,24 @@ watch([HUE, SAT, VAL], () => {
 watch(isOpen, (newValue) => {
   if (newValue) {
     initializeFromHex(modelValue);
+    window.addEventListener('resize', calculateAndSetPopupPosition);
+    calculateAndSetPopupPosition();
   }
   else {
+    window.removeEventListener('resize', calculateAndSetPopupPosition);
     stopHueDrag();
     stopSatValDrag();
   }
 });
 
 onUnmounted(() => {
+  window.removeEventListener('resize', calculateAndSetPopupPosition);
   stopHueDrag();
   stopSatValDrag();
 });
 
 watch(() => modelValue, (newValue) => {
-  if (!isOpen.value && newValue !== HEX.value) {
-    initializeFromHex(newValue);
-  }
+  if (!isOpen.value && newValue !== HEX.value) initializeFromHex(newValue);
 });
 </script>
 
@@ -402,7 +447,6 @@ watch(() => modelValue, (newValue) => {
 .widget-shadow {
   box-shadow: 0 0 10px 2px #03030580;
 }
-
 .slider-shadow {
   box-shadow: 0 0 4px 3px #0008;
 }

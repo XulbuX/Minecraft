@@ -1,10 +1,10 @@
 <template>
-  <div class="relative flex items-center justify-end overflow-clip border border-white/10 rounded-lg bg-gray-8">
+  <div class="shadow-x relative flex items-center justify-end overflow-clip border border-white/10 rounded-lg bg-gray-8">
     <div class="hide-scrollbar w-full overflow-x-auto whitespace-nowrap px-3 py-2.5 font-minecraft">
       {{ generatedCommand }}
     </div>
     <button
-      class="absolute right-0 m-1 size-8 select-none border border-white/10 rounded p-1 backdrop-blur-5 transition-all duration-200"
+      class="absolute right-0 z-10 m-1 size-8 select-none border border-white/10 rounded p-1 backdrop-blur-5 transition-all duration-200"
       :class="buttonClass"
       @click="copyCommand">
       <motion.svg
@@ -42,9 +42,7 @@ const generatedCommand = computed(() => {
   const backMessages = formatSignMessages(formattedLines.back);
   const frontTextTag = `front_text:{messages:[${frontMessages.join(',')}]}`;
   const backTextTag = `back_text:{messages:[${backMessages.join(',')}]}`;
-
-  const hasBackContent = formattedLines.back.some(line => line.length > 0);
-  const backTagPart = hasBackContent ? `,${backTextTag}` : '';
+  const backTagPart = formattedLines.back.some(line => line.length > 0) ? `,${backTextTag}` : '';
 
   switch (commandType) {
     case 'give':
@@ -84,7 +82,12 @@ function formatSignMessages(lines: TextSegment[][]): string[] {
         parts.push(`color:"${formattedColor}"`);
       }
       if (segment.bold) parts.push('bold:true');
-      if (segment.italic) parts.push('italic:true');
+      if (segment.italic) {
+        parts.push('italic:true');
+      }
+      else {
+        parts.push('italic:false');
+      };
       if (segment.underline) parts.push('underlined:true');
       return `{${parts.join(',')}}`;
     });
@@ -117,6 +120,27 @@ function copyCommand(): void {
 </script>
 
 <style scoped>
+.shadow-x::before,
+.shadow-x::after {
+  content: '';
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 12px;
+  position: absolute;
+  pointer-events: none;
+}
+
+.shadow-x::before {
+  left: 0;
+  background: linear-gradient(to right, #1F2937, transparent);
+}
+
+.shadow-x::after {
+  right: 0;
+  background: linear-gradient(to left, #1F2937, transparent);
+}
+
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;

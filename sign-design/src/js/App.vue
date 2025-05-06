@@ -8,7 +8,7 @@
       :options="MC_SIGNS_ARRAY"
       placeholder="Select a sign type"
       @update:model-value="signType = $event" />
-    <SignEditor
+    <SignEditors
       ref="signEditor"
       v-model="formattedLines"
       :max-line-width-px="200"
@@ -23,12 +23,12 @@
 
 <script setup lang="ts">
 import type { CommandType, FormattedLines } from '@@/interfaces';
-import SignEditor from '@@/components/SignEditor.vue';
+import SignEditors from '@/js/components/SignEditors.vue';
 import { MC_COLORS_ARRAY, MC_SIGNS_ARRAY } from 'minecraft';
 
 const signType = ref('oak_sign');
 const commandType = ref('give' as CommandType);
-const signEditor = ref<InstanceType<typeof SignEditor> | null>(null);
+const signEditor = ref<InstanceType<typeof SignEditors> | null>(null);
 const formattedLines = ref<FormattedLines>({ back: [[], [], [], []], front: [[], [], [], []] });
 
 const selectedSignDetails = computed<SignType | undefined>(() => {

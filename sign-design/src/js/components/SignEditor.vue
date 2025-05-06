@@ -1,30 +1,28 @@
 <template>
-  <div>
-    <EditorToolbar
-      :editor="activeEditor"
-      :minecraft-colors
-      @apply-color="applyColorToSelection"
-      @reset-formatting="resetFormatting" />
+  <div class="flex flex-col items-center justify-center gap-3">
     <div
-      class="top-shadow flex items-center justify-center gap-3 border border-t-0 border-white/10 rounded-b-lg p-3 duration-200"
-      :style="{ backgroundColor: `${textAreaBg}CC` }">
-      <EditorContent
-        class="tiptap h-19 rounded p-2 text-center shadow-md duration-200"
-        :class="signTypeDetails?.isDark ? 'border-white/10' : 'border-black/10'"
-        :editor-1
-        :style="textAreaStyle" />
-      <EditorContent
-        class="tiptap h-19 rounded p-2 text-center shadow-md duration-200"
-        :class="signTypeDetails?.isDark ? 'border-white/10' : 'border-black/10'"
-        :editor-2
-        :style="textAreaStyle" />
+      v-if="!labelBelow"
+      class="text-lg font-700"
+      :class="signTypeDetails?.isDark ? 'text-white/20' : 'text-black/20'">
+      {{ label }}
+    </div>
+    <EditorContent
+      class="tiptap h-19 border-3 rounded p-2 text-center shadow-md duration-200"
+      :class="signTypeDetails?.isDark ? 'border-white/5' : 'border-black/10'"
+      :editor="tiptapEditor"
+      :style="textAreaStyle" />
+    <div
+      v-if="labelBelow"
+      class="text-lg font-700"
+      :class="signTypeDetails?.isDark ? 'text-white/20' : 'text-black/20'">
+      {{ label }}
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { FormattedLines, TextSegment } from '@@/interfaces';
-import type { Editor, EditorOptions } from '@tiptap/vue-3';
+import type { TextSegment } from '@@/interfaces';
+import type { EditorOptions, Editor as TiptapEditor } from '@tiptap/vue-3';
 import type { Node as EditorNode } from 'prosemirror-model';
 import type { EditorView } from 'prosemirror-view';
 import Bold from '@tiptap/extension-bold';
@@ -34,113 +32,170 @@ import TextStyle from '@tiptap/extension-text-style';
 import Underline from '@tiptap/extension-underline';
 import StarterKit from '@tiptap/starter-kit';
 import { EditorContent, useEditor } from '@tiptap/vue-3';
-import EditorToolbar from './EditorToolbar.vue';
 
-const { maxLineWidthPx, modelValue, signTypeDetails } = defineProps<{
-  modelValue: FormattedLines;
-  signTypeDetails?: SignType;
+const props = defineProps<{
+  label: string;
+  labelBelow?: boolean;
   maxLineWidthPx: number;
-  minecraftColors: MinecraftColor[];
+  signTypeDetails?: any;
+  textAreaBg: string;
+  value: TextSegment[][];
 }>();
 
-const emit = defineEmits<{ (e: 'update:modelValue', value: FormattedLines): void }>();
+const emit = defineEmits<{
+  (e: 'update:value', value: TextSegment[][]): void;
+  (e: 'editorFocus', editor: TiptapEditor): void;
+}>();
 
-const textAreaBg = computed(() => signTypeDetails?.hex ?? '#374151');
 const textAreaStyle = computed(() => ({
-  width: `${maxLineWidthPx + 4}px`,
-  backgroundColor: textAreaBg.value,
+  width: `${props.maxLineWidthPx + 4}px`,
+  backgroundColor: props.textAreaBg,
 }));
 
-const editorConfig: Partial<EditorOptions> = {
-  content: '<p></p><p></p><p></p><p></p>',
+function segmentsToProseMirrorDoc(lines: TextSegment[][]): Record<string, any> {
+  const content = lines.map((line) => {
+    if (!line || line.length === 0) return { type: 'paragraph' };
+    return {
+      content: line.map((segment) => {
+        const marks = [];
+        if (segment.bold) marks.push({ type: 'bold' });
+        if (segment.italic) marks.push({ type: 'italic' });
+        if (segment.underline) marks.push({ type: 'underline' });
+        if (segment.color) marks.push({ attrs: { color: segment.color }, type: 'textStyle' });
+        return {
+          marks: marks.length > 0 ? marks : undefined,
+          text: segment.text,
+          type: 'text',
+        };
+      }),
+      type: 'paragraph',
+    };
+  });
+  while (content.length < 4) {
+    content.push({ type: 'paragraph' });
+  }
+  return { content: content.slice(0, 4), type: 'doc' };
+}
+
+const editorExtensions: EditorOptions['extensions'] = [
+  StarterKit.configure({
+    blockquote: false,
+    bold: false,
+    bulletList: false,
+    codeBlock: false,
+    dropcursor: false,
+    gapcursor: false,
+    hardBreak: false,
+    heading: false,
+    horizontalRule: false,
+    italic: false,
+    listItem: false,
+    orderedList: false,
+    paragraph: {},
+  }),
+  Bold.configure({ HTMLAttributes: { class: 'font-minecraft' } }),
+  Italic.configure({ HTMLAttributes: { class: 'font-minecraft' } }),
+  Underline.configure({ HTMLAttributes: { class: 'font-minecraft' } }),
+  TextStyle,
+  Color,
+];
+
+const tiptapEditor = useEditor({
+  content: segmentsToProseMirrorDoc(props.value),
   editorProps: {
     handleKeyDown: (view, event) => {
-      if (event.key === 'Enter' && view.state.doc.content.childCount >= 4) {
+      const { state } = view;
+      const { doc, selection } = state;
+      const { $from, $to, empty } = selection;
+
+      if (event.key === 'Enter') {
+        if (tiptapEditor.value) {
+          const currentLineIndex = $from.index($from.depth - 1);
+          const totalLines = doc.childCount;
+          if (currentLineIndex < totalLines - 1) {
+            let nextLineContentStartPosition = 0;
+            for (let i = 0; i <= currentLineIndex; i++) {
+              nextLineContentStartPosition += doc.child(i).nodeSize;
+            }
+            const targetPos = nextLineContentStartPosition + 1;
+            tiptapEditor.value.chain().focus().setTextSelection(targetPos).run();
+          }
+        }
         return true;
+      }
+
+      if (event.key === 'Backspace') {
+        if (empty) {
+          if ($from.parentOffset === 0 && $from.index($from.depth - 1) > 0) {
+            return true;
+          }
+        }
+        else if ($from.parent !== $to.parent) {
+          return true;
+        }
+      }
+
+      if (event.key === 'Delete') {
+        if (empty) {
+          const currentParagraphNode = $from.parent;
+          const currentLineIndex = $from.index($from.depth - 1);
+          const isNotLastLine = currentLineIndex < doc.childCount - 1;
+
+          if ($from.parentOffset === currentParagraphNode.content.size
+            && currentParagraphNode.content.size > 0
+            && isNotLastLine) {
+            return true;
+          }
+          if (currentParagraphNode.content.size === 0) {
+            return true;
+          }
+        }
+        else if ($from.parent !== $to.parent) {
+          return true;
+        };
       }
       return false;
     },
-    handlePaste: (view, _, slice) => {
+    handlePaste: (view, event, slice) => {
       const { state } = view;
-      const currentLineCount = state.doc.content.childCount;
-      let pastedLineCount = 0;
-      slice.content.forEach((node) => {
-        if (node.type.name === 'paragraph') {
-          pastedLineCount++;
-        }
-      });
-      const potentialLineCount = currentLineCount + pastedLineCount - (pastedLineCount > 0 ? 1 : 0);
-      if (potentialLineCount > 4) {
-        return true;
-      }
+      const { selection } = state;
+      const { $from, $to } = selection;
+      if (slice.content.childCount > 1) return true;
+      if ($from.parent !== $to.parent) return true;
       return false;
     },
     handleTextInput: (view, from, to, text) => {
-      const { state } = view;
-      const transaction = state.tr.insertText(text, from, to);
-      const nodeCount = transaction.doc.content.childCount;
-
-      if (text === '\n' && nodeCount >= 4) {
-        return true;
-      }
-
-      if (maxLineWidthExceeded(view, from, text)) {
-        return true;
-      }
-
-      view.dispatch(transaction);
-      return true;
+      if (text.includes('\n')) return true;
+      if (maxLineWidthExceeded(view, from, text)) return true;
+      return false;
     },
   },
-  extensions: [
-    StarterKit.configure({
-      blockquote: false,
-      bold: false,
-      bulletList: false,
-      codeBlock: false,
-      dropcursor: false,
-      gapcursor: false,
-      hardBreak: false,
-      heading: false,
-      horizontalRule: false,
-      italic: false,
-      listItem: false,
-      orderedList: false,
-      paragraph: {},
-    }),
-    Bold.configure({ HTMLAttributes: { class: 'font-minecraft' } }),
-    Italic.configure({ HTMLAttributes: { class: 'font-minecraft' } }),
-    Underline.configure({ HTMLAttributes: { class: 'font-minecraft' } }),
-    TextStyle,
-    Color,
-  ],
-};
-
-const editor1 = useEditor({
-  ...editorConfig,
-  onUpdate: ({ editor }) => {
-    const frontData = transformToCustomJson(editor.getJSON());
-    emit('update:modelValue', { ...modelValue, front: frontData });
+  extensions: editorExtensions,
+  onFocus: () => {
+    if (tiptapEditor.value) emit('editorFocus', tiptapEditor.value);
+  },
+  onUpdate: ({ editor: updatedEditor }) => {
+    const currentData = transformToCustomJson(updatedEditor.getJSON());
+    emit('update:value', currentData);
   },
 });
 
-const editor2 = useEditor({
-  ...editorConfig,
-  onUpdate: ({ editor }) => {
-    const backData = transformToCustomJson(editor.getJSON());
-    emit('update:modelValue', { ...modelValue, back: backData });
-  },
-});
+watch(() => props.value, (newValue) => {
+  if (tiptapEditor.value) {
+    const editorJson = tiptapEditor.value.getJSON();
+    const editorContentAsCustomJson = transformToCustomJson(editorJson);
+    if (JSON.stringify(editorContentAsCustomJson) !== JSON.stringify(newValue)) {
+      tiptapEditor.value.commands.setContent(segmentsToProseMirrorDoc(newValue), false);
+    }
+  }
+}, { deep: true });
 
-const activeEditor = computed<Editor | undefined>(() => {
-  if (editor1.value?.isFocused) return editor1.value;
-  if (editor2.value?.isFocused) return editor2.value;
-  return editor1.value;
+onBeforeUnmount(() => {
+  tiptapEditor.value?.destroy();
 });
 
 function maxLineWidthExceeded(view: EditorView, pos: number, newText: string): boolean {
   if (!view || !newText) return false;
-
   const { state } = view;
   const $pos = state.doc.resolve(pos);
   const paragraph = $pos.parent;
@@ -164,7 +219,7 @@ function maxLineWidthExceeded(view: EditorView, pos: number, newText: string): b
   const width = testElement.getBoundingClientRect().width;
   document.body.removeChild(testElement);
 
-  return width > maxLineWidthPx;
+  return width > props.maxLineWidthPx;
 }
 
 function transformToCustomJson(proseMirrorJson: any): TextSegment[][] {
@@ -195,17 +250,25 @@ function transformToCustomJson(proseMirrorJson: any): TextSegment[][] {
           }
 
           const lastSegment = line[line.length - 1];
-          if (lastSegment
+          if (
+            lastSegment
             && !!lastSegment.bold === !!segment.bold
             && !!lastSegment.italic === !!segment.italic
             && !!lastSegment.underline === !!segment.underline
-            && lastSegment.color === segment.color) {
+            && lastSegment.color === segment.color
+          ) {
             lastSegment.text += segment.text;
           }
           else {
-            if (segment.bold === undefined) segment.bold = false;
-            if (segment.italic === undefined) segment.italic = false;
-            if (segment.underline === undefined) segment.underline = false;
+            if (segment.bold === undefined) {
+              segment.bold = false;
+            }
+            if (segment.italic === undefined) {
+              segment.italic = false;
+            }
+            if (segment.underline === undefined) {
+              segment.underline = false;
+            }
             line.push(segment);
           }
         }
@@ -220,35 +283,9 @@ function transformToCustomJson(proseMirrorJson: any): TextSegment[][] {
 
   return result.slice(0, 4);
 }
-
-function applyColorToSelection(color: string) {
-  const targetEditor = activeEditor.value;
-  if (!targetEditor) return;
-  if (color) {
-    targetEditor.chain().focus().setColor(color).run();
-  }
-  else {
-    targetEditor.chain().focus().unsetColor().run();
-  }
-}
-
-function resetFormatting() {
-  const targetEditor = activeEditor.value;
-  if (!targetEditor) return;
-  targetEditor.chain().focus().unsetColor().unsetBold().unsetItalic().unsetUnderline().run();
-}
-
-onBeforeUnmount(() => {
-  editor1.value?.destroy();
-  editor2.value?.destroy();
-});
 </script>
 
 <style>
-.top-shadow {
-  box-shadow: inset 0 5px 5px 0 #03030520;
-}
-
 .tiptap p {
   margin: 0;
   overflow: hidden;
