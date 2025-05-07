@@ -1,5 +1,5 @@
 <template>
-  <div v-on-click-outside="closeDropdown" class="relative z-1000 max-w-300px w-full select-none">
+  <div v-on-click-outside="closeDropdown" class="relative z-1000 max-w-70 min-w-40 w-1/2 select-none">
     <div
       class="flex cursor-pointer items-center justify-between rounded-lg p-3 outline-1 outline-white/20 duration-200"
       :class="{
@@ -12,7 +12,7 @@
       <span class="truncate">{{ selectedOption ? selectedOption.label : placeholder }}</span>
       <motion.svg
         :animate="{ rotate: isOpen ? 180 : 0 }"
-        class="ml-2 h-4 w-4"
+        class="ml-2 size-4 min-w-4"
         fill="none"
         :initial="{ rotate: 0 }"
         stroke="currentColor"
