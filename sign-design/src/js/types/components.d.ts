@@ -10,6 +10,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     ColorControls: typeof import('./../components/ColorControls.vue')['default']
     ColorPicker: typeof import('./../components/ColorPicker.vue')['default']
+    Command: typeof import('./../components/Command.vue')['default']
     CommandOutput: typeof import('./../components/CommandOutput.vue')['default']
     Editor: typeof import('../components/SignEditor.vue')['default']
     EditorToolbar: typeof import('./../components/EditorToolbar.vue')['default']

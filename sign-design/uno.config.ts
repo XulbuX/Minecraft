@@ -11,6 +11,7 @@ export default defineConfig({
       white: '#FCFCFF',
     },
     fontFamily: {
+      jetbrains: ['JetBrains Mono', 'monospace'],
       minecraft: ['Minecraft', 'monospace'],
       montserrat: ['Montserrat', 'sans-serif'],
     },

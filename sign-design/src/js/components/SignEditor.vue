@@ -2,7 +2,7 @@
   <div class="flex flex-col items-center justify-center gap-3">
     <div
       v-if="!labelBelow"
-      class="text-lg font-700"
+      class="select-none text-lg font-700"
       :class="signTypeDetails?.isDark ? 'text-white/20' : 'text-black/20'">
       {{ label }}
     </div>
@@ -13,7 +13,7 @@
       :style="textAreaStyle" />
     <div
       v-if="labelBelow"
-      class="text-lg font-700"
+      class="select-none text-lg font-700"
       :class="signTypeDetails?.isDark ? 'text-white/20' : 'text-black/20'">
       {{ label }}
     </div>

@@ -1,10 +1,8 @@
 <template>
   <div class="shadow-x relative flex items-center justify-end overflow-clip border border-white/10 rounded-lg bg-gray-8">
-    <div class="hide-scrollbar w-full overflow-x-auto whitespace-nowrap px-3 py-2.5 font-minecraft">
-      {{ generatedCommand }}
-    </div>
+    <Command :generated-command />
     <button
-      class="absolute right-0 z-10 m-1 size-8 select-none border border-white/10 rounded p-1 backdrop-blur-5 transition-all duration-200"
+      class="absolute right-0 top-0 z-10 m-1 size-8 select-none border border-white/10 rounded p-1 backdrop-blur-5 transition-all duration-200"
       :class="buttonClass"
       @click="copyCommand">
       <motion.svg
@@ -139,13 +137,5 @@ function copyCommand(): void {
 .shadow-x::after {
   right: 0;
   background: linear-gradient(to left, #1F2937, transparent);
-}
-
-.hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
 }
 </style>

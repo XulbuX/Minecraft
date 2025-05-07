@@ -1,5 +1,6 @@
 <template>
-  <div class="mx-auto max-w-3xl flex flex-col gap-5 p-5 font-sans">
+  <div class="relative mx-auto max-w-3xl flex flex-col gap-5 p-5 font-sans">
+    <div id="top-fadeout" />
     <h1 class="select-none text-2xl font-bold">
       Minecraft Sign Editor
     </h1>
@@ -18,6 +19,7 @@
       :command-type="commandType"
       :formatted-lines
       :sign-type="signType" />
+    <div id="bottom-fadeout" />
   </div>
 </template>
 
@@ -35,3 +37,24 @@ const selectedSignDetails = computed<SignType | undefined>(() => {
   return MC_SIGNS_ARRAY.find(s => s.value === signType.value);
 });
 </script>
+
+<style scoped>
+#top-fadeout,
+#bottom-fadeout {
+  z-index: 1000;
+  content: '';
+  left: 0;
+  right: 0;
+  height: 1.25rem;
+  position: fixed;
+  pointer-events: none;
+}
+#top-fadeout {
+  top: 0;
+  background: linear-gradient(to bottom, #0E131BAA, transparent);
+}
+#bottom-fadeout {
+  bottom: 0;
+  background: linear-gradient(to top, #0E131BAA, transparent);
+}
+</style>
