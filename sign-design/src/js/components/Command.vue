@@ -135,19 +135,21 @@ const formattedDisplayCommand = computed(() => {
   display: none;
 }
 
-.command-text {
+.command-text,
+.command-text * {
   margin: 0;
   text-align: left;
   word-break: break-all;
   white-space: pre-wrap;
+  font-family: 'JetBrains', monospace;
 }
 
 /* SYNTAX HIGHLIGHTING */
-.command-text ::v-deep(.token-command) { font-family: 'JetBrains', monospace; color: #569CD6; font-weight: bold; }
-.command-text ::v-deep(.token-selector) { font-family: 'JetBrains', monospace; color: #C586C0; }
-.command-text ::v-deep(.token-keyword) { font-family: 'JetBrains', monospace; color: #9CDCFE; }
-.command-text ::v-deep(.token-string) { font-family: 'JetBrains', monospace; color: #CE9178; }
-.command-text ::v-deep(.token-number) { font-family: 'JetBrains', monospace; color: #B5CEA8; }
-.command-text ::v-deep(.token-boolean) { font-family: 'JetBrains', monospace; color: #569CD6; }
-.command-text ::v-deep(.token-punctuation) { font-family: 'JetBrains', monospace; color: #D4D4D4; }
+.command-text ::v-deep(.token-command) { color: #72A8F8; font-weight: bold; }
+.command-text ::v-deep(.token-selector) { color: #80EEC5; }
+.command-text ::v-deep(.token-keyword) { color: #A1DBFB; }
+.command-text ::v-deep(.token-string) { color: #9198F8; }
+.command-text ::v-deep(.token-number) { color: #CA7DF8; }
+.command-text ::v-deep(.token-boolean) { color: #B1CBFB; }
+.command-text ::v-deep(.token-punctuation) { color: #D0D0D5; }
 </style>
