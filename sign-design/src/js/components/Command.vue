@@ -135,6 +135,13 @@ const formattedDisplayCommand = computed(() => {
   display: none;
 }
 
+.command-text {
+  margin: 0;
+  text-align: left;
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
 /* SYNTAX HIGHLIGHTING */
 .command-text ::v-deep(.token-command) { font-family: 'JetBrains', monospace; color: #569CD6; font-weight: bold; }
 .command-text ::v-deep(.token-selector) { font-family: 'JetBrains', monospace; color: #C586C0; }
@@ -143,11 +150,4 @@ const formattedDisplayCommand = computed(() => {
 .command-text ::v-deep(.token-number) { font-family: 'JetBrains', monospace; color: #B5CEA8; }
 .command-text ::v-deep(.token-boolean) { font-family: 'JetBrains', monospace; color: #569CD6; }
 .command-text ::v-deep(.token-punctuation) { font-family: 'JetBrains', monospace; color: #D4D4D4; }
-
-.command-text {
-  margin: 0;
-  text-align: left;
-  word-break: break-all;
-  white-space: pre-wrap;
-}
 </style>
