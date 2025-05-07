@@ -1,9 +1,10 @@
 <template>
   <div v-on-click-outside="closeDropdown" class="relative z-10 max-w-70 min-w-40 w-1/2 select-none">
     <div
-      class="flex cursor-pointer items-center justify-between rounded-lg p-3 outline-1 outline-white/20 duration-200"
+      class="flex cursor-pointer items-center justify-between rounded-lg p-3 duration-200"
       :class="{
-        'rounded-b-0': isOpen,
+        'outline-x-t rounded-b-0': isOpen,
+        'outline-full': !isOpen,
         'text-white!': selectedOption?.isDark,
         'text-black!': !selectedOption?.isDark,
       }"
@@ -24,8 +25,8 @@
     <AnimatePresence>
       <motion.div
         v-if="isOpen"
-        :animate="{ opacity: 1, y: 0 }"
-        class="absolute max-h-62 w-full flex flex-col overflow-y-auto rounded-b-lg bg-gray-8/90 shadow-lg outline-1 outline-white/20 backdrop-blur-5"
+        :animate="{ opacity: 0, y: 0 }"
+        class="outline-x-b absolute max-h-62 w-full flex flex-col overflow-y-auto rounded-b-lg bg-gray-8/90 shadow-lg backdrop-blur-5"
         :exit="{ opacity: 0, y: -10 }"
         :initial="{ opacity: 0, y: -10 }"
         :transition="{ duration: 0.2 }">
@@ -83,3 +84,25 @@ function selectOption(option: Option) {
   closeDropdown();
 }
 </script>
+
+<style scoped>
+.outline-full {
+  box-shadow: inset
+    0.25px 0 0 0 var(--white-10),
+    0.65px 0 0 0 var(--white-10),
+    0 -0.65px 0 0 var(--white-10),
+    0 0.5px 0 0 var(--white-10);
+}
+.outline-x-t {
+  box-shadow: inset
+    0.25px 0 0 0 var(--white-10),
+    0.65px 0 0 0 var(--white-10),
+    0 -0.65px 0 0 var(--white-10);
+}
+.outline-x-b {
+  box-shadow: inset
+    -0.5px 0 0 0 var(--white-10),
+    -0.5px 0 0 0 var(--white-10),
+    0 0.5px 0 0 var(--white-10);
+}
+</style>

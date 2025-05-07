@@ -149,7 +149,7 @@ const formattedDisplayCommand = computed(() => {
 .command-text ::v-deep(.token-selector) { color: #80EEC5; }
 .command-text ::v-deep(.token-keyword) { color: #A1DBFB; }
 .command-text ::v-deep(.token-string) { color: #9198F8; }
-.command-text ::v-deep(.token-number) { color: #CA7DF8; }
+.command-text ::v-deep(.token-number) { color: #F1A273; }
 .command-text ::v-deep(.token-boolean) { color: #B1CBFB; }
 .command-text ::v-deep(.token-punctuation) { color: #D0D0D5; }
 </style>

@@ -1,3 +1,14 @@
+:root {
+  --white: #FCFCFF;
+  --white-20: #FCFCFF33;
+  --white-10: #f008;
+  --black: #030305;
+  --black-20: #03030533;
+  --black-10: #0303051A;
+}
+
+/************************** RESETS ***************************/
+
 * {
   margin: 0;
   padding: 0;
@@ -9,7 +20,7 @@
 html, body, main, section, div,
 button, input, textarea, select,
 a, p, h1, h2, h3, h4, h5, h6 {
-  color: #FCFCFF;
+  color: var(--white);
 }
 
 html, body {
@@ -19,7 +30,6 @@ html, body {
 button {
   cursor: pointer;
 }
-
 
 /************************* SCROLLBAR *************************/
 
