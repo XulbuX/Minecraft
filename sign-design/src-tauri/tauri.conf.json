@@ -14,9 +14,9 @@
     "windows": [{
       "title": "Sign Design • XulbuX",
       "width": 700,
-      "height": 632,
-      "minWidth": 310,
-      "minHeight": 632,
+      "height": 650,
+      "minWidth": 325,
+      "minHeight": 600,
       "center": true,
       "resizable": true,
       "fullscreen": false,

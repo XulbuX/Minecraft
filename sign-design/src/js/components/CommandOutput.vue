@@ -53,8 +53,8 @@ const generatedCommand = computed(() => {
 });
 
 const buttonClass = computed(() => {
-  if (!copied.value) return 'bg-gray-6/50 hover:bg-gray-5/50';
-  return copySuccess.value ? 'bg-teal-4/40' : 'bg-red-4/40';
+  if (!copied.value) return 'color-white bg-gray-600/50 hover:bg-gray-500/50';
+  return copySuccess.value ? 'color-teal-300 bg-teal-400/40' : 'color-red-300 bg-red-400/40';
 });
 
 const iconState = computed(() => {

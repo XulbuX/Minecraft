@@ -1,5 +1,5 @@
 <template>
-  <div v-on-click-outside="closeDropdown" class="relative z-1000 max-w-70 min-w-40 w-1/2 select-none">
+  <div v-on-click-outside="closeDropdown" class="relative z-10 max-w-70 min-w-40 w-1/2 select-none">
     <div
       class="flex cursor-pointer items-center justify-between rounded-lg p-3 outline-1 outline-white/20 duration-200"
       :class="{
