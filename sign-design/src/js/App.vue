@@ -1,9 +1,12 @@
 <template>
   <div class="relative mx-auto max-w-3xl flex flex-col gap-5 p-5 font-sans">
     <div id="top-fadeout" />
-    <h1 class="select-none text-2xl font-bold">
-      Minecraft Sign Editor
-    </h1>
+    <div class="flex items-center justify-between">
+      <h1 class="select-none text-2xl font-bold">
+        Minecraft Sign Editor
+      </h1>
+      <ThemeSwitcher />
+    </div>
     <SignTypeSelect
       :model-value="signType"
       :options="MC_SIGNS_ARRAY"
@@ -26,6 +29,7 @@
 <script setup lang="ts">
 import type { CommandType, FormattedLines } from '@@/interfaces';
 import SignEditors from '@/js/components/SignEditors.vue';
+import ThemeSwitcher from '@/js/components/ThemeSwitcher.vue';
 import { MC_COLORS_ARRAY, MC_SIGNS_ARRAY } from 'minecraft';
 
 const signType = ref('oak_sign');
@@ -51,10 +55,10 @@ const selectedSignDetails = computed<SignType | undefined>(() => {
 }
 #top-fadeout {
   top: 0;
-  background: linear-gradient(to bottom, #0E131BAA, transparent);
+  background: linear-gradient(to bottom, var(--fadeout-color, #0E131BAA), transparent);
 }
 #bottom-fadeout {
   bottom: 0;
-  background: linear-gradient(to top, #0E131BAA, transparent);
+  background: linear-gradient(to top, var(--fadeout-color, #0E131BAA), transparent);
 }
 </style>

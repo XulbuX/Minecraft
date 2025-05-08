@@ -2,7 +2,9 @@ import { defineConfig, presetTagify, presetWind3 } from 'unocss';
 
 export default defineConfig({
   presets: [
-    presetWind3(),
+    presetWind3({
+      darkMode: 'class',
+    }),
     presetTagify(),
   ],
   theme: {

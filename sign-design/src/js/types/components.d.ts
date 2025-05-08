@@ -16,5 +16,6 @@ declare module 'vue' {
     SignEditor: typeof import('./../components/SignEditor.vue')['default']
     SignEditors: typeof import('./../components/SignEditors.vue')['default']
     SignTypeSelect: typeof import('./../components/SignTypeSelect.vue')['default']
+    ThemeSwitcher: typeof import('./../components/ThemeSwitcher.vue')['default']
   }
 }
