@@ -139,8 +139,6 @@ const formattedDisplayCommand = computed(() => {
 .command-text * {
   margin: 0;
   text-align: left;
-  word-break: break-all;
-  white-space: pre-wrap;
   font-family: 'JetBrains', monospace;
 }
 
