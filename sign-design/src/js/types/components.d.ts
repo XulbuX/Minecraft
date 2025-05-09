@@ -18,4 +18,7 @@ declare module 'vue' {
     SignTypeSelect: typeof import('./../components/SignTypeSelect.vue')['default']
     ThemeSwitcher: typeof import('./../components/ThemeSwitcher.vue')['default']
   }
+  export interface ComponentCustomProperties {
+    OnClickOutside: typeof import('@vueuse/components')['vOnClickOutside']
+  }
 }
