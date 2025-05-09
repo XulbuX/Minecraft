@@ -12,7 +12,7 @@
         <div
           ref="popupRef"
           v-on-click-outside="handleClickOutside"
-          class="widget-shadow absolute border border-white/10 rounded-lg bg-gray-7/80 p-3 backdrop-blur-5"
+          class="widget-shadow absolute border border-black/5 rounded-lg bg-gray-2/80 p-3 backdrop-blur-5 dark:border-white/10 dark:bg-gray-7/80"
           :style="popupPosition">
           <div class="w-60">
             <div class="mb-3 space-y-3">
@@ -45,7 +45,7 @@
             <div class="mb-3 flex items-center">
               <input
                 v-model="HEX"
-                class="flex-1 rounded bg-gray-9/30 p-1 text-white font-mono outline-1 outline-white/10"
+                class="flex-1 rounded bg-gray-1/30 p-1 text-white font-mono outline-1 outline-black/5 dark:bg-gray-9/30 dark:outline-white/10"
                 type="text"
                 @input="updateFromHex">
             </div>
@@ -447,8 +447,11 @@ watch(() => modelValue, (newValue) => {
 .widget-shadow {
   box-shadow: 0 0 10px 2px rgb(var(--shadow-rgb) / 0.4);
 }
+[data-theme="light"] .widget-shadow {
+  box-shadow: 0 0 10px 2px rgb(var(--shadow-rgb) / 0.2);
+}
 .slider-shadow {
-  box-shadow: 0 0 4px 3px rgb(var(--shadow-rgb) / 0.4);
+  box-shadow: 0 0 4px 3px rgb(var(--shadow-rgb) / 0.3);
 }
 
 .inset-border {
