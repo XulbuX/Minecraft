@@ -8,16 +8,18 @@
 
 [data-theme="dark"] {
   --white-rgb: 252 252 255;
+  --gray-rgb: 128 128 130;
   --black-rgb: 3 3 5;
   --bg-rgb: 14 19 27;
-  --bg-8-rgb: 31 41 55;  
+  --bg-800-rgb: 31 41 55;  
 }
 
 [data-theme="light"] {
   --white-rgb: 3 3 5;
+  --gray-rgb: 160 160 162;
   --black-rgb: 252 252 255;
   --bg-rgb: 243 244 246;
-  --bg-8-rgb: 229 231 235;
+  --bg-800-rgb: 229 231 235;
 }
 
 /************************** RESETS ***************************/
@@ -68,8 +70,8 @@ button {
 /********************** TEXT SELECTION ***********************/
 
 ::selection {
-  background-color: rgb(var(--white-rgb) / 0.5);
+  background-color: rgb(var(--gray-rgb) / 0.4);
 }
 ::-moz-selection {
-  background-color: rgb(var(--white-rgb) / 0.5);
+  background-color: rgb(var(--gray-rgb) / 0.4);
 }

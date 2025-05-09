@@ -1,6 +1,6 @@
 <template>
   <div
-    class="command-display-container w-full overflow-x-auto px-3 py-2.5"
+    class="w-full overflow-x-auto px-3 py-2.5"
     :class="{ 'hide-scrollbar': hideScrollbar }">
     <pre class="command-text text-sm" v-html="formattedDisplayCommand" />
   </div>
@@ -150,4 +150,11 @@ const formattedDisplayCommand = computed(() => {
 .command-text ::v-deep(.token-number) { color: #F1A273; }
 .command-text ::v-deep(.token-boolean) { color: #B1CBFB; }
 .command-text ::v-deep(.token-punctuation) { color: #D0D0D5; }
+[data-theme="light"] .command-text ::v-deep(.token-command) { color: #5093FF; font-weight: bold; }
+[data-theme="light"] .command-text ::v-deep(.token-selector) { color: #08BCB0; }
+[data-theme="light"] .command-text ::v-deep(.token-keyword) { color: #286ABF; }
+[data-theme="light"] .command-text ::v-deep(.token-string) { color: #6065FF; }
+[data-theme="light"] .command-text ::v-deep(.token-number) { color: #FF7B47; }
+[data-theme="light"] .command-text ::v-deep(.token-boolean) { color: #2C5ABD; }
+[data-theme="light"] .command-text ::v-deep(.token-punctuation) { color: #4B5563; }
 </style>

@@ -23,7 +23,7 @@
 <script setup lang="ts">
 import type { TextSegment } from '@@/interfaces';
 import type { EditorOptions, Editor as TiptapEditor } from '@tiptap/vue-3';
-import type { Node as EditorNode } from 'prosemirror-model';
+import type { Node as NodeEditor } from 'prosemirror-model';
 import type { EditorView } from 'prosemirror-view';
 import Bold from '@tiptap/extension-bold';
 import { Color } from '@tiptap/extension-color';
@@ -71,9 +71,8 @@ function segmentsToProseMirrorDoc(lines: TextSegment[][]): Record<string, any> {
       type: 'paragraph',
     };
   });
-  while (content.length < 4) {
-    content.push({ type: 'paragraph' });
-  }
+
+  while (content.length < 4) content.push({ type: 'paragraph' });
   return { content: content.slice(0, 4), type: 'doc' };
 }
 
@@ -190,9 +189,7 @@ watch(() => props.value, (newValue) => {
   }
 }, { deep: true });
 
-onBeforeUnmount(() => {
-  tiptapEditor.value?.destroy();
-});
+onBeforeUnmount(() => tiptapEditor.value?.destroy());
 
 function maxLineWidthExceeded(view: EditorView, pos: number, newText: string): boolean {
   if (!view || !newText) return false;
@@ -201,10 +198,8 @@ function maxLineWidthExceeded(view: EditorView, pos: number, newText: string): b
   const paragraph = $pos.parent;
 
   let textBefore = '';
-  paragraph.nodesBetween(0, $pos.parentOffset, (node: EditorNode) => {
-    if (node.isText) {
-      textBefore += node.text;
-    }
+  paragraph.nodesBetween(0, $pos.parentOffset, (node: NodeEditor) => {
+    if (node.isText) textBefore += node.text;
   });
 
   const testElement = document.createElement('span');
@@ -212,7 +207,6 @@ function maxLineWidthExceeded(view: EditorView, pos: number, newText: string): b
   testElement.style.visibility = 'hidden';
   testElement.style.position = 'absolute';
   testElement.style.whiteSpace = 'nowrap';
-
   testElement.textContent = textBefore + newText;
 
   document.body.appendChild(testElement);
@@ -277,10 +271,7 @@ function transformToCustomJson(proseMirrorJson: any): TextSegment[][] {
     result.push(line);
   });
 
-  while (result.length < 4) {
-    result.push([]);
-  }
-
+  while (result.length < 4) result.push([]);
   return result.slice(0, 4);
 }
 </script>

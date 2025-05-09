@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-wrap select-none items-center gap-x-4 gap-y-3 border border-b-0 border-black/5 rounded-t-lg bg-gray-2 px-3.5 py-3 dark:border-white/10 dark:bg-gray-8">
+  <div class="flex flex-wrap select-none items-center gap-x-4 gap-y-3 border border-b-0 border-black/5 rounded-t-lg bg-gray-200 px-3.5 py-3 transition-all-200 dark:border-white/10 dark:bg-gray-800">
     <div class="w-min flex flex-wrap gap-1 sm:w-auto">
       <div v-for="(row, rowIndex) in colorRows" :key="rowIndex" class="flex flex-row items-center gap-1">
         <motion.button
@@ -20,21 +20,21 @@
     <div class="flex grow flex-wrap items-center justify-between gap-4">
       <div class="flex flex-row gap-1">
         <button
-          class="format-b size-6 flex items-center justify-center border border-black/5 rounded bg-gray-3 text-lg leading-none transition-all-200 dark:border-white/10 dark:bg-gray-7 -tracking-0.5"
+          class="format-b size-6 flex items-center justify-center border border-black/5 rounded bg-gray-300 text-lg leading-none transition-all-200 dark:border-white/10 dark:bg-gray-700 -tracking-0.5"
           :class="{ 'brightness-83 dark:brightness-133': editor?.isActive('bold') }"
           title="Bold"
           @click="toggleBold">
           B
         </button>
         <button
-          class="format-i size-6 flex items-center justify-center border border-black/5 rounded bg-gray-3 text-lg leading-none tracking-0.2 transition-all-200 dark:border-white/10 dark:bg-gray-7"
+          class="format-i size-6 flex items-center justify-center border border-black/5 rounded bg-gray-300 text-lg leading-none tracking-0.2 transition-all-200 dark:border-white/10 dark:bg-gray-700"
           :class="{ 'brightness-83 dark:brightness-133': editor?.isActive('italic') }"
           title="Italic"
           @click="toggleItalic">
           I
         </button>
         <button
-          class="format-u size-6 flex items-center justify-center border border-black/5 rounded bg-gray-3 text-lg leading-none transition-all-200 dark:border-white/10 dark:bg-gray-7 -tracking-0.2"
+          class="format-u size-6 flex items-center justify-center border border-black/5 rounded bg-gray-300 text-lg leading-none transition-all-200 dark:border-white/10 dark:bg-gray-700 -tracking-0.2"
           :class="{ 'brightness-83 dark:brightness-133': editor?.isActive('underline') }"
           title="Underline"
           @click="toggleUnderline">
@@ -43,7 +43,7 @@
       </div>
 
       <button
-        class="ml-auto size-6 flex items-center justify-center border border-black/14 rounded bg-red-4/80 px-0.75 transition-all-200 dark:border-white/14 dark:bg-red-5/80 hover:bg-red-4 dark:hover:bg-red-5"
+        class="ml-auto size-6 flex items-center justify-center border border-black/14 rounded bg-red-400/80 px-0.75 transition-all-200 dark:border-white/14 dark:bg-red-500/80 hover:bg-red-400 dark:hover:bg-red-500"
         title="Reset Formatting"
         @click="$emit('resetFormatting')">
         <svg fill="currentColor" stroke="none" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg">
@@ -57,8 +57,7 @@
 <script setup lang="ts">
 import type { Editor } from '@tiptap/vue-3';
 import { motion } from 'motion-v';
-import { currentTheme } from 'theme';
-import ColorPicker from './ColorPicker.vue';
+import { currentTheme } from 'settings';
 
 const { editor, minecraftColors } = defineProps<{
   editor?: Editor;
@@ -81,24 +80,15 @@ const colorRows = computed(() => {
   return result;
 });
 
-function toggleBold() {
-  editor?.chain().focus().toggleBold().run();
-}
-
-function toggleItalic() {
-  editor?.chain().focus().toggleItalic().run();
-}
-
-function toggleUnderline() {
-  editor?.chain().focus().toggleUnderline().run();
-}
-
+const toggleBold = () => editor?.chain().focus().toggleBold().run();
+const toggleItalic = () => editor?.chain().focus().toggleItalic().run();
+const toggleUnderline = () => editor?.chain().focus().toggleUnderline().run();
 const applyCustomColor = () => emit('applyColor', customColorValue.value);
 </script>
 
 <style scoped>
 .inset-border {
-  box-shadow: inset 0 0 0 0.5px rgb(var(--white-rgb) / 0.5);
+  box-shadow: inset 0 0 0 0.5px rgb(var(--white-rgb) / 0.3);
 }
 [data-theme="light"] .inset-border {
   box-shadow: inset 0 0 0 0.5px rgb(var(--white-rgb) / 0.2);

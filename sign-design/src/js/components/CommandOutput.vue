@@ -1,13 +1,13 @@
 <template>
-  <div class="shadow-x relative flex items-center justify-end overflow-clip border border-white/10 rounded-lg bg-gray-8">
+  <div class="shadow-x relative flex items-center justify-end overflow-clip border border-black/5 rounded-lg bg-gray-200 transition-all-200 dark:border-white/10 dark:bg-gray-800">
     <Command :generated-command />
     <button
-      class="absolute right-0 top-0 z-10 m-1 size-8 select-none border border-white/10 rounded p-1 backdrop-blur-5 transition-all duration-200"
+      class="absolute right-0 top-0 z-10 m-1 size-8 select-none border border-black/5 rounded p-1 backdrop-blur-5 transition-all-200 dark:border-white/10"
       :class="buttonClass"
       @click="copyCommand">
       <motion.svg
         :animate="iconState"
-        class="size-4 focus:outline-none"
+        class="size-4"
         fill="currentColor"
         :initial="{ scale: 1, rotate: 0 }"
         :transition="{ duration: 0.5, type: 'spring' }"
@@ -53,8 +53,8 @@ const generatedCommand = computed(() => {
 });
 
 const buttonClass = computed(() => {
-  if (!copied.value) return 'color-white bg-gray-600/50 hover:bg-gray-500/50';
-  return copySuccess.value ? 'color-teal-300 bg-teal-400/40' : 'color-red-300 bg-red-400/40';
+  if (!copied.value) return 'color-black/50 dark:color-white bg-gray-400/30 dark:bg-gray-600/50 hover:bg-gray-400/50 dark:hover:bg-gray-500/50';
+  return copySuccess.value ? 'color-teal-600 dark:color-teal-300 bg-teal-300/40 dark:bg-teal-400/40' : 'color-red-600 dark:color-red-300 bg-red-300/40 dark:bg-red-400/40';
 });
 
 const iconState = computed(() => {
@@ -133,11 +133,11 @@ function copyCommand(): void {
 
 .shadow-x::before {
   left: 0;
-  background: linear-gradient(to right, rgb(var(--bg-8-rgb)), transparent);
+  background: linear-gradient(to right, rgb(var(--bg-800-rgb)), transparent);
 }
 
 .shadow-x::after {
   right: 0;
-  background: linear-gradient(to left, rgb(var(--bg-8-rgb)), transparent);
+  background: linear-gradient(to left, rgb(var(--bg-800-rgb)), transparent);
 }
 </style>

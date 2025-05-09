@@ -5,7 +5,7 @@
       <h1 class="select-none text-2xl font-bold transition-all-200">
         Minecraft Sign Editor
       </h1>
-      <ThemeSwitcher />
+      <Settings />
     </div>
     <SignTypeSelect
       :model-value="signType"
@@ -29,7 +29,6 @@
 <script setup lang="ts">
 import type { CommandType, FormattedLines } from '@@/interfaces';
 import SignEditors from '@/js/components/SignEditors.vue';
-import ThemeSwitcher from '@/js/components/ThemeSwitcher.vue';
 import { MC_COLORS_ARRAY, MC_SIGNS_ARRAY } from 'minecraft';
 
 const signType = ref('oak_sign');

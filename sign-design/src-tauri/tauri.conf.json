@@ -13,7 +13,6 @@
     "withGlobalTauri": true,
     "windows": [{
       "title": "Sign Design • XulbuX",
-      "theme": "Dark",
       "width": 700,
       "height": 650,
       "minWidth": 325,

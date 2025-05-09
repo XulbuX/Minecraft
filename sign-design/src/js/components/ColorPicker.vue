@@ -8,12 +8,17 @@
       {{ modelValue }}
     </div>
     <Teleport to="body">
-      <div v-if="isOpen" class="fixed inset-0 z-50">
-        <div
+      <AnimatePresence>
+        <motion.div
+          v-if="isOpen"
           ref="popupRef"
-          v-on-click-outside="handleClickOutside"
-          class="widget-shadow absolute border border-black/5 rounded-lg bg-gray-2/80 p-3 backdrop-blur-5 dark:border-white/10 dark:bg-gray-7/80"
-          :style="popupPosition">
+          v-on-click-outside="closePicker"
+          :animate="{ opacity: 1, y: 0 }"
+          class="widget-shadow absolute z-50 border border-black/5 rounded-lg bg-gray-2/80 p-3 backdrop-blur-5 dark:border-white/10 dark:bg-gray-7/80"
+          :exit="{ opacity: 0, y: -10, scale: 0.95 }"
+          :initial="{ opacity: 0, y: -10 }"
+          :style="popupPosition"
+          :transition="{ duration: 0.2, ease: 'easeOut' }">
           <div class="w-60">
             <div class="mb-3 space-y-3">
               <!-- SATURATION-VALUE AREA -->
@@ -41,33 +46,53 @@
                   :style="{ left: `${HUE / 360 * 100}%` }" />
               </div>
             </div>
-            <!-- HEX INPUT -->
-            <div class="mb-3 flex items-center">
+            <!-- UNIVERSAL TEXT INPUT -->
+            <div class="relative mb-3 flex items-center rounded bg-black/5! dark:bg-white/8!">
               <input
-                v-model="HEX"
-                class="flex-1 rounded bg-gray-1/30 p-1 text-white font-mono outline-1 outline-black/5 dark:bg-gray-9/30 dark:outline-white/10"
+                ref="universalInputRef"
+                v-model="textInputValue"
+                class="flex-1 rounded bg-white/50 px-1.5 py-1 text-black font-mono outline-1 outline-black/5 transition-all-200 dark:bg-black/30 dark:text-white dark:outline-white/10"
                 type="text"
-                @input="updateFromHex">
+                @blur="isTextInputFocused = false"
+                @focus="isTextInputFocused = true"
+                @input="parseTextInput"
+                @keydown.enter="handleInputEnterKey">
+              <button
+                class="absolute bottom-0 right-0 top-0 flex items-center justify-center bg-transparent px-1.5 py-1"
+                title="Change input color type"
+                @click="toggleInputColorFormat">
+                <svg class="mr-9 size-3 min-w-3 color-black/16 dark:color-white/40" fill="currentColor" stroke="none" viewBox="0 0 448 512">
+                  <path d="M244 7c-11.7-9.3-28.3-9.3-40 0L44 135c-13.8 11-16 31.2-5 45s31.2 16 45 5L224 73l140 112c13.8 11 33.9 8.8 45-5s8.8-33.9-5-45L244 7zm160 370c13.8-11 16-31.2 5-45s-31.2-16-45-5L224 439 84 327c-13.8-11-33.9-8.8-45 5s-8.8 33.9 5 45l160 128c11.7 9.3 28.3 9.3 40 0l160-128z" />
+                </svg>
+              </button>
+              <div class="w-9 flex items-center justify-center text-sm text-black/25 font-jetbrains dark:text-white/40">
+                {{ currentFormat }}
+              </div>
             </div>
             <!-- PREVIEW AND ACTIONS -->
             <div class="flex select-none items-center">
-              <div class="inset-border mr-3 h-6 w-6 rounded" :style="{ backgroundColor: HEX }" />
-              <button class="mr-1 cursor-pointer rounded border-none bg-gray-5/40 p-1 px-2 text-white duration-200 hover:bg-gray-4/40" @click="applyColor">
+              <div class="inset-border mr-3 size-6 rounded" :style="{ backgroundColor: HEX }" />
+              <button
+                class="mr-1 cursor-pointer rounded bg-white/40 p-1 px-2 text-black transition-all-200 transition-all-200 dark:bg-gray-5/40 hover:bg-white/60 dark:text-white dark:hover:bg-gray-4/40"
+                @click="applyColor">
                 Apply
               </button>
-              <button class="mr-1 cursor-pointer rounded border-none bg-gray-5/40 p-1 px-2 text-white/50 duration-200 hover:(border-2 border-white/50)" @click="togglePicker">
+              <button
+                class="mr-1 cursor-pointer rounded bg-white/40 p-1 px-2 text-black/50 transition-all-200 transition-all-200 dark:bg-gray-5/40 dark:text-white/50"
+                @click="closePicker">
                 Cancel
               </button>
             </div>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </AnimatePresence>
     </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
 import { vOnClickOutside } from '@vueuse/components';
+import { AnimatePresence, motion } from 'motion-v';
 
 const { modelValue } = defineProps<{
   modelValue: string;
@@ -83,17 +108,25 @@ const isOpen = ref(false);
 const isDraggingHue = ref(false);
 const isDraggingSatVal = ref(false);
 const justFinishedDragging = ref(false);
+const isTextInputFocused = ref(false);
 
 const popupRef = ref<HTMLElement | null>(null);
 const popupPosition = ref({ left: '0px', top: '0px' });
 const colorPickerRef = ref<HTMLElement | null>(null);
 const satValAreaRef = ref<HTMLElement | null>(null);
 const hueSliderRef = ref<HTMLElement | null>(null);
+const universalInputRef = ref<HTMLInputElement | null>(null);
 
 const HUE = ref(0);
 const SAT = ref(100);
 const VAL = ref(100);
 const HEX = ref('');
+const textInputValue = ref('');
+
+type ColorFormat = 'HEX' | 'RGB' | 'HSL';
+const availableFormats: ColorFormat[] = ['HEX', 'RGB', 'HSL'];
+const currentFormatIndex = ref(0);
+const currentFormat = computed(() => availableFormats[currentFormatIndex.value]);
 
 const cleanHex = (hexStr: string) => hexStr.replace(/^(#+|0x)/i, '').toUpperCase();
 
@@ -150,35 +183,37 @@ function hsvToRgb(h: number, s: number, v: number) {
   let g = 0;
   let b = 0;
 
-  if (h < 60) {
-    r = c;
-    g = x;
-    b = 0;
-  }
-  else if (h < 120) {
-    r = x;
-    g = c;
-    b = 0;
-  }
-  else if (h < 180) {
-    r = 0;
-    g = c;
-    b = x;
-  }
-  else if (h < 240) {
-    r = 0;
-    g = x;
-    b = c;
-  }
-  else if (h < 300) {
-    r = x;
-    g = 0;
-    b = c;
-  }
-  else {
-    r = c;
-    g = 0;
-    b = x;
+  switch (Math.floor(h / 60)) {
+    case 0:
+      r = c;
+      g = x;
+      b = 0;
+      break;
+    case 1:
+      r = x;
+      g = c;
+      b = 0;
+      break;
+    case 2:
+      r = 0;
+      g = c;
+      b = x;
+      break;
+    case 3:
+      r = 0;
+      g = x;
+      b = c;
+      break;
+    case 4:
+      r = x;
+      g = 0;
+      b = c;
+      break;
+    case 5:
+      r = c;
+      g = 0;
+      b = x;
+      break;
   }
   return {
     b: Math.round((b + m) * 255),
@@ -187,127 +222,287 @@ function hsvToRgb(h: number, s: number, v: number) {
   };
 }
 
-function updateHexFromHsv() {
-  const rgb = hsvToRgb(HUE.value, SAT.value, VAL.value);
-  const rHex = rgb.r.toString(16).padStart(2, '0');
-  const gHex = rgb.g.toString(16).padStart(2, '0');
-  const bHex = rgb.b.toString(16).padStart(2, '0');
-  HEX.value = `#${rHex}${gHex}${bHex}`.toUpperCase();
+function rgbToHsl(r: number, g: number, b: number) {
+  r /= 255;
+  g /= 255;
+  b /= 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const delta = max - min;
+  let h = 0;
+  let s = 0;
+  const l = (max + min) / 2;
+
+  if (delta !== 0) {
+    s = delta / (1 - Math.abs(2 * l - 1));
+    switch (max) {
+      case r:
+        h = ((g - b) / delta) % 6;
+        break;
+      case g:
+        h = (b - r) / delta + 2;
+        break;
+      case b:
+        h = (r - g) / delta + 4;
+        break;
+    }
+    h = Math.round(h * 60);
+    if (h < 0) h += 360;
+  }
+
+  return { h, l: Math.round(l * 100), s: Math.round(s * 100) };
+}
+
+function hslToRgb(h: number, s: number, l: number) {
+  h = h % 360;
+  s = s / 100;
+  l = l / 100;
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+  const m = l - c / 2;
+  let r = 0;
+  let g = 0;
+  let b = 0;
+
+  switch (Math.floor(h / 60)) {
+    case 0:
+      r = c;
+      g = x;
+      b = 0;
+      break;
+    case 1:
+      r = x;
+      g = c;
+      b = 0;
+      break;
+    case 2:
+      r = 0;
+      g = c;
+      b = x;
+      break;
+    case 3:
+      r = 0;
+      g = x;
+      b = c;
+      break;
+    case 4:
+      r = x;
+      g = 0;
+      b = c;
+      break;
+    case 5:
+      r = c;
+      g = 0;
+      b = x;
+      break;
+  }
+  return {
+    b: Math.round((b + m) * 255),
+    g: Math.round((g + m) * 255),
+    r: Math.round((r + m) * 255),
+  };
+}
+
+function updateDisplaysFromHsv() {
+  const rgbForHex = hsvToRgb(HUE.value, SAT.value, VAL.value);
+  const rHex = rgbForHex.r.toString(16).padStart(2, '0').toUpperCase();
+  const gHex = rgbForHex.g.toString(16).padStart(2, '0').toUpperCase();
+  const bHex = rgbForHex.b.toString(16).padStart(2, '0').toUpperCase();
+  if (rHex !== 'NAN' && gHex !== 'NAN' && bHex !== 'NAN') {
+    HEX.value = `#${rHex}${gHex}${bHex}`;
+  }
+
+  if (isTextInputFocused.value) return;
+
+  switch (currentFormat.value) {
+    case 'HEX':
+      textInputValue.value = HEX.value;
+      break;
+    case 'RGB': {
+      const { b, g, r } = hsvToRgb(HUE.value, SAT.value, VAL.value);
+      textInputValue.value = `rgb(${r},${g},${b})`;
+      break;
+    }
+    case 'HSL': {
+      const { b, g, r } = hsvToRgb(HUE.value, SAT.value, VAL.value);
+      const hsl = rgbToHsl(r, g, b);
+      textInputValue.value = `hsl(${hsl.h},${hsl.s}%,${hsl.l}%)`;
+      break;
+    }
+  }
+}
+
+function parseTextInput() {
+  const input = textInputValue.value.trim();
+  let r: number | undefined, g: number | undefined, b: number | undefined;
+  let h: number | undefined, s: number | undefined, l: number | undefined;
+
+  try {
+    switch (currentFormat.value) {
+      case 'HEX': {
+        let hex = cleanHex(input);
+        if (/^[0-9A-F]{3}|[0-9A-F]{6}$/i.test(hex)) {
+          if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+          r = Number.parseInt(hex.substring(0, 2), 16);
+          g = Number.parseInt(hex.substring(2, 4), 16);
+          b = Number.parseInt(hex.substring(4, 6), 16);
+        }
+        else {
+          return;
+        }
+        break;
+      }
+      case 'RGB': {
+        const match = input.match(/^(?:rgb\s*\(\s*)?(\d{1,3})[,\s]+(\d{1,3})[,\s]+(\d{1,3})\s*\)?$/i);
+        if (match) {
+          r = Number.parseInt(match[1]);
+          g = Number.parseInt(match[2]);
+          b = Number.parseInt(match[3]);
+          if (r > 255 || g > 255 || b > 255) return;
+        }
+        else {
+          return;
+        }
+        break;
+      }
+      case 'HSL': {
+        const match = input.match(/^(?:hsl\s*\(\s*)?(\d{1,3})[,\s]+(\d{1,3})%?[,\s]+(\d{1,3})%?\s*\)?$/i);
+        if (match) {
+          h = Number.parseInt(match[1]);
+          s = Number.parseInt(match[2]);
+          l = Number.parseInt(match[3]);
+          if (h > 360 || s > 100 || l > 100) {
+            return;
+          }
+          else {
+            const rgbFromHsl = hslToRgb(h, s, l);
+            r = rgbFromHsl.r;
+            g = rgbFromHsl.g;
+            b = rgbFromHsl.b;
+          }
+        }
+        else {
+          return;
+        }
+        break;
+      }
+    }
+
+    if (r !== undefined && g !== undefined && b !== undefined
+      && !Number.isNaN(r) && !Number.isNaN(g) && !Number.isNaN(b)) {
+      const hsv = rgbToHsv(r, g, b);
+      if (hsv.s !== 0 || VAL.value === 0 || VAL.value === 100 || (hsv.s === 0 && hsv.h === HUE.value)) {
+        HUE.value = hsv.h;
+      }
+      SAT.value = hsv.s;
+      VAL.value = hsv.v;
+      updateDisplaysFromHsv();
+    }
+  }
+  catch (error) {
+    console.warn('Color parsing error:', error);
+  }
+}
+
+function handleInputEnterKey() {
+  if (universalInputRef.value) {
+    universalInputRef.value.blur();
+  }
+  applyColor();
 }
 
 function initializeFromHex(hexColor: string) {
   const hex = cleanHex(hexColor);
-  const hsv = rgbToHsv(
-    Number.parseInt(hex.substring(0, 2), 16),
-    Number.parseInt(hex.substring(2, 4), 16),
-    Number.parseInt(hex.substring(4, 6), 16),
-  );
+  const r = Number.parseInt(hex.substring(0, 2), 16);
+  const g = Number.parseInt(hex.substring(2, 4), 16);
+  const b = Number.parseInt(hex.substring(4, 6), 16);
 
-  if (hsv.s === 0 && HUE.value !== 0) {
-    SAT.value = hsv.s;
-    VAL.value = hsv.v;
-  }
-  else {
+  if (!Number.isNaN(r) && !Number.isNaN(g) && !Number.isNaN(b)) {
+    const hsv = rgbToHsv(r, g, b);
     HUE.value = hsv.h;
     SAT.value = hsv.s;
     VAL.value = hsv.v;
+    updateDisplaysFromHsv();
   }
-  updateHexFromHsv();
 }
 
 initializeFromHex(modelValue);
 
 function calculateAndSetPopupPosition() {
   if (!isOpen.value) return;
-
   nextTick(() => {
     const buttonRect = colorPickerRef.value?.getBoundingClientRect();
-    const popupEl = popupRef.value;
+    const motionComponentInstance = popupRef.value;
+    const popupEl = (motionComponentInstance as any)?.$el as HTMLElement | undefined;
 
-    if (buttonRect && popupEl) {
+    if (buttonRect && popupEl && popupEl instanceof HTMLElement) {
+      let popupWidth = popupEl.offsetWidth;
+      let popupHeight = popupEl.offsetHeight;
+
+      if (popupWidth === 0 && popupEl.firstElementChild) popupWidth = (popupEl.firstElementChild as HTMLElement).offsetWidth;
+      if (popupHeight === 0 && popupEl.firstElementChild) popupHeight = (popupEl.firstElementChild as HTMLElement).offsetHeight;
+      if (typeof popupWidth !== 'number' || popupWidth === 0 || typeof popupHeight !== 'number' || popupHeight === 0) {
+        console.error('ColorPicker Position Debug: Invalid or zero popup dimensions after .$el access and fallback.', { popupWidth, popupHeight });
+        setTimeout(calculateAndSetPopupPosition, 50);
+        return;
+      }
+
       const margin = 10;
-      const popupWidth = popupEl.offsetWidth;
-      const popupHeight = popupEl.offsetHeight;
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
 
       let newLeft = buttonRect.left;
-      let newTop = buttonRect.bottom + 5;
-
-      if (newLeft + popupWidth > viewportWidth - margin) {
-        newLeft = viewportWidth - popupWidth - margin;
-      }
+      if (newLeft + popupWidth > window.innerWidth - margin) newLeft = window.innerWidth - popupWidth - margin;
       if (newLeft < margin) newLeft = margin;
-      if (newTop + popupHeight > viewportHeight - margin) {
-        const topAbove = buttonRect.top - popupHeight - 5;
-        if (topAbove >= margin) {
-          newTop = topAbove;
-        }
-        else {
-          newTop = viewportHeight - popupHeight - margin;
-        }
-      }
-      if (newTop < margin) {
-        newTop = margin;
-      }
-
-      newLeft = Math.max(margin, Math.min(newLeft, viewportWidth - popupWidth - margin));
-      newTop = Math.max(margin, Math.min(newTop, viewportHeight - popupHeight - margin));
-
-      popupPosition.value = { left: `${newLeft}px`, top: `${newTop}px` };
+      newLeft = Math.max(margin, Math.min(newLeft, window.innerWidth - popupWidth - margin));
+      let newTop = buttonRect.bottom + 5;
+      if ((buttonRect.bottom + 5 + popupHeight) > (window.innerHeight - margin)) newTop = buttonRect.top - popupHeight - 5;
+      const finalLeft = newLeft + window.scrollX;
+      const finalTop = newTop + window.scrollY;
+      popupPosition.value = { left: `${finalLeft}px`, top: `${finalTop}px` };
     }
-    else if (buttonRect) {
-      popupPosition.value = { left: `${buttonRect.left}px`, top: `${buttonRect.bottom + 5}px` };
+    else {
+      if (buttonRect) popupPosition.value = { left: `${buttonRect.left + window.scrollX}px`, top: `${buttonRect.bottom + 5 + window.scrollY}px` };
     }
   });
 }
 
-function togglePicker() {
-  isOpen.value = !isOpen.value;
-  if (isOpen.value) {
-    calculateAndSetPopupPosition(); // Calculate position when opening
-  }
+function closePicker() {
+  if (!justFinishedDragging.value) isOpen.value = false;
 }
 
-function updateFromHex() {
-  let hex = cleanHex(HEX.value);
+function togglePicker() {
+  isOpen.value = !isOpen.value;
+  if (isOpen.value) calculateAndSetPopupPosition();
+}
 
-  if (/^[0-9A-F]{3}|[0-9A-F]{6}$/i.test(hex)) {
-    if (hex.length === 3) {
-      hex = hex.split('').map(c => c + c).join('');
-    }
-
-    const rgb = {
-      b: Number.parseInt(hex.substring(4, 6), 16),
-      g: Number.parseInt(hex.substring(2, 4), 16),
-      r: Number.parseInt(hex.substring(0, 2), 16),
-    };
-    const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
-
-    if (hsv.s !== 0) {
-      HUE.value = hsv.h;
-    }
-    SAT.value = hsv.s;
-    VAL.value = hsv.v;
-    HEX.value = `#${hex.toUpperCase()}`;
-  }
+function toggleInputColorFormat() {
+  currentFormatIndex.value = (currentFormatIndex.value + 1) % availableFormats.length;
+  isTextInputFocused.value = false;
+  updateDisplaysFromHsv();
 }
 
 function applyColor() {
-  updateHexFromHsv();
-  emit('update:modelValue', HEX.value);
-  emit('change', HEX.value);
-  isOpen.value = false;
+  const currentRgb = hsvToRgb(HUE.value, SAT.value, VAL.value);
+  const rH = currentRgb.r.toString(16).padStart(2, '0').toUpperCase();
+  const gH = currentRgb.g.toString(16).padStart(2, '0').toUpperCase();
+  const bH = currentRgb.b.toString(16).padStart(2, '0').toUpperCase();
+  const finalHex = `#${rH}${gH}${bH}`;
+
+  if (finalHex !== modelValue) {
+    emit('update:modelValue', finalHex);
+    emit('change', finalHex);
+  }
+  closePicker();
 }
 
-function handleClickOutside() {
-  if (!justFinishedDragging.value) {
-    isOpen.value = false;
+function blurActiveColorInput() {
+  if (universalInputRef.value && document.activeElement === universalInputRef.value) {
+    universalInputRef.value.blur();
   }
 }
 
 function startHueDrag(event: MouseEvent | TouchEvent) {
   event.preventDefault();
+  blurActiveColorInput();
   isDraggingHue.value = true;
   updateHueFromEvent(event);
 
@@ -360,6 +555,7 @@ function stopHueDrag() {
 
 function startSatValDrag(event: MouseEvent | TouchEvent) {
   event.preventDefault();
+  blurActiveColorInput();
   isDraggingSatVal.value = true;
   updateSatValFromEvent(event);
 
@@ -416,17 +612,27 @@ function stopSatValDrag() {
 }
 
 watch([HUE, SAT, VAL], () => {
-  updateHexFromHsv();
-}, { immediate: true });
+  const rgbForHex = hsvToRgb(HUE.value, SAT.value, VAL.value);
+  const rHex = rgbForHex.r.toString(16).padStart(2, '0').toUpperCase();
+  const gHex = rgbForHex.g.toString(16).padStart(2, '0').toUpperCase();
+  const bHex = rgbForHex.b.toString(16).padStart(2, '0').toUpperCase();
+  HEX.value = `#${rHex}${gHex}${bHex}`;
+
+  if (!isTextInputFocused.value) {
+    updateDisplaysFromHsv();
+  }
+}, { immediate: false });
 
 watch(isOpen, (newValue) => {
   if (newValue) {
     initializeFromHex(modelValue);
     window.addEventListener('resize', calculateAndSetPopupPosition);
+    window.addEventListener('scroll', calculateAndSetPopupPosition, true);
     calculateAndSetPopupPosition();
   }
   else {
     window.removeEventListener('resize', calculateAndSetPopupPosition);
+    window.removeEventListener('scroll', calculateAndSetPopupPosition, true);
     stopHueDrag();
     stopSatValDrag();
   }
@@ -434,12 +640,16 @@ watch(isOpen, (newValue) => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', calculateAndSetPopupPosition);
+  window.removeEventListener('scroll', calculateAndSetPopupPosition, true);
   stopHueDrag();
   stopSatValDrag();
 });
 
 watch(() => modelValue, (newValue) => {
-  if (!isOpen.value && newValue !== HEX.value) initializeFromHex(newValue);
+  const currentDerivedHex = HEX.value;
+  if (!isOpen.value || (newValue !== currentDerivedHex && !isTextInputFocused.value)) {
+    initializeFromHex(newValue);
+  }
 });
 </script>
 
@@ -455,7 +665,7 @@ watch(() => modelValue, (newValue) => {
 }
 
 .inset-border {
-  box-shadow: inset 0 0 0 0.5px rgb(var(--white-rgb) / 0.5);
+  box-shadow: inset 0 0 0 0.5px rgb(var(--white-rgb) / 0.3);
 }
 [data-theme="light"] .inset-border {
   box-shadow: inset 0 0 0 0.5px rgb(var(--white-rgb) / 0.2);

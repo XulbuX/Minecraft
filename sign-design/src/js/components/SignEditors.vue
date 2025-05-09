@@ -7,7 +7,7 @@
       @reset-formatting="resetFormatting" />
     <div
       class="top-shadow flex flex-col items-center justify-center gap-3 border border-t-0 border-white/10 rounded-b-lg p-3 duration-200 sm:flex-row"
-      :style="{ backgroundColor: `${textAreaBg}${currentTheme === 'dark' ? 'BB' : '99'}` }">
+      :style="{ backgroundColor: `${textAreaBg}${currentTheme === 'dark' ? 'BB' : '9A'}` }">
       <SignEditor
         label="FRONT"
         :label-below="winWidth >= 640"
@@ -34,8 +34,7 @@
 import type { FormattedLines, TextSegment } from '@@/interfaces';
 import type { Editor as TiptapEditor } from '@tiptap/vue-3';
 import { useWinSize } from '@@/helpers/win';
-import { currentTheme } from 'theme';
-import SignEditor from './SignEditor.vue';
+import { currentTheme } from 'settings';
 
 const { maxLineWidthPx, minecraftColors, modelValue, signTypeDetails } = defineProps<{
   maxLineWidthPx: number;

@@ -31,7 +31,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
       '@@': path.resolve(__dirname, './src/js'),
       'minecraft': path.resolve(__dirname, './src/js/helpers/minecraft.ts'),
-      'theme': path.resolve(__dirname, './src/js/helpers/theme.ts'),
+      'settings': path.resolve(__dirname, './src/js/helpers/settings.ts'),
     },
   },
   server: {

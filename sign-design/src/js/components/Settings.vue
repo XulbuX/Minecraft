@@ -1,7 +1,8 @@
 <template>
-  <div v-on-click-outside="closeSettings" class="relative z-1000">
+  <div v-on-click-outside="closeSettings" class="relative z-1000 ml-4">
     <button
-      title="Appearance"
+      class="flex items-center rounded bg-transparent p-1 transition-all-200 hover:bg-black/5 dark:hover:bg-white/10"
+      title="Settings"
       @click="showPopup = !showPopup">
       <motion.svg
         :animate="{ rotate: showPopup ? 90 : 0 }"
@@ -19,36 +20,37 @@
         v-if="showPopup"
         ref="popupRef"
         :animate="{ opacity: 1, y: 0, scale: 1 }"
-        class="absolute right-0 z-10 mt-2 w-36 origin-top-right overflow-clip border border-white/10 rounded-lg bg-gray-8/80 shadow-lg backdrop-blur-5"
+        class="absolute right-0 z-10 mt-2 w-min origin-top-right overflow-clip border border-black/5 rounded-md bg-gray-300/85 shadow-lg backdrop-blur-5 transition-background-color-200 dark:border-white/10 dark:bg-gray-800/85"
         :exit="{ opacity: 0, y: -10, scale: 0.95 }"
         :initial="{ opacity: 0, y: -10, scale: 0.95 }"
         :transition="{ duration: 0.2, ease: 'easeOut' }">
-        <button
-          v-for="themeOption in availableThemes"
-          :key="themeOption.value"
-          class="w-full bg-transparent px-4 py-2 text-left text-sm text-black/75 hover:bg-black/10 dark:text-white/75 dark:hover:bg-white/10"
-          :class="{ 'font-semibold text-black! dark:text-white!': currentTheme === themeOption.value }"
-          @click="selectTheme(themeOption.value)">
-          {{ themeOption.label }}
-        </button>
+        <div class="flex flex-col p-2">
+          <div class="mb-1 text-sm text-black/75 font-semibold transition-all-200 dark:text-white/75">
+            App Theme
+          </div>
+          <div class="flex flex-row overflow-clip border border-black/10 rounded bg-white/50 transition-all-200 dark:border-white/10 dark:bg-black/40">
+            <button
+              v-for="themeOption in availableThemes"
+              :key="themeOption.value"
+              class="w-full border-l border-black/10 bg-transparent py-2 pl-3 pr-4 text-left text-sm text-black/75 transition-all-200 transition-background-color-200 dark:border-white/10 first:border-none hover:bg-black/6 dark:text-white/75 dark:hover:bg-white/8"
+              :class="{ 'font-semibold text-black! dark:text-white! bg-black/3! dark:bg-white/5!': settings.theme === themeOption.value }"
+              @click="setTheme(themeOption.value)">
+              {{ themeOption.label }}
+            </button>
+          </div>
+        </div>
       </motion.div>
     </AnimatePresence>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Theme } from 'theme';
 import { vOnClickOutside } from '@vueuse/components';
 import { AnimatePresence, motion } from 'motion-v';
-import { setTheme as applyTheme, availableThemes, currentTheme } from 'theme';
+import { availableThemes, setTheme, settings } from 'settings';
 
 const showPopup = ref(false);
 const popupRef = ref(null);
 
 const closeSettings = () => showPopup.value = false;
-
-function selectTheme(theme: Theme) {
-  applyTheme(theme);
-  showPopup.value = false;
-}
 </script>

@@ -12,20 +12,20 @@
       <span class="truncate">{{ selectedOption ? selectedOption.label : placeholder }}</span>
       <motion.svg
         :animate="{ rotate: isOpen ? 180 : 0 }"
-        class="ml-2 size-4 min-w-4 transition-all-200"
-        fill="none"
+        class="ml-2 size-4 min-w-4"
+        fill="currentColor"
         :initial="{ rotate: 0 }"
-        stroke="currentColor"
+        stroke="none"
         :transition="{ duration: 0.3 }"
-        viewBox="0 0 24 24">
-        <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+        viewBox="0 0 448 512">
+        <path d="M201.4 374.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 306.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z" />
       </motion.svg>
     </div>
     <AnimatePresence>
       <motion.div
         v-if="isOpen"
         :animate="{ opacity: 1, y: 0 }"
-        class="absolute max-h-62 w-full flex flex-col overflow-y-auto rounded-b-lg bg-gray-2/90 shadow-lg backdrop-blur-5 transition-all-200 dark:bg-gray-8/90"
+        class="absolute max-h-62 w-full flex flex-col overflow-y-auto rounded-b-lg bg-gray-200/90 shadow-lg ring-0.5 ring-black/10 backdrop-blur-5 transition-background-color-200 dark:bg-gray-800/90 dark:ring-white/20"
         :exit="{ opacity: 0, y: -10 }"
         :initial="{ opacity: 0, y: -10 }"
         :transition="{ duration: 0.2 }">
@@ -33,7 +33,7 @@
           v-for="option in options"
           :key="option.value"
           class="cursor-pointer transition-all-200"
-          :class="{ 'font-bold bg-black/10! dark:bg-white/10!': modelValue === option.value }"
+          :class="{ 'font-bold bg-black/5! dark:bg-white/10!': modelValue === option.value }"
           @click="selectOption(option)"
           @mouseout="hoveredOption = null"
           @mouseover="hoveredOption = option">

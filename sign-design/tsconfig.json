@@ -15,8 +15,8 @@
       "minecraft": [
         "./src/js/helpers/minecraft.ts"
       ],
-      "theme": [
-        "./src/js/helpers/theme.ts"
+      "settings": [
+        "./src/js/helpers/settings.ts"
       ]
     },
     "typeRoots": [

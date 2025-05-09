@@ -13,6 +13,7 @@ declare module 'vue' {
     Command: typeof import('./../components/Command.vue')['default']
     CommandOutput: typeof import('./../components/CommandOutput.vue')['default']
     EditorToolbar: typeof import('./../components/EditorToolbar.vue')['default']
+    Settings: typeof import('./../components/Settings.vue')['default']
     SignEditor: typeof import('./../components/SignEditor.vue')['default']
     SignEditors: typeof import('./../components/SignEditors.vue')['default']
     SignTypeSelect: typeof import('./../components/SignTypeSelect.vue')['default']
