@@ -1,7 +1,7 @@
 <template>
   <div v-on-click-outside="closeDropdown" class="relative z-10 max-w-70 min-w-40 w-1/2 select-none">
     <div
-      class="flex cursor-pointer items-center justify-between rounded-lg p-3 duration-200"
+      class="flex cursor-pointer items-center justify-between rounded-lg p-3 transition-all-200"
       :class="{
         'rounded-b-0': isOpen,
         'text-white!': selectedOption?.isDark,
@@ -12,7 +12,7 @@
       <span class="truncate">{{ selectedOption ? selectedOption.label : placeholder }}</span>
       <motion.svg
         :animate="{ rotate: isOpen ? 180 : 0 }"
-        class="ml-2 size-4 min-w-4"
+        class="ml-2 size-4 min-w-4 transition-all-200"
         fill="none"
         :initial="{ rotate: 0 }"
         stroke="currentColor"
@@ -25,15 +25,15 @@
       <motion.div
         v-if="isOpen"
         :animate="{ opacity: 1, y: 0 }"
-        class="absolute max-h-62 w-full flex flex-col overflow-y-auto rounded-b-lg bg-gray-8/90 shadow-lg backdrop-blur-5"
+        class="absolute max-h-62 w-full flex flex-col overflow-y-auto rounded-b-lg bg-gray-2/90 shadow-lg backdrop-blur-5 transition-all-200 dark:bg-gray-8/90"
         :exit="{ opacity: 0, y: -10 }"
         :initial="{ opacity: 0, y: -10 }"
         :transition="{ duration: 0.2 }">
         <div
           v-for="option in options"
           :key="option.value"
-          class="cursor-pointer transition-all duration-200"
-          :class="{ 'font-bold bg-white/10!': modelValue === option.value }"
+          class="cursor-pointer transition-all-200"
+          :class="{ 'font-bold bg-black/10! dark:bg-white/10!': modelValue === option.value }"
           @click="selectOption(option)"
           @mouseout="hoveredOption = null"
           @mouseover="hoveredOption = option">

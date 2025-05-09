@@ -3,18 +3,18 @@
     <div
       v-if="!labelBelow"
       class="select-none text-lg font-700"
-      :class="signTypeDetails?.isDark ? 'text-white/20' : 'text-black/20'">
+      :class="signTypeDetails?.isDark ? 'text-black/20 dark:text-white/20' : 'text-black/20'">
       {{ label }}
     </div>
     <EditorContent
-      class="tiptap h-19 border-3 rounded p-2 text-center shadow-md duration-200"
+      class="tiptap h-19 border-3 rounded p-2 text-center shadow-md transition-all-200"
       :class="signTypeDetails?.isDark ? 'border-white/5' : 'border-black/10'"
       :editor="tiptapEditor"
       :style="textAreaStyle" />
     <div
       v-if="labelBelow"
       class="select-none text-lg font-700"
-      :class="signTypeDetails?.isDark ? 'text-white/20' : 'text-black/20'">
+      :class="signTypeDetails?.isDark ? 'text-black/20 dark:text-white/20' : 'text-black/20'">
       {{ label }}
     </div>
   </div>

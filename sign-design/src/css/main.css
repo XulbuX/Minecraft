@@ -1,49 +1,23 @@
 :root {
-  --white: #FCFCFF;
-  --white-20: #FCFCFF33;
-  --white-10: #FCFCFFAA;
-  --black: #030305;
-  --black-20: #03030533;
-  --black-10: #0303051A;
-
-  --white-rgb: 252, 252, 255;
-  --black-rgb: 3, 3, 5;
-
-  --text-color: var(--white);
-  --bg-color: #0E131B;
-  --scrollbar-thumb-color: #80808280;
-  --selection-bg-color: #80808280;
-  --fadeout-color: #0E131BAA;
-}
-
-[data-theme="light"] {
-  --white: #030305; /* Inverted for light theme */
-  --white-20: #03030533;
-  --white-10: #0303051A;
-  --black: #FCFCFF; /* Inverted for light theme */
-  --black-20: #FCFCFF33;
-  --black-10: #FCFCFFAA;
-
-  --text-color: var(--black);
-  --bg-color: #FCFCFF;
-  --scrollbar-thumb-color: #80808280; /* Keeping scrollbar consistent for now */
-  --selection-bg-color: #B0B0B280; /* Lighter selection for light theme */
-  --fadeout-color: #FCFCFFAA;
+  --white-rgb: 252 252 255;
+  --gray-rgb: 128 128 130;
+  --black-rgb: 3 3 5;
+  --shadow-rgb: 3 3 5;
+  --bg-rgb: 14 19 27;
 }
 
 [data-theme="dark"] {
-  --white: #FCFCFF;
-  --white-20: #FCFCFF33;
-  --white-10: #FCFCFFAA;
-  --black: #030305;
-  --black-20: #03030533;
-  --black-10: #0303051A;
+  --white-rgb: 252 252 255;
+  --black-rgb: 3 3 5;
+  --bg-rgb: 14 19 27;
+  --bg-8-rgb: 31 41 55;  
+}
 
-  --text-color: var(--white);
-  --bg-color: #0E131B;
-  --scrollbar-thumb-color: #80808280;
-  --selection-bg-color: #80808280;
-  --fadeout-color: #0E131BAA;
+[data-theme="light"] {
+  --white-rgb: 3 3 5;
+  --black-rgb: 252 252 255;
+  --bg-rgb: 243 244 246;
+  --bg-8-rgb: 229 231 235;
 }
 
 /************************** RESETS ***************************/
@@ -59,11 +33,13 @@
 html, body, main, section, div,
 button, input, textarea, select,
 a, p, h1, h2, h3, h4, h5, h6 {
-  color: var(--text-color);
+  color: rgb(var(--white-rgb));
 }
 
 html, body {
-  background-color: var(--bg-color);
+  background-color: rgb(var(--bg-rgb));
+  transition: all 200ms ease-in-out;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 button {
@@ -82,7 +58,7 @@ button {
 }
 ::-webkit-scrollbar-thumb {
   border-radius: 4px;
-  background: var(--scrollbar-thumb-color);
+  background: rgb(var(--gray-rgb) / 0.4);
   backdrop-filter: blur(5px);
 }
 ::-webkit-scrollbar-button {
@@ -92,8 +68,8 @@ button {
 /********************** TEXT SELECTION ***********************/
 
 ::selection {
-  background-color: var(--selection-bg-color);
+  background-color: rgb(var(--white-rgb) / 0.5);
 }
 ::-moz-selection {
-  background-color: var(--selection-bg-color);
+  background-color: rgb(var(--white-rgb) / 0.5);
 }

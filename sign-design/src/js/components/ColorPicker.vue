@@ -445,14 +445,17 @@ watch(() => modelValue, (newValue) => {
 
 <style scoped>
 .widget-shadow {
-  box-shadow: 0 0 10px 2px #03030580;
+  box-shadow: 0 0 10px 2px rgb(var(--shadow-rgb) / 0.4);
 }
 .slider-shadow {
-  box-shadow: 0 0 4px 3px #0008;
+  box-shadow: 0 0 4px 3px rgb(var(--shadow-rgb) / 0.4);
 }
 
 .inset-border {
-  box-shadow: inset 0 0 0 0.5px #FCFCFF60;
+  box-shadow: inset 0 0 0 0.5px rgb(var(--white-rgb) / 0.5);
+}
+[data-theme="light"] .inset-border {
+  box-shadow: inset 0 0 0 0.5px rgb(var(--white-rgb) / 0.2);
 }
 
 .hue-gradient {

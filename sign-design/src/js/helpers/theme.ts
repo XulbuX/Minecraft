@@ -1,13 +1,21 @@
-const THEME_STORAGE_KEY = 'vite-ui-theme';
-
 export type Theme = 'light' | 'dark' | 'system';
 
-export const currentTheme = ref<Theme>((localStorage.getItem(THEME_STORAGE_KEY) as Theme) || 'system');
+const THEME_STORAGE_KEY = 'vite-ui-theme';
+
 export const availableThemes: { value: Theme; label: string }[] = [
   { label: 'Light', value: 'light' },
   { label: 'Dark', value: 'dark' },
   { label: 'System', value: 'system' },
 ];
+export const currentTheme = ref<Theme>(getInitialTheme());
+
+function getInitialTheme(): Theme {
+  const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+  if (storedTheme === 'light' || storedTheme === 'dark' || storedTheme === 'system') {
+    return storedTheme;
+  }
+  return 'system';
+}
 
 function applyTheme(theme: Theme) {
   const root = document.documentElement;
@@ -55,4 +63,5 @@ export function initializeTheme() {
   }
 }
 
+// Initialize theme when this module is imported
 initializeTheme();

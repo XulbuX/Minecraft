@@ -127,15 +127,17 @@ function copyCommand(): void {
   width: 12px;
   position: absolute;
   pointer-events: none;
+  transition: all 300ms ease-in-out;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .shadow-x::before {
   left: 0;
-  background: linear-gradient(to right, #1F2937, transparent);
+  background: linear-gradient(to right, rgb(var(--bg-8-rgb)), transparent);
 }
 
 .shadow-x::after {
   right: 0;
-  background: linear-gradient(to left, #1F2937, transparent);
+  background: linear-gradient(to left, rgb(var(--bg-8-rgb)), transparent);
 }
 </style>

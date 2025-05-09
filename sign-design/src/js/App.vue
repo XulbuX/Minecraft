@@ -1,8 +1,8 @@
 <template>
-  <div class="relative mx-auto max-w-3xl flex flex-col gap-5 p-5 font-sans">
-    <div id="top-fadeout" />
+  <div class="relative mx-auto max-w-3xl flex flex-col gap-5 p-5 font-sans transition-all-200">
+    <div id="top-fadeout" class="transition-all-200" />
     <div class="flex items-center justify-between">
-      <h1 class="select-none text-2xl font-bold">
+      <h1 class="select-none text-2xl font-bold transition-all-200">
         Minecraft Sign Editor
       </h1>
       <ThemeSwitcher />
@@ -22,7 +22,7 @@
       :command-type="commandType"
       :formatted-lines
       :sign-type="signType" />
-    <div id="bottom-fadeout" />
+    <div id="bottom-fadeout" class="transition-all-200" />
   </div>
 </template>
 
@@ -55,10 +55,10 @@ const selectedSignDetails = computed<SignType | undefined>(() => {
 }
 #top-fadeout {
   top: 0;
-  background: linear-gradient(to bottom, var(--fadeout-color, #0E131BAA), transparent);
+  background: linear-gradient(to bottom, rgb(var(--bg-rgb)), transparent);
 }
 #bottom-fadeout {
   bottom: 0;
-  background: linear-gradient(to top, var(--fadeout-color, #0E131BAA), transparent);
+  background: linear-gradient(to top, rgb(var(--bg-rgb)), transparent);
 }
 </style>
