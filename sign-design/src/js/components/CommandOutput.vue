@@ -21,19 +21,18 @@
 </template>
 
 <script setup lang="ts">
-import type { CommandType, FormattedLines, TextSegment } from '@@/interfaces';
+import type { FormattedLines, TextSegment } from '@@/interfaces';
 import { getMinecraftColorFormat } from 'minecraft';
 import { motion } from 'motion-v';
 
-const { commandType, formattedLines, signType } = defineProps<{
-  formattedLines: FormattedLines;
-  signType: string;
-  commandType: CommandType;
-}>();
+const { formattedLines } = defineProps<{ formattedLines: FormattedLines }>();
 
 const copied = ref(false);
 const copySuccess = ref(false);
 const animationTimer = ref<number | null>(null);
+
+// /data merge block ~ ~ ~ {front_text:{messages:["",'[{text:"Hello world!",color:"green",italic:false}]',"",""]},back_text:{messages:["","",'[{text:"VERY ",color:"red",bold:true,italic:false},{text:"COOL ",color:"aqua",italic:true},{text:"TEXT",color:"blue",italic:false,underlined:true}]',""]}}
+// /data merge block ~ ~ ~ {front_text:{messages:['{"text":"THIS SIGN","color":"#FF0000"}','{"text":"HAS","color":"#0000FF"}','{"text":"COLORED","color":"#FFFF00"}','{"text":"TEXT","color":"#00FF00"}']},back_text:{messages:['{"text":"THE BACK","color":"#00FFFF"}','{"text":"OF THIS","color":"#FFFFFF"}','{"text":"IS","color":"#FFA500"}','{"text":"FORBIDDEN","color":"#52307C"}']}}
 
 const generatedCommand = computed(() => {
   const frontMessages = formatSignMessages(formattedLines.front);
@@ -41,15 +40,7 @@ const generatedCommand = computed(() => {
   const frontTextTag = `front_text:{messages:[${frontMessages.join(',')}]}`;
   const backTextTag = `back_text:{messages:[${backMessages.join(',')}]}`;
   const backTagPart = formattedLines.back.some(line => line.length > 0) ? `,${backTextTag}` : '';
-
-  switch (commandType) {
-    case 'give':
-      return `/give @p ${signType ?? 'oak_sign'}{BlockEntityTag:{${frontTextTag}${backTagPart}}} 1`;
-    case 'setblock':
-      return `/setblock ~ ~ ~ ${signType ?? 'oak_sign'}{${frontTextTag}${backTagPart}}`;
-    default:
-      return `/data merge block ~ ~ ~ {${frontTextTag}${backTagPart}}`;
-  }
+  return `/data merge block ~ ~ ~ {${frontTextTag}${backTagPart}}`;
 });
 
 const buttonClass = computed(() => {
