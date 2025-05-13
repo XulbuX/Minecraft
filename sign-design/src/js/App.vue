@@ -15,6 +15,7 @@
     <SignEditors
       ref="signEditor"
       v-model="formattedLines"
+      default-color="black"
       :max-line-width-px="200"
       :minecraft-colors="MC_COLORS_ARRAY"
       :sign-type-details="selectedSignDetails" />

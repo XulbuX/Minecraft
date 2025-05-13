@@ -9,6 +9,7 @@
       class="top-shadow flex flex-col items-center justify-center gap-3 border border-t-0 border-white/10 rounded-b-lg p-3 duration-200 sm:flex-row"
       :style="{ backgroundColor: `${textAreaBg}${currentTheme === 'dark' ? 'BB' : '9A'}` }">
       <SignEditor
+        :default-color
         label="FRONT"
         :label-below="winWidth >= 640"
         :max-line-width-px="maxLineWidthPx"
@@ -18,6 +19,7 @@
         @editor-focus="handleEditorFocus"
         @update:value="updateFrontValue" />
       <SignEditor
+        :default-color
         label="BACK"
         label-below
         :max-line-width-px="maxLineWidthPx"
@@ -36,7 +38,8 @@ import type { Editor as TiptapEditor } from '@tiptap/vue-3';
 import { useWinSize } from '@@/helpers/win';
 import { currentTheme } from 'settings';
 
-const { maxLineWidthPx, minecraftColors, modelValue, signTypeDetails } = defineProps<{
+const { maxLineWidthPx, defaultColor = 'black', minecraftColors, modelValue, signTypeDetails } = defineProps<{
+  defaultColor?: string;
   maxLineWidthPx: number;
   minecraftColors: MinecraftColor[];
   modelValue: FormattedLines;
@@ -69,14 +72,14 @@ function applyColorToSelection(color: string) {
     targetEditor.chain().focus().setColor(color).run();
   }
   else {
-    targetEditor.chain().focus().unsetColor().run();
+    targetEditor.chain().focus().setColor(defaultColor).run();
   }
 }
 
 function resetFormatting() {
   const targetEditor = activeEditorInstance.value;
   if (!targetEditor) return;
-  targetEditor.chain().focus().unsetColor().unsetBold().unsetItalic().unsetUnderline().run();
+  targetEditor.chain().focus().setColor(defaultColor).unsetBold().unsetItalic().unsetUnderline().run();
 }
 </script>
 

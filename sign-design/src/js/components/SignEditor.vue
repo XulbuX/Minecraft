@@ -32,8 +32,10 @@ import TextStyle from '@tiptap/extension-text-style';
 import Underline from '@tiptap/extension-underline';
 import StarterKit from '@tiptap/starter-kit';
 import { EditorContent, useEditor } from '@tiptap/vue-3';
+import { AllSelection } from 'prosemirror-state';
 
-const props = defineProps<{
+const { maxLineWidthPx, defaultColor = 'black', textAreaBg, value } = defineProps<{
+  defaultColor?: string;
   label: string;
   labelBelow?: boolean;
   maxLineWidthPx: number;
@@ -48,20 +50,20 @@ const emit = defineEmits<{
 }>();
 
 const textAreaStyle = computed(() => ({
-  width: `${props.maxLineWidthPx + 4}px`,
-  backgroundColor: props.textAreaBg,
+  width: `${maxLineWidthPx + 4}px`,
+  backgroundColor: textAreaBg,
 }));
 
 function segmentsToProseMirrorDoc(lines: TextSegment[][]): Record<string, any> {
   const content = lines.map((line) => {
-    if (!line || line.length === 0) return { type: 'paragraph' };
+    if (!line || line.length === 0) return { content: [{ marks: [{ attrs: { color: 'black' }, type: 'textStyle' }], text: '\n', type: 'text' }], type: 'paragraph' };
     return {
       content: line.map((segment) => {
         const marks = [];
         if (segment.bold) marks.push({ type: 'bold' });
         if (segment.italic) marks.push({ type: 'italic' });
         if (segment.underline) marks.push({ type: 'underline' });
-        if (segment.color) marks.push({ attrs: { color: segment.color }, type: 'textStyle' });
+        if (segment.color) marks.push({ attrs: { color: segment.color || defaultColor }, type: 'textStyle' });
         return {
           marks: marks.length > 0 ? marks : undefined,
           text: segment.text,
@@ -72,7 +74,7 @@ function segmentsToProseMirrorDoc(lines: TextSegment[][]): Record<string, any> {
     };
   });
 
-  while (content.length < 4) content.push({ type: 'paragraph' });
+  while (content.length < 4) content.push({ content: [{ marks: [{ attrs: { color: 'black' }, type: 'textStyle' }], text: '\n', type: 'text' }], type: 'paragraph' });
   return { content: content.slice(0, 4), type: 'doc' };
 }
 
@@ -100,12 +102,22 @@ const editorExtensions: EditorOptions['extensions'] = [
 ];
 
 const tiptapEditor = useEditor({
-  content: segmentsToProseMirrorDoc(props.value),
+  content: segmentsToProseMirrorDoc(value),
   editorProps: {
     handleKeyDown: (view, event) => {
       const { state } = view;
       const { doc, selection } = state;
       const { $from, $to, empty } = selection;
+      const isMultiLineOrAllSelection = selection instanceof AllSelection || ($from.pos !== $to.pos && $from.parent !== $to.parent);
+
+      if (isMultiLineOrAllSelection) {
+        if (event.ctrlKey && (event.key.toLowerCase() === 'c' || event.key.toLowerCase() === 'x' || event.key.toLowerCase() === 'a')) {
+          return false;
+        }
+        const allowedKeys = ['Control', 'Shift', 'Alt', 'Meta', 'CapsLock', 'Escape'];
+        if (!allowedKeys.includes(event.key)) return true;
+        return false;
+      }
 
       if (event.key === 'Enter') {
         if (tiptapEditor.value) {
@@ -123,49 +135,47 @@ const tiptapEditor = useEditor({
         return true;
       }
 
-      if (event.key === 'Backspace') {
-        if (empty) {
-          if ($from.parentOffset === 0 && $from.index($from.depth - 1) > 0) {
-            return true;
-          }
-        }
-        else if ($from.parent !== $to.parent) {
+      if (event.key === 'Backspace' && empty) {
+        if ($from.parentOffset === 0 && $from.index($from.depth - 1) > 0) {
           return true;
         }
       }
 
-      if (event.key === 'Delete') {
-        if (empty) {
-          const currentParagraphNode = $from.parent;
-          const currentLineIndex = $from.index($from.depth - 1);
-          const isNotLastLine = currentLineIndex < doc.childCount - 1;
+      if (event.key === 'Delete' && empty) {
+        const currentParagraphNode = $from.parent;
+        const currentLineIndex = $from.index($from.depth - 1);
+        const isNotLastLine = currentLineIndex < doc.childCount - 1;
 
-          if ($from.parentOffset === currentParagraphNode.content.size
-            && currentParagraphNode.content.size > 0
-            && isNotLastLine) {
-            return true;
-          }
-          if (currentParagraphNode.content.size === 0) {
-            return true;
-          }
-        }
-        else if ($from.parent !== $to.parent) {
+        if ($from.parentOffset === currentParagraphNode.content.size && currentParagraphNode.content.size > 0 && isNotLastLine) {
           return true;
-        };
+        }
+        if (currentParagraphNode.content.size === 0 && isNotLastLine) {
+          return true;
+        }
       }
+
       return false;
     },
     handlePaste: (view, event, slice) => {
       const { state } = view;
       const { selection } = state;
       const { $from, $to } = selection;
-      if (slice.content.childCount > 1) return true;
-      if ($from.parent !== $to.parent) return true;
+
+      const isMultiLineOrAllSelection = selection instanceof AllSelection || ($from.pos !== $to.pos && $from.parent !== $to.parent);
+      if (isMultiLineOrAllSelection || slice.content.childCount > 1) {
+        return true;
+      }
       return false;
     },
     handleTextInput: (view, from, to, text) => {
-      if (text.includes('\n')) return true;
-      if (maxLineWidthExceeded(view, from, text)) return true;
+      const { state } = view;
+      const currentSelection = state.selection;
+      const { $from, $to } = currentSelection;
+
+      const isMultiLineOrAllSelection = currentSelection instanceof AllSelection || ($from.pos !== $to.pos && $from.parent !== $to.parent);
+      if (isMultiLineOrAllSelection || text.includes('\n') || maxLineWidthExceeded(view, from, text)) {
+        return true;
+      }
       return false;
     },
   },
@@ -179,7 +189,7 @@ const tiptapEditor = useEditor({
   },
 });
 
-watch(() => props.value, (newValue) => {
+watch(() => value, (newValue) => {
   if (tiptapEditor.value) {
     const editorJson = tiptapEditor.value.getJSON();
     const editorContentAsCustomJson = transformToCustomJson(editorJson);
@@ -213,7 +223,7 @@ function maxLineWidthExceeded(view: EditorView, pos: number, newText: string): b
   const width = testElement.getBoundingClientRect().width;
   document.body.removeChild(testElement);
 
-  return width > props.maxLineWidthPx;
+  return width > maxLineWidthPx;
 }
 
 function transformToCustomJson(proseMirrorJson: any): TextSegment[][] {

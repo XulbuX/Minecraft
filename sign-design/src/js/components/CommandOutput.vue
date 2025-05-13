@@ -31,9 +31,6 @@ const copied = ref(false);
 const copySuccess = ref(false);
 const animationTimer = ref<number | null>(null);
 
-// /data merge block ~ ~ ~ {front_text:{messages:["",'[{text:"Hello world!",color:"green",italic:false}]',"",""]},back_text:{messages:["","",'[{text:"VERY ",color:"red",bold:true,italic:false},{text:"COOL ",color:"aqua",italic:true},{text:"TEXT",color:"blue",italic:false,underlined:true}]',""]}}
-// /data merge block ~ ~ ~ {front_text:{messages:['{"text":"THIS SIGN","color":"#FF0000"}','{"text":"HAS","color":"#0000FF"}','{"text":"COLORED","color":"#FFFF00"}','{"text":"TEXT","color":"#00FF00"}']},back_text:{messages:['{"text":"THE BACK","color":"#00FFFF"}','{"text":"OF THIS","color":"#FFFFFF"}','{"text":"IS","color":"#FFA500"}','{"text":"FORBIDDEN","color":"#52307C"}']}}
-
 const generatedCommand = computed(() => {
   const frontMessages = formatSignMessages(formattedLines.front);
   const backMessages = formatSignMessages(formattedLines.back);
@@ -58,30 +55,25 @@ const iconState = computed(() => {
   }
 });
 
-const escapeText = (text: string): string => text.replace(/"/g, '\\"');
-
 function formatSignMessages(lines: TextSegment[][]): string[] {
   return lines.map((line) => {
-    if (line.length === 0) return '""';
+    if (line.length === 0 || (line.length === 1 && line[0].text === '\n')) {
+      return '\'{"text":""}\'';
+    };
 
     const segments = line.map((segment: TextSegment) => {
-      const parts = [`text:"${escapeText(segment.text)}"`];
+      const parts = [`"text":"${segment.text.replace(/\n/g, '').replace(/"/g, '\\"')}"`];
       if (segment.color) {
         const formattedColor = getMinecraftColorFormat(segment.color);
-        parts.push(`color:"${formattedColor}"`);
+        parts.push(`"color":"${formattedColor}"`);
       }
-      if (segment.bold) parts.push('bold:true');
-      if (segment.italic) {
-        parts.push('italic:true');
-      }
-      else {
-        parts.push('italic:false');
-      };
-      if (segment.underline) parts.push('underlined:true');
+      if (segment.bold) parts.push('"bold":true');
+      if (segment.italic) parts.push('"italic":true');
+      if (segment.underline) parts.push('"underlined":true');
       return `{${parts.join(',')}}`;
     });
 
-    return `'[${segments.join(',')}]'`;
+    return segments.length > 1 ? `'[${segments.join(',')}]'` : `'${segments[0]}'`;
   });
 }
 
