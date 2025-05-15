@@ -12,10 +12,6 @@ export interface FormattedLines {
 };
 
 export interface CommandConfiguration {
-  options?: {
-    [key: string]: any;
-  };
+  options?: { [key: string]: any };
   type: string;
 }
-
-export type CommandType = 'data' | 'give' | 'setblock';

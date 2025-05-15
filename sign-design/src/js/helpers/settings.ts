@@ -1,5 +1,5 @@
 export type ThemeSetting = 'light' | 'dark' | 'system';
-export type EffectiveTheme = 'light' | 'dark';
+export type Theme = 'light' | 'dark';
 
 const osPrefersDark = ref(false);
 const THEME_SETTING_STORAGE_KEY = 'sign_design_theme_setting';
@@ -12,7 +12,7 @@ export const availableThemes: { value: ThemeSetting; label: string }[] = [
 
 export const settings = ref<{ theme: ThemeSetting }>({ theme: getInitialThemeSetting() });
 
-export const currentTheme = computed<EffectiveTheme>(() => {
+export const currentTheme = computed<Theme>(() => {
   if (settings.value.theme === 'system') return osPrefersDark.value ? 'dark' : 'light';
   return settings.value.theme;
 });
@@ -23,7 +23,7 @@ function getInitialThemeSetting(): ThemeSetting {
   return 'system';
 }
 
-function applyDomTheme(theme: EffectiveTheme) {
+function applyDomTheme(theme: Theme) {
   const root = document.documentElement;
   root.setAttribute('data-theme', theme);
   if (theme === 'dark') {

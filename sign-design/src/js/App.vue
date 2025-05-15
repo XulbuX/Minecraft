@@ -15,25 +15,26 @@
     <SignEditors
       ref="signEditor"
       v-model="formattedLines"
-      default-color="black"
+      :default-color="DEFAULT_COLOR"
       :max-line-width-px="200"
       :minecraft-colors="MC_COLORS_ARRAY"
       :sign-type-details="selectedSignDetails" />
     <CommandOutput
-      :command-type="commandType"
+      :default-color="DEFAULT_COLOR"
       :formatted-lines
-      :sign-type="signType" />
+      :sign-type />
     <div id="bottom-fadeout" class="transition-all-200" />
   </div>
 </template>
 
 <script setup lang="ts">
-import type { CommandType, FormattedLines } from '@@/interfaces';
+import type { FormattedLines } from '@@/interfaces';
 import SignEditors from '@/js/components/SignEditors.vue';
 import { MC_COLORS_ARRAY, MC_SIGNS_ARRAY } from 'minecraft';
 
-const signType = ref('oak_sign');
-const commandType = ref('give' as CommandType);
+const DEFAULT_COLOR = 'black';
+
+const signType = ref<string>('oak_sign');
 const signEditor = ref<InstanceType<typeof SignEditors> | null>(null);
 const formattedLines = ref<FormattedLines>({ back: [[], [], [], []], front: [[], [], [], []] });
 

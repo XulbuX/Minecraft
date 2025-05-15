@@ -1,9 +1,8 @@
 :root {
-  --white-rgb: 252 252 255;
-  --gray-rgb: 128 128 130;
-  --black-rgb: 3 3 5;
   --shadow-rgb: 3 3 5;
-  --bg-rgb: 14 19 27;
+  --popup-shadow:
+    0 4px 6px -1px rgb(var(--shadow-rgb) / 0.2),
+    0 2px 4px -2px rgb(var(--shadow-rgb) / 0.2);
 }
 
 [data-theme="dark"] {
@@ -11,7 +10,11 @@
   --gray-rgb: 128 128 130;
   --black-rgb: 3 3 5;
   --bg-rgb: 14 19 27;
-  --bg-800-rgb: 31 41 55;  
+  --bg-800-rgb: 31 41 55;
+  --bg-700-rgb: 55 65 81;
+  --bg-600-rgb: 75 85 99;
+  --bg-yellow-rgb: 202 138 4;
+  --tooltip-bg-rgb: var(--bg-700-rgb);
 }
 
 [data-theme="light"] {
@@ -20,6 +23,10 @@
   --black-rgb: 252 252 255;
   --bg-rgb: 243 244 246;
   --bg-800-rgb: 229 231 235;
+  --bg-700-rgb: 209 213 219;
+  --bg-600-rgb: 194 199 207;
+  --bg-yellow-rgb: 250 204 21;
+  --tooltip-bg-rgb: var(--bg-600-rgb);
 }
 
 /************************** RESETS ***************************/
@@ -74,4 +81,31 @@ button {
 }
 ::-moz-selection {
   background-color: rgb(var(--gray-rgb) / 0.4);
+}
+
+/************************* V-TOOLTIP *************************/
+
+.v-popper--theme-normal-tooltip {
+  width: 60vw;
+  max-width: 13rem;
+  padding: 1rem;
+  user-select: none;
+  border-radius: 8px;
+  box-shadow: var(--popup-shadow);
+  border: 1px solid rgb(var(--white-rgb) / 0.1);
+  background-color: rgb(var(--tooltip-bg-rgb) / 0.8);
+  backdrop-filter: blur(5px);
+}
+.v-popper--theme-normal-tooltip .v-popper__arrow-inner {
+  visibility: hidden;
+}
+.v-popper--theme-normal-tooltip .v-popper__arrow-outer {
+  border-color: rgb(var(--tooltip-bg-rgb) / 0.8);
+}
+
+.v-popper--theme-warning-tooltip {
+  background-color: rgb(var(--bg-yellow-rgb) / 0.5);
+}
+.v-popper--theme-normal-tooltip .v-popper__arrow-outer {
+  border-color: rgb(var(--bg-yellow-rgb) / 0.5);
 }

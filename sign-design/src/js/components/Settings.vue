@@ -20,7 +20,7 @@
         v-if="showPopup"
         ref="popupRef"
         :animate="{ opacity: 1, y: 0, scale: 1 }"
-        class="absolute right-0 z-10 mt-2 w-min origin-top-right overflow-clip border border-black/5 rounded-md bg-gray-300/85 shadow-lg backdrop-blur-5 transition-background-color-200 dark:border-white/10 dark:bg-gray-800/85"
+        class="absolute right-0 z-10 mt-2 w-min origin-top-right overflow-clip border border-black/5 rounded-md bg-gray-300/85 shadow-xl backdrop-blur-5 transition-background-color-200 dark:border-white/10 dark:bg-gray-800/85"
         :exit="{ opacity: 0, y: -10, scale: 0.95 }"
         :initial="{ opacity: 0, y: -10, scale: 0.95 }"
         :transition="{ duration: 0.2, ease: 'easeOut' }">

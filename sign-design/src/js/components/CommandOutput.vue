@@ -2,7 +2,7 @@
   <div class="shadow-x relative flex items-center justify-end overflow-clip border border-black/5 rounded-lg bg-gray-200 transition-all-200 dark:border-white/10 dark:bg-gray-800">
     <Command :generated-command />
     <button
-      class="absolute right-0 top-0 z-10 m-1 size-8 select-none border border-black/5 rounded p-1 backdrop-blur-5 transition-all-200 dark:border-white/10"
+      class="absolute right-0 top-0 z-10 m-1 size-8 flex select-none items-center justify-center border border-black/5 rounded p-1 backdrop-blur-5 transition-all-200 dark:border-white/10"
       :class="buttonClass"
       @click="copyCommand">
       <motion.svg
@@ -17,6 +17,14 @@
         <path v-else d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm121.6 313.1c4.7 4.7 4.7 12.3 0 17L338 377.6c-4.7 4.7-12.3 4.7-17 0L256 312l-65.1 65.6c-4.7 4.7-12.3 4.7-17 0L134.4 338c-4.7-4.7-4.7-12.3 0-17l65.6-65-65.6-65.1c-4.7-4.7-4.7-12.3 0-17l39.6-39.6c4.7-4.7 12.3-4.7 17 0l65 65.7 65.1-65.6c4.7-4.7 12.3-4.7 17 0l39.6 39.6c4.7 4.7 4.7 12.3 0 17L312 256l65.6 65.1z" />
       </motion.svg>
     </button>
+    <button
+      v-if="generatedCommand.length > 256"
+      v-tooltip="tooltipOptions"
+      class="absolute right-0 top-9 z-10 m-1 size-8 flex select-none items-center justify-center border border-black/5 rounded bg-yellow-400/50 p-1 color-yellow-600 backdrop-blur-5 transition-all-200 dark:border-white/10 dark:bg-yellow-600/50 dark:color-yellow">
+      <svg class="size-4.5" fill="currentColor" viewBox="0 0 128 512">
+        <path d="M96 64c0-17.7-14.3-32-32-32S32 46.3 32 64l0 256c0 17.7 14.3 32 32 32s32-14.3 32-32L96 64zM64 480a40 40 0 1 0 0-80 40 40 0 1 0 0 80z" />
+      </svg>
+    </button>
   </div>
 </template>
 
@@ -24,20 +32,32 @@
 import type { FormattedLines, TextSegment } from '@@/interfaces';
 import { getMinecraftColorFormat } from 'minecraft';
 import { motion } from 'motion-v';
+import 'floating-vue/dist/style.css';
 
-const { formattedLines } = defineProps<{ formattedLines: FormattedLines }>();
+const { defaultColor, formattedLines, signType } = defineProps<{
+  formattedLines: FormattedLines;
+  signType: string;
+  defaultColor: string;
+}>();
 
 const copied = ref(false);
 const copySuccess = ref(false);
 const animationTimer = ref<number | null>(null);
 
+const tooltipOptions = computed(() => ({
+  content: 'This command must be run in a command block as it is too long for chat.',
+  placement: 'left',
+  popperTriggers: ['hover', 'click'],
+  theme: 'warning-tooltip',
+  triggers: ['hover', 'click'],
+}));
+
 const generatedCommand = computed(() => {
-  const frontMessages = formatSignMessages(formattedLines.front);
-  const backMessages = formatSignMessages(formattedLines.back);
-  const frontTextTag = `front_text:{messages:[${frontMessages.join(',')}]}`;
-  const backTextTag = `back_text:{messages:[${backMessages.join(',')}]}`;
-  const backTagPart = formattedLines.back.some(line => line.length > 0) ? `,${backTextTag}` : '';
-  return `/data merge block ~ ~ ~ {${frontTextTag}${backTagPart}}`;
+  const frontMsgs = formatSignMessages(formattedLines.front);
+  const backMsgs = formatSignMessages(formattedLines.back);
+  const frontText = `front_text:{color:"${defaultColor}",messages:[${frontMsgs.join(',')}]}`;
+  const backText = `back_text:{color:"${defaultColor}",messages:[${backMsgs.join(',')}]}`;
+  return `/give @p ${signType}[block_entity_data={${frontText},${backText},id:"minecraft:sign"}] 1`;
 });
 
 const buttonClass = computed(() => {
@@ -57,22 +77,21 @@ const iconState = computed(() => {
 
 function formatSignMessages(lines: TextSegment[][]): string[] {
   return lines.map((line) => {
-    if (line.length === 0 || (line.length === 1 && line[0].text === '\n')) {
-      return '\'{"text":""}\'';
-    };
-
-    const segments = line.map((segment: TextSegment) => {
-      const parts = [`"text":"${segment.text.replace(/\n/g, '').replace(/"/g, '\\"')}"`];
-      if (segment.color) {
+    if (line.length === 0 || (line.length === 1 && line[0].text === '\n')) return '\'""\'';
+    let segments = line.map((segment: TextSegment) => {
+      const text = segment.text.replace(/\n/g, '').replace(/"/g, '\\"');
+      const parts = [];
+      if (segment.color && segment.color !== defaultColor) {
         const formattedColor = getMinecraftColorFormat(segment.color);
         parts.push(`"color":"${formattedColor}"`);
       }
       if (segment.bold) parts.push('"bold":true');
       if (segment.italic) parts.push('"italic":true');
       if (segment.underline) parts.push('"underlined":true');
-      return `{${parts.join(',')}}`;
+      if (parts.length === 0 || text.length === 0) return `"${text}"`;
+      return `{"text":"${text}",${parts.join(',')}}`;
     });
-
+    if (segments.length > 1) segments = segments.filter(s => s !== '""');
     return segments.length > 1 ? `'[${segments.join(',')}]'` : `'${segments[0]}'`;
   });
 }
@@ -122,5 +141,38 @@ function copyCommand(): void {
 .shadow-x::after {
   right: 0;
   background: linear-gradient(to left, rgb(var(--bg-800-rgb)), transparent);
+}
+
+.v-popper--theme-custom-tooltip .v-popper__inner {
+  background-color: #E5E7EB; /* Tailwind gray-200 */
+  color: #1F2937; /* Tailwind gray-800 */
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  max-width: 250px; /* Prevent tooltip from becoming too wide */
+  word-wrap: break-word; /* Allow long words to break and wrap */
+}
+
+.v-popper--theme-custom-tooltip .v-popper__arrow-inner {
+  border-color: #E5E7EB;
+}
+
+.v-popper--theme-custom-tooltip .v-popper__arrow-outer {
+  border-color: #E5E7EB;
+}
+
+/* Dark theme overrides */
+.dark .v-popper--theme-custom-tooltip .v-popper__inner {
+  background-color: #374151; /* Tailwind gray-700 */
+  color: #F3F4F6; /* Tailwind gray-100 */
+}
+
+.dark .v-popper--theme-custom-tooltip .v-popper__arrow-inner {
+  border-color: #374151;
+}
+
+.dark .v-popper--theme-custom-tooltip .v-popper__arrow-outer {
+  border-color: #374151;
 }
 </style>
