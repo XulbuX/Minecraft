@@ -8,7 +8,6 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    ColorControls: typeof import('./../components/ColorControls.vue')['default']
     ColorPicker: typeof import('./../components/ColorPicker.vue')['default']
     Command: typeof import('./../components/Command.vue')['default']
     CommandOutput: typeof import('./../components/CommandOutput.vue')['default']
@@ -17,9 +16,5 @@ declare module 'vue' {
     SignEditor: typeof import('./../components/SignEditor.vue')['default']
     SignEditors: typeof import('./../components/SignEditors.vue')['default']
     SignTypeSelect: typeof import('./../components/SignTypeSelect.vue')['default']
-    ThemeSwitcher: typeof import('./../components/ThemeSwitcher.vue')['default']
-  }
-  export interface ComponentCustomProperties {
-    OnClickOutside: typeof import('@vueuse/components')['vOnClickOutside']
   }
 }

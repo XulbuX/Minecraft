@@ -94,9 +94,9 @@ const editorExtensions: EditorOptions['extensions'] = [
     orderedList: false,
     paragraph: {},
   }),
-  Bold.configure({ HTMLAttributes: { class: 'font-minecraft' } }),
-  Italic.configure({ HTMLAttributes: { class: 'font-minecraft' } }),
-  Underline.configure({ HTMLAttributes: { class: 'font-minecraft' } }),
+  Bold.configure({ HTMLAttributes: { class: 'font-monocraft' } }),
+  Italic.configure({ HTMLAttributes: { class: 'font-monocraft' } }),
+  Underline.configure({ HTMLAttributes: { class: 'font-monocraft' } }),
   TextStyle,
   Color,
 ];
@@ -213,7 +213,7 @@ function maxLineWidthExceeded(view: EditorView, pos: number, newText: string): b
   });
 
   const testElement = document.createElement('span');
-  testElement.className = 'font-minecraft';
+  testElement.className = 'font-monocraft';
   testElement.style.visibility = 'hidden';
   testElement.style.position = 'absolute';
   testElement.style.whiteSpace = 'nowrap';

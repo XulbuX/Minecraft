@@ -1,7 +1,7 @@
 <template>
   <div v-on-click-outside="closeSettings" class="relative z-1000 ml-4">
     <button
-      class="flex items-center rounded bg-transparent p-1 transition-all-200 hover:bg-black/5 dark:hover:bg-white/10"
+      class="flex select-none items-center rounded bg-transparent p-1 outline-none transition-all-200 hover:bg-black/5 focus:outline-none dark:hover:bg-white/10"
       title="Settings"
       @click="showPopup = !showPopup">
       <motion.svg
@@ -32,7 +32,7 @@
             <button
               v-for="themeOption in availableThemes"
               :key="themeOption.value"
-              class="w-full border-l border-black/10 bg-transparent py-2 pl-3 pr-4 text-left text-sm text-black/75 transition-all-200 transition-background-color-200 dark:border-white/10 first:border-none hover:bg-black/6 dark:text-white/75 dark:hover:bg-white/8"
+              class="w-full select-none border-l border-black/10 bg-transparent py-2 pl-3 pr-4 text-left text-sm text-black/75 transition-all-200 transition-background-color-200 dark:border-white/10 first:border-none hover:bg-black/6 dark:text-white/75 dark:hover:bg-white/8"
               :class="{ 'font-semibold text-black! dark:text-white! bg-black/3! dark:bg-white/5!': settings.theme === themeOption.value }"
               @click="setTheme(themeOption.value)">
               {{ themeOption.label }}

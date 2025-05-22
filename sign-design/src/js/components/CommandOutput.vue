@@ -67,12 +67,8 @@ const buttonClass = computed(() => {
 
 const iconState = computed(() => {
   if (!copied.value) return { rotate: 0, scale: 1 };
-  if (copySuccess.value) {
-    return { rotate: 0, scale: 1.2 };
-  }
-  else {
-    return { rotate: 15, scale: 1.1 };
-  }
+  if (copySuccess.value) return { rotate: 0, scale: 1.2 };
+  else return { rotate: 15, scale: 1.1 };
 });
 
 function formatSignMessages(lines: TextSegment[][]): string[] {
@@ -97,10 +93,7 @@ function formatSignMessages(lines: TextSegment[][]): string[] {
 }
 
 function copyCommand(): void {
-  if (animationTimer.value) {
-    clearTimeout(animationTimer.value);
-  }
-
+  if (animationTimer.value) clearTimeout(animationTimer.value);
   navigator.clipboard.writeText(generatedCommand.value)
     .then(() => {
       copied.value = true;
@@ -141,38 +134,5 @@ function copyCommand(): void {
 .shadow-x::after {
   right: 0;
   background: linear-gradient(to left, rgb(var(--bg-800-rgb)), transparent);
-}
-
-.v-popper--theme-custom-tooltip .v-popper__inner {
-  background-color: #E5E7EB; /* Tailwind gray-200 */
-  color: #1F2937; /* Tailwind gray-800 */
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.75rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.375rem;
-  max-width: 250px; /* Prevent tooltip from becoming too wide */
-  word-wrap: break-word; /* Allow long words to break and wrap */
-}
-
-.v-popper--theme-custom-tooltip .v-popper__arrow-inner {
-  border-color: #E5E7EB;
-}
-
-.v-popper--theme-custom-tooltip .v-popper__arrow-outer {
-  border-color: #E5E7EB;
-}
-
-/* Dark theme overrides */
-.dark .v-popper--theme-custom-tooltip .v-popper__inner {
-  background-color: #374151; /* Tailwind gray-700 */
-  color: #F3F4F6; /* Tailwind gray-100 */
-}
-
-.dark .v-popper--theme-custom-tooltip .v-popper__arrow-inner {
-  border-color: #374151;
-}
-
-.dark .v-popper--theme-custom-tooltip .v-popper__arrow-outer {
-  border-color: #374151;
 }
 </style>

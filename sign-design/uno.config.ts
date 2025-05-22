@@ -12,7 +12,7 @@ export default defineConfig({
     },
     fontFamily: {
       jetbrains: ['JetBrains Mono', 'monospace'],
-      minecraft: ['Minecraft', 'monospace'],
+      monocraft: ['Monocraft', 'monospace'],
       montserrat: ['Montserrat', 'sans-serif'],
     },
   },
