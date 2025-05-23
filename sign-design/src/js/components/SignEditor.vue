@@ -291,21 +291,21 @@ function transformToCustomJson(proseMirrorJson: any): TextSegment[][] {
   margin: 0;
   overflow: hidden;
   white-space: nowrap;
-  font-family: 'Minecraft', monospace;
+  font-family: 'Monocraft', monospace;
 }
 .tiptap span {
-  font-family: 'Minecraft', monospace;
+  font-family: 'Monocraft', monospace;
 }
 .tiptap strong, .format-b {
   font-weight: bold;
-  font-family: 'Minecraft', monospace;
+  font-family: 'Monocraft', monospace;
 }
 .tiptap em, .format-i {
   font-style: italic;
-  font-family: 'Minecraft', monospace;
+  font-family: 'Monocraft', monospace;
 }
 .tiptap u, .format-u {
   text-decoration: underline 2px;
-  font-family: 'Minecraft', monospace;
+  font-family: 'Monocraft', monospace;
 }
 </style>

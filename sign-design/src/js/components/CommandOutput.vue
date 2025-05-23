@@ -30,6 +30,7 @@
 
 <script setup lang="ts">
 import type { FormattedLines, TextSegment } from '@@/interfaces';
+import { fixTablesKey } from '@tiptap/pm/tables';
 import { getMinecraftColorFormat } from 'minecraft';
 import { motion } from 'motion-v';
 import 'floating-vue/dist/style.css';
@@ -53,10 +54,10 @@ const tooltipOptions = computed(() => ({
 }));
 
 const generatedCommand = computed(() => {
-  const frontMsgs = formatSignMessages(formattedLines.front);
-  const backMsgs = formatSignMessages(formattedLines.back);
-  const frontText = `front_text:{color:"${defaultColor}",messages:[${frontMsgs.join(',')}]}`;
-  const backText = `back_text:{color:"${defaultColor}",messages:[${backMsgs.join(',')}]}`;
+  const signFrontMsgs = formatSignMessages(formattedLines.front);
+  const signBackMsgs = formatSignMessages(formattedLines.back);
+  const frontText = `front_text:{color:"${defaultColor}",messages:[${signFrontMsgs.join(',')}]}`;
+  const backText = `back_text:{color:"${defaultColor}",messages:[${signBackMsgs.join(',')}]}`;
   return `/give @p ${signType}[block_entity_data={${frontText},${backText},id:"minecraft:sign"}] 1`;
 });
 
@@ -73,22 +74,27 @@ const iconState = computed(() => {
 
 function formatSignMessages(lines: TextSegment[][]): string[] {
   return lines.map((line) => {
-    if (line.length === 0 || (line.length === 1 && line[0].text === '\n')) return '\'""\'';
+    if (line.length === 0 || (line.length === 1 && line[0].text === '\n')) return `'""'`;
+
     let segments = line.map((segment: TextSegment) => {
       const text = segment.text.replace(/\n/g, '').replace(/"/g, '\\"');
       const parts = [];
-      if (segment.color && segment.color !== defaultColor) {
-        const formattedColor = getMinecraftColorFormat(segment.color);
-        parts.push(`"color":"${formattedColor}"`);
+      if (segment.color) {
+        const formattedSegmentColor = getMinecraftColorFormat(segment.color);
+        if (formattedSegmentColor !== defaultColor) parts.push(`"color":"${formattedSegmentColor}"`);
       }
       if (segment.bold) parts.push('"bold":true');
       if (segment.italic) parts.push('"italic":true');
       if (segment.underline) parts.push('"underlined":true');
-      if (parts.length === 0 || text.length === 0) return `"${text}"`;
+      if (text.length === 0 && parts.length === 0) return '""';
+      if (parts.length === 0) return `"${text}"`;
       return `{"text":"${text}",${parts.join(',')}}`;
     });
+
     if (segments.length > 1) segments = segments.filter(s => s !== '""');
-    return segments.length > 1 ? `'[${segments.join(',')}]'` : `'${segments[0]}'`;
+    if (segments.length === 0 || (segments.length === 1 && segments[0] === '""')) return `'""'`;
+    if (segments.length > 1) return `'[${segments.join(',')}]'`;
+    return `'${segments[0]}'`;
   });
 }
 
@@ -98,16 +104,12 @@ function copyCommand(): void {
     .then(() => {
       copied.value = true;
       copySuccess.value = true;
-      animationTimer.value = window.setTimeout(() => {
-        copied.value = false;
-      }, 2000);
+      animationTimer.value = window.setTimeout(() => copied.value = false, 2000);
     })
     .catch(() => {
       copied.value = true;
       copySuccess.value = false;
-      animationTimer.value = window.setTimeout(() => {
-        copied.value = false;
-      }, 2000);
+      animationTimer.value = window.setTimeout(() => copied.value = false, 2000);
     });
 }
 </script>
