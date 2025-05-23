@@ -1,5 +1,5 @@
 <template>
-  <div class="relative" :title>
+  <div v-on-click-outside="closePicker" class="relative" :title>
     <div
       ref="colorPickerRef"
       class="inset-border h-6 flex cursor-pointer select-none items-center justify-center rounded-md px-1.5 font-mono"
@@ -12,7 +12,6 @@
         <motion.div
           v-if="isOpen"
           ref="popupRef"
-          v-on-click-outside="closePicker"
           :animate="{ opacity: 1, y: 0 }"
           class="widget-shadow absolute z-50 border border-black/5 rounded-lg bg-gray-2/80 p-3 backdrop-blur-5 dark:border-white/10 dark:bg-gray-7/80"
           :exit="{ opacity: 0, y: -10, scale: 0.95 }"
